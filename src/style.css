@@ -1,0 +1,7 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Optional: smooth fonts + better defaults */
+html { scroll-behavior: smooth; }
+:root { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
