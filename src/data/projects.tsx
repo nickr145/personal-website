@@ -1,4 +1,5 @@
-// src/data/projects.ts
+import * as strings from "./projectStrings";
+
 export type Project = {
   title: string;
   description: string;
@@ -9,25 +10,26 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    title: "Crop Yield Prediction & Risk Mitigation using Deep Learning",
-    description: "Turning agricultural data into actionable crop insights.",
-    tags: ["python", "pandas", "scikit-learn", "random forest", "lasso regression", "neural nets", "recurrent nns", "lstm", "tensorflow", "data visualization", "feature engineering"],
-    repo: "https://github.com/nickr145/ml-crop-yield-prediction"
+    title: strings.fit4MeTitle,
+    description: strings.fit4MeDescription,
+    tags: strings.fit4MeTags,
+    repo: strings.fit4MeRepo
   },
   {
-    title: "Skystones (SwiftUI)",
-    description: "Turn-based strategy with PVC/PVP modes, difficulty levels, score box, and audio.",
-    tags: ["SwiftUI", "Game", "MVVM"],
-    repo: "https://github.com/yourname/skystones" // placeholder
+    title: strings.cropTitle,
+    description: strings.cropDescription,
+    tags: strings.cropTags,
+    repo: strings.cropRepo
   },
   {
-    title: "Password Generator",
-    description: "Complexity-driven password generator with playful animations and history.",
-    tags: ["SwiftUI"],
+    title: strings.skystonesTitle,
+    description: strings.skystonesDescription,
+    tags: strings.skystonesTags,
+    repo: strings.skystonesRepo // placeholder
   },
   {
-    title: "Weekly Planner (SimpleKit)",
-    description: "Imperative UI planner with toolbar actions and drag-to-resize events.",
-    tags: ["TypeScript", "SimpleKit", "MVC"],
+    title: strings.pwgenTitle,
+    description: strings.pwgenDescription,
+    tags: strings.pwgenTags,
   },
 ];
