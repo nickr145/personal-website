@@ -1,15 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
-/**
- * Interactive Particle Playground + Gravity Well (A/R + continuous I/D)
- * - Fullscreen playground with bouncing particles
- * - Cursor acts as a gravity well (attract or repel)
- * - Click to spawn bursts; hold ⌥/Alt to repel temporarily
- * - Keys: A = attract, R = repel, hold I = increase strength continuously, hold D = decrease continuously
- *
- * Type-safe for React and Preact (via compat).
- */
 export default function InteractiveParticlePlayground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const initialX = typeof window !== 'undefined' ? window.innerWidth / 2 : 512;
@@ -81,7 +72,6 @@ export default function InteractiveParticlePlayground() {
     } as ParticleState;
   }
 
-  // --- Handlers (typed to work in React AND Preact compat) ---
   const onClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
