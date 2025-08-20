@@ -1,11 +1,11 @@
 // src/app.tsx
-import { Header } from './components/header';
-import { Hero } from './components/hero';
-import { About } from './components/about';
-import { Projects } from './components/projects';
-import { Contact } from './components/contact';
-import { Footer } from './components/footer';
-import InteractiveParticlePlayground from './components/particlePlayground';
+import { Header } from "./components/header";
+import { Hero } from "./components/hero";
+import { About } from "./components/about";
+import { Projects } from "./components/projects";
+import { Contact } from "./components/contact";
+import { Footer } from "./components/footer";
+import InteractiveParticleCanvas from "./components/particlePlayground";
 
 export function App() {
   return (
@@ -18,9 +18,9 @@ export function App() {
       </main>
 
       {/* Full-bleed interactive section */}
-      <section class="w-screen">
-        <InteractiveParticlePlayground />
-      </section>
+      <div className="mx-auto my-12">
+        <InteractiveParticleCanvas width={720} height={420} />
+      </div>
 
       {/* Back to constrained content */}
       <main class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">

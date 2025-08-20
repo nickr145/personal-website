@@ -1,208 +1,226 @@
-import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+// src/components/InteractiveParticleCanvas.tsx
+import React, { useEffect, useRef } from "react";
 
-export default function InteractiveParticlePlayground() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const initialX = typeof window !== 'undefined' ? window.innerWidth / 2 : 512;
-  const initialY = typeof window !== 'undefined' ? window.innerHeight / 2 : 384;
-  const mouse = useRef<{ x: number; y: number; active: boolean; repel: boolean; strength: number }>({
-    x: initialX,
-    y: initialY,
-    active: false,
-    repel: false,
-    strength: 1400,
+type Mode = "attract" | "repel";
+
+interface Props {
+  width?: number; // canvas pixels
+  height?: number; // canvas pixels
+  radius?: number; // particle radius (px)
+  initialParticles?: number;
+  maxParticles?: number;
+}
+
+export default function InteractiveParticleCanvas({
+  width = 720,
+  height = 420,
+  radius = 6,
+  initialParticles = 24,
+  maxParticles = 120,
+}: Props) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Simulation state kept outside React renders
+  const stateRef = useRef({
+    particles: [] as {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      color: string;
+    }[],
+    mouse: {
+      x: 0,
+      y: 0,
+      active: false,
+      mode: "attract" as Mode,
+      strength: 1400,
+      inc: false,
+      dec: false,
+      tempRepel: false,
+    },
+    raf: 0,
   });
 
-  const keys = useRef({ inc: false, dec: false });
-  const lastTime = useRef<number | null>(null);
+  // Helpers
+  const clamp = (v: number, lo: number, hi: number) =>
+    v < lo ? lo : v > hi ? hi : v;
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
 
-  const [particles, setParticles] = useState(() => Array.from({ length: 60 }, (_, i) => makeParticle(i)));
-  const [hovered, setHovered] = useState(false);
-  const [mode, setMode] = useState<'attract' | 'repel'>('attract');
+  function spawn(n: number, cx?: number, cy?: number) {
+    const s = stateRef.current;
+    for (let i = 0; i < n; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = rand(0.5, 1.8);
+      s.particles.push({
+        x: clamp(cx ?? rand(radius, width - radius), radius, width - radius),
+        y: clamp(cy ?? rand(radius, height - radius), radius, height - radius),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        color: `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`,
+      });
+    }
+    // Cap total
+    if (s.particles.length > maxParticles) {
+      s.particles.splice(0, s.particles.length - maxParticles);
+    }
+  }
 
-  // Keyboard controls: A/R mode toggle; I/D continuous strength adjust while held
+  // Setup + animation loop
   useEffect(() => {
+    const s = stateRef.current;
+    const canvas = canvasRef.current!;
+    const ctx = canvas.getContext("2d")!;
+
+    // Initial seed
+    s.particles = [];
+    spawn(initialParticles);
+
+    // Keyboard
     const onKeyDown = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
-      if (k === 'r') setMode('repel');
-      if (k === 'a') setMode('attract');
-      if (k === 'i') keys.current.inc = true;
-      if (k === 'd') keys.current.dec = true;
+      if (k === "a") s.mouse.mode = "attract";
+      if (k === "r") s.mouse.mode = "repel";
+      if (k === "i") s.mouse.inc = true;
+      if (k === "d") s.mouse.dec = true;
+      if (k === "c") s.particles = [];
     };
     const onKeyUp = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
-      if (k === 'i') keys.current.inc = false;
-      if (k === 'd') keys.current.dec = false;
+      if (k === "i") s.mouse.inc = false;
+      if (k === "d") s.mouse.dec = false;
     };
-    window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+
+    // Pointer
+    const rectFor = () => {
+      // account for borders via clientLeft/Top + scrolling
+      const r = canvas.getBoundingClientRect();
+      return {
+        left: r.left + canvas.clientLeft,
+        top: r.top + canvas.clientTop,
+      };
     };
-  }, []);
-
-  // RAF loop to continuously adjust strength while I/D are held
-  useEffect(() => {
-    let raf: number;
-    const tick = (t: number) => {
-      const ratePerSecond = 900; // units per second
-      if (lastTime.current === null) lastTime.current = t;
-      const dt = Math.min(0.05, (t - lastTime.current) / 1000); // clamp dt to avoid jumps
-      lastTime.current = t;
-      const m = mouse.current;
-      if (keys.current.inc) m.strength = Math.min(4000, m.strength + ratePerSecond * dt);
-      if (keys.current.dec) m.strength = Math.max(200, m.strength - ratePerSecond * dt);
-      raf = requestAnimationFrame(tick);
+    const onMove = (e: MouseEvent) => {
+      const r = rectFor();
+      s.mouse.x = e.clientX - r.left;
+      s.mouse.y = e.clientY - r.top;
+      s.mouse.active = true;
+      s.mouse.tempRepel = e.altKey;
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+    const onLeave = () => {
+      s.mouse.active = false;
+    };
 
-  function makeParticle(id: number) {
-    const w = typeof window !== 'undefined' ? window.innerWidth : 1024;
-    const h = typeof window !== 'undefined' ? window.innerHeight : 768;
-    return {
-      id,
-      x: Math.random() * w,
-      y: Math.random() * h,
-      dx: (Math.random() - 0.5) * 2,
-      dy: (Math.random() - 0.5) * 2,
-      color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-    } as ParticleState;
-  }
+    canvas.addEventListener("mousemove", onMove);
+    canvas.addEventListener("mouseleave", onLeave);
 
-  const onClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const cx = e.clientX - rect.left;
-    const cy = e.clientY - rect.top;
-    const burst = Array.from({ length: 14 }, (_, i) => ({ ...makeParticle(Date.now() + i), x: cx, y: cy }));
-    setParticles((p) => [...p, ...burst]);
-  };
+    // Click to burst
+    const onClick = (e: MouseEvent) => {
+      const r = rectFor();
+      const cx = clamp(e.clientX - r.left, radius, width - radius);
+      const cy = clamp(e.clientY - r.top, radius, height - radius);
+      spawn(14, cx, cy);
+    };
+    canvas.addEventListener("click", onClick);
 
-  const onMove: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    mouse.current.x = e.clientX - rect.left;
-    mouse.current.y = e.clientY - rect.top;
-    mouse.current.active = true;
-    mouse.current.repel = e.altKey;
-  };
+    // Animation
+    const step = () => {
+      // Strength ramp
+      if (s.mouse.inc) s.mouse.strength = Math.min(4000, s.mouse.strength + 40);
+      if (s.mouse.dec) s.mouse.strength = Math.max(400, s.mouse.strength - 40);
 
-  return (
-    <div
-      ref={containerRef}
-      onMouseEnter={() => { setHovered(true); mouse.current.active = true; }}
-      onMouseLeave={() => { setHovered(false); mouse.current.active = false; }}
-      onMouseMove={onMove}
-      onClick={onClick}
-      className="relative w-full h-screen overflow-hidden bg-white"
-      tabIndex={0}
-    >
-      {/* Background flow + cursor darkening */}
-      <CursorVignette mouse={mouse} />
+      // Clear (fill the content, border is via CSS)
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, width, height);
 
-      {particles.map((p) => (
-        <Particle key={p.id} data={p} hovered={hovered} mouse={mouse} mode={mode} />
-      ))}
+      // Physics
+      for (const p of s.particles) {
+        // Force (use inverse-square falloff)
+        if (s.mouse.active) {
+          const dx = s.mouse.x - p.x;
+          const dy = s.mouse.y - p.y;
+          const d2 = dx * dx + dy * dy + 200; // avoid div by zero
+          const inv = 1 / Math.sqrt(d2);
+          const dirX = dx * inv,
+            dirY = dy * inv;
+          const sign = s.mouse.tempRepel || s.mouse.mode === "repel" ? -1 : 1;
+          const accel = (s.mouse.strength / d2) * sign;
+          p.vx += dirX * accel;
+          p.vy += dirY * accel;
+        }
 
-      {/* UI hint */}
-      <div className="absolute bottom-4 left-4 text-white/80 text-xs px-3 py-2 rounded-xl bg-white/10 border border-white/15 backdrop-blur">
-        <span className="mr-3">Mode: <strong>{mode}</strong></span>
-        <span className="mr-3">I = stronger (hold)</span>
-        <span className="mr-3">D = weaker (hold)</span>
-        <span className="mr-3">A = attract, R = repel</span>
-        <span>Alt = repel (hold)</span>
-      </div>
-    </div>
-  );
-}
+        // Damping + clamp
+        p.vx *= 0.995;
+        p.vy *= 0.995;
+        const maxV = 3.2;
+        p.vx = Math.max(-maxV, Math.min(maxV, p.vx));
+        p.vy = Math.max(-maxV, Math.min(maxV, p.vy));
 
-// --- Types ---
-interface ParticleState {
-  id: number;
-  x: number;
-  y: number;
-  dx: number;
-  dy: number;
-  color: string;
-}
+        // Integrate
+        p.x += p.vx;
+        p.y += p.vy;
 
-function Particle({ data, hovered, mouse, mode }: { data: ParticleState; hovered: boolean; mouse: React.MutableRefObject<{ x: number; y: number; active: boolean; repel: boolean; strength: number }>; mode: 'attract' | 'repel' }) {
-  const x = useMotionValue(data.x);
-  const y = useMotionValue(data.y);
-  const springX = useSpring(x, { stiffness: 40, damping: 15 });
-  const springY = useSpring(y, { stiffness: 40, damping: 15 });
+        // Bounce on canvas edges (exact to the pixel inside the border)
+        if (p.x < radius) {
+          p.x = radius;
+          p.vx *= -1;
+        }
+        if (p.x > width - radius) {
+          p.x = width - radius;
+          p.vx *= -1;
+        }
+        if (p.y < radius) {
+          p.y = radius;
+          p.vy *= -1;
+        }
+        if (p.y > height - radius) {
+          p.y = height - radius;
+          p.vy *= -1;
+        }
 
-  useEffect(() => {
-    let frame: number;
-    const animate = () => {
-      const w = typeof window !== 'undefined' ? window.innerWidth : 1024;
-      const h = typeof window !== 'undefined' ? window.innerHeight : 768;
-
-      // Gravity toward/away from cursor
-      if (mouse.current.active) {
-        const cx = mouse.current.x;
-        const cy = mouse.current.y;
-        const dx = cx - x.get();
-        const dy = cy - y.get();
-        const dist2 = dx * dx + dy * dy + 200; // avoid division by zero
-        const invDist = 1 / Math.sqrt(dist2);
-        const dirX = dx * invDist;
-        const dirY = dy * invDist;
-        const strength = mouse.current.strength / dist2; // inverse square falloff
-        const sgn = (mouse.current.repel || mode === 'repel') ? -1 : 1;
-        data.dx += dirX * strength * sgn;
-        data.dy += dirY * strength * sgn;
+        // Draw
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = "rgba(255,255,255,0.35)";
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
 
-      // Velocity limits & damping
-      const maxV = 3.2;
-      data.dx = Math.max(-maxV, Math.min(maxV, data.dx * 0.995));
-      data.dy = Math.max(-maxV, Math.min(maxV, data.dy * 0.995));
-
-      let nx = x.get() + data.dx;
-      let ny = y.get() + data.dy;
-
-      if (nx < 0 || nx > w) { data.dx *= -1; nx = Math.max(0, Math.min(nx, w)); }
-      if (ny < 0 || ny > h) { data.dy *= -1; ny = Math.max(0, Math.min(ny, h)); }
-
-      x.set(nx);
-      y.set(ny);
-      frame = requestAnimationFrame(animate);
+      s.raf = requestAnimationFrame(step);
     };
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, [x, y, data, mouse, mode]);
+    s.raf = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(s.raf);
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+      canvas.removeEventListener("mousemove", onMove);
+      canvas.removeEventListener("mouseleave", onLeave);
+      canvas.removeEventListener("click", onClick);
+    };
+  }, [width, height, radius, initialParticles, maxParticles]);
 
   return (
-    <motion.div
-      className="absolute rounded-full"
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      // Border & rounded corner are purely visual; physics uses canvas size
       style={{
-        width: 12,
-        height: 12,
-        background: data.color,
-        opacity: hovered ? 0.95 : 0.7,
-        boxShadow: '0 0 16px rgba(255,255,255,0.35)',
-        left: springX,
-        top: springY,
+        display: "block",
+        margin: "0 auto",
+        background: "black",
+        border: "2px solid rgba(255,255,255,0.2)",
+        borderRadius: 12,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
       }}
+      aria-label="Interactive particle box"
+      title="A: attract · R: repel · hold I/D: strength · Alt: temp repel · C: clear"
     />
   );
-}
-
-function CursorVignette({ mouse }: { mouse: React.MutableRefObject<{ x: number; y: number; active: boolean; repel: boolean; strength: number }> }) {
-  // Darken around cursor similar to the screenshot vibe
-  const [pos, setPos] = useState({ x: typeof window !== 'undefined' ? window.innerWidth / 2 : 512, y: typeof window !== 'undefined' ? window.innerHeight / 2 : 384 });
-  useEffect(() => {
-    let raf: number;
-    const tick = () => { setPos({ x: mouse.current.x, y: mouse.current.y }); raf = requestAnimationFrame(tick); };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [mouse]);
-  const style: React.CSSProperties = {
-    background: `radial-gradient(320px 320px at ${pos.x}px ${pos.y}px, rgba(255,255,255,0.05), rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.85))`,
-  };
-  return <div aria-hidden className="absolute inset-0 pointer-events-none" style={style} />;
 }
