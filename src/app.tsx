@@ -9,7 +9,7 @@ import InteractiveParticleCanvas from "./components/particlePlayground";
 
 export function App() {
   return (
-    <div class="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <div class="min-h-screen bg-white text-gray-900 data-[theme=dark]:bg-gray-950 data-[theme=dark]:text-gray-100">
       <Header />
 
       {/* Keep Hero in the normal content flow */}

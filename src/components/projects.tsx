@@ -9,13 +9,13 @@ export function Projects() {
         {projects.map((p) => (
           <article
             key={p.title}
-            class="group rounded-2xl border border-gray-200 p-5 transition hover:-translate-y-0.5 hover:shadow-sm dark:border-gray-800"
+            class="group rounded-2xl border border-gray-200 p-5 transition hover:-translate-y-0.5 hover:shadow-sm data-[theme=dark]:border-gray-800"
           >
             <h3 class="text-lg font-semibold">{p.title}</h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">{p.description}</p>
+            <p class="mt-2 text-sm text-gray-600 data-[theme=dark]:text-gray-300">{p.description}</p>
             <div class="mt-4 flex flex-wrap gap-2">
               {p.tags.map((t) => (
-                <span key={t} class="rounded-lg border border-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:border-gray-800 dark:text-gray-300">
+                <span key={t} class="rounded-lg border border-gray-200 px-2 py-0.5 text-xs text-gray-600 data-[theme=dark]:border-gray-800 data-[theme=dark]:text-gray-300">
                   {t}
                 </span>
               ))}
