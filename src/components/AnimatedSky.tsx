@@ -55,8 +55,16 @@ export function AnimatedSky() {
   const [starSeeds] = useState(() =>
     Array.from({ length: 30 }, () => [Math.random(), Math.random(), Math.random()])
   );
+  // Only render stars in the upper sky region (y < 40), small and subtle
   const stars = starSeeds.map(([x, y, r], i) => (
-    <circle key={i} cx={x * 100} cy={y * 70} r={r * 0.7 + 0.3} fill="#fff8" />
+    <circle
+      key={i}
+      cx={x * 100}
+      cy={y * 35} // restrict to top half of sky
+      r={r * 0.25 + 0.12}
+      fill="#fff"
+      opacity={0.85}
+    />
   ));
 
   return (
@@ -92,8 +100,8 @@ export function AnimatedSky() {
       {/* Background */}
       <rect x="0" y="0" width="100" height="70" fill="url(#sky)" />
 
-      {/* Stars */}
-      {showStars && stars}
+  {/* Stars (only at night, only in sky) */}
+  {showStars && stars}
 
       {/* Sun */}
       {time < 0.6 && (

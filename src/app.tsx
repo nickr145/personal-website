@@ -5,7 +5,7 @@ import { About } from "./components/about";
 import { Projects } from "./components/projects";
 import { Contact } from "./components/contact";
 
-function App() {
+export function App() {
   return (
     <div style={{ position: 'relative', minHeight: '100vh', width: '100vw', overflow: 'hidden' }}>
       <AnimatedSky />
