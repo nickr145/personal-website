@@ -52,20 +52,28 @@ export function AnimatedSky() {
 
   // Stars for night
   const showStars = time > 0.6 || time < 0.18;
+  // More stars, color variation, and twinkling
+  const STAR_COUNT = 60;
+  const STAR_COLORS = ["#fff", "#ffe9b0", "#b0d0ff"];
   const [starSeeds] = useState(() =>
-    Array.from({ length: 30 }, () => [Math.random(), Math.random(), Math.random()])
+    Array.from({ length: STAR_COUNT }, () => [Math.random(), Math.random(), Math.random(), Math.floor(Math.random() * STAR_COLORS.length)])
   );
-  // Only render stars in the upper sky region (y < 40), small and subtle
-  const stars = starSeeds.map(([x, y, r], i) => (
-    <circle
-      key={i}
-      cx={x * 100}
-      cy={y * 35} // restrict to top half of sky
-      r={r * 0.25 + 0.12}
-      fill="#fff"
-      opacity={0.85}
-    />
-  ));
+  // Twinkling: animate opacity with time and a phase offset
+  const stars = starSeeds.map(([x, y, r, colorIdx], i) => {
+    // Twinkle: use time and index for phase
+    const twinkle = 0.6 + 0.4 * Math.abs(Math.sin(time * 2 * Math.PI * 2 + i));
+    return (
+      <circle
+        key={i}
+        cx={x * 100}
+        cy={y * 35}
+        r={r * 0.22 + 0.10}
+        fill={STAR_COLORS[colorIdx as number]}
+        opacity={showStars ? twinkle : 0}
+        style={{ transition: 'opacity 0.3s' }}
+      />
+    );
+  });
 
   return (
     <svg
