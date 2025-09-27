@@ -1,0 +1,27 @@
+
+.card {
+  background: rgba(255,255,255,0.7);
+  border: 2px solid #fff;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin: 1rem;
+  max-width: 400px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: none;
+  backdrop-filter: blur(6px);
+}
+
+.card-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.card-content {
+  font-size: 1.05rem;
+  color: #222;
+}
