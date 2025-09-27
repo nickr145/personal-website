@@ -107,7 +107,7 @@ export default function InteractiveParticleCanvas({
       s.mouse.x = e.clientX - r.left;
       s.mouse.y = e.clientY - r.top;
       s.mouse.active = true;
-      s.mouse.tempRepel = e.altKey;
+      //s.mouse.tempRepel = e.altKey;
     };
     const onLeave = () => {
       s.mouse.active = false;
@@ -133,7 +133,7 @@ export default function InteractiveParticleCanvas({
 
       // Clear (fill the content, border is via CSS)
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
       ctx.fillRect(0, 0, width, height);
 
       // Physics
@@ -214,13 +214,12 @@ export default function InteractiveParticleCanvas({
       style={{
         display: "block",
         margin: "0 auto",
-        background: "black",
         border: "2px solid rgba(255,255,255,0.2)",
         borderRadius: 12,
         boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
       }}
       aria-label="Interactive particle box"
-      title="A: attract · R: repel · hold I/D: strength · Alt: temp repel · C: clear"
+      title="A: attract · R: repel · hold I/D: incr/decr strength · C: clear"
     />
   );
 }

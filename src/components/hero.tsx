@@ -1,3 +1,5 @@
+import InteractiveParticleCanvas from "./particlePlayground";
+
 // src/components/Hero.tsx
 export function Hero() {
   return (
@@ -9,25 +11,10 @@ export function Hero() {
           <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">
             CS + Business student building fast, delightful web & mobile experiences. Interested in AI/ML, product, and fintech.
           </p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a
-              href="#projects"
-              class="inline-flex items-center rounded-xl border border-gray-900 px-4 py-2 text-sm transition hover:-translate-y-0.5 dark:border-gray-100"
-            >
-              View Projects
-            </a>
-            <a
-              href="/resume.pdf"
-              class="inline-flex items-center rounded-xl border border-gray-300 px-4 py-2 text-sm transition hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-900"
-            >
-              Résumé
-            </a>
-          </div>
         </div>
 
-        <div class="mx-auto w-full max-w-sm rounded-3xl border border-gray-200 bg-white/60 p-6 shadow-sm backdrop-blur dark:border-gray-800 dark:bg-gray-900/50">
-          <div class="aspect-square w-full rounded-2xl bg-gradient-to-br from-indigo-200 via-sky-200 to-emerald-200 dark:from-indigo-900/40 dark:via-sky-900/40 dark:to-emerald-900/40" />
-          <p class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">Add a headshot or logo here</p>
+        <div className="mx-auto my-12">
+          <InteractiveParticleCanvas width={720} height={420} />
         </div>
       </div>
     </section>
