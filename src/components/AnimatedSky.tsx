@@ -1,250 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+// No top-level React import required for JSX in this setup
 import Tree from './Tree';
 import Mountain from './Mountain';
-
-// Helper for circular sun/moon motion
-function getArcPosition(cx: number, cy: number, r: number, angleDeg: number) {
-  const rad = (angleDeg * Math.PI) / 180;
-  return {
-    x: cx + r * Math.cos(rad),
-    y: cy - r * Math.sin(rad),
-  };
-}
+import Cloud from './Cloud';
 
 export function AnimatedSky() {
-  const DAY_LENGTH = 40; // seconds for a full cycle (sunrise to sunrise)
-  const [time, setTime] = useState(0); // 0 to 1
-  const requestRef = useRef<number>();
-  const startRef = useRef<number>();
-
-  useEffect(() => {
-    function animate(ts: number) {
-      if (startRef.current === undefined) startRef.current = ts;
-      const elapsed = (ts - startRef.current) / 1000;
-      setTime((elapsed % DAY_LENGTH) / DAY_LENGTH);
-      requestRef.current = requestAnimationFrame(animate);
-    }
-    requestRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (requestRef.current !== undefined) cancelAnimationFrame(requestRef.current);
-      startRef.current = undefined; // reset for remounts
-    };
-  }, []);
 
   // Sun/moon arcs and phase timing
   // We'll define phases as fractions of the cycle: dawn -> day -> dusk -> night
-  const PHASES = {
-    dawnEnd: 0.18, // end of dawn / start of day
-    dayEnd: 0.45, // end of day / start of dusk
-    duskEnd: 0.6, // end of dusk / start of night
-  };
+  // No phases needed for static grey sky
 
-  // Pause fraction of cycle after set / before rise to hold sky at horizon for a moment
-  const PAUSE_LENGTH = 0.06; // 6% of cycle (~2.4s with DAY_LENGTH=40s)
-
-  // Arc: we want the sun to travel from left horizon (arcStart) down to right horizon (arcEnd)
-  // Represented as degrees along an arc; use full 200deg sweep for sun path
-  const arcStart = 200; // left-horizon-ish angle in degrees
-  const arcEnd = -20; // right-horizon-ish
-  const cx = 50, cy = 60, r = 40;
-
-  // Compute sunAngle as continuous function mapped to [0..1] across sun-active window which ends at duskEnd
-  // Sun active window: from start of cycle (time=0) until duskEnd
-  const sunWindowStart = 0;
-  const sunWindowEnd = PHASES.duskEnd;
-  // Map time within sun window (clamped) to [0,1]
-  let sunProgress = 0;
-  if (time <= sunWindowEnd) {
-    sunProgress = Math.max(0, Math.min(1, (time - sunWindowStart) / (sunWindowEnd - sunWindowStart)));
-  } else {
-    sunProgress = 1; // after sun window we keep sun below horizon (no progress)
-  }
-  const sunAngle = arcStart + (arcEnd - arcStart) * sunProgress;
-  const sunPos = getArcPosition(cx, cy, r, sunAngle);
-  // Fade parameters (fractions of cycle)
-  const FADE_LENGTH = 0.06; // ~2.4s
-
-  // Sun opacity: fade out approaching duskEnd, fade in after dawn start
-  let sunOpacity = 0;
-  // compute sun window in continuous terms
-  const sunStartCont = sunWindowStart;
-  const sunEndCont = sunWindowEnd;
-  // use same FADE_LENGTH as moon for consistency
-  if (time >= sunStartCont && time <= sunEndCont) {
-    const edge = Math.min(time - sunStartCont, sunEndCont - time);
-    const edgeFrac = Math.min(1, edge / FADE_LENGTH);
-    sunOpacity = Math.max(0.02, edgeFrac);
-  } else if (time < sunStartCont && time >= sunStartCont - FADE_LENGTH) {
-    sunOpacity = (time - (sunStartCont - FADE_LENGTH)) / FADE_LENGTH;
-  } else if (time > sunEndCont && time <= sunEndCont + FADE_LENGTH) {
-    sunOpacity = 1 - (time - sunEndCont) / FADE_LENGTH;
-  }
-  sunOpacity = Math.max(0, Math.min(1, sunOpacity));
+  // Plain static sky; no sun/moon motion when using light-grey background
 
   // Moon should start after a brief pause at night start. We'll define a moon window that begins at nightStart + PAUSE_LENGTH
   // and ends at nextDawnEnd - PAUSE_LENGTH so there's a hold at both transitions.
-  const nightStart = PHASES.duskEnd;
-  const nextDawnEnd = PHASES.dawnEnd + 1.0; // wrap
-  const moonWindowStart = nightStart + PAUSE_LENGTH;
-  const moonWindowEnd = nextDawnEnd - PAUSE_LENGTH;
-  let moonProgress = 0;
-  // Compute moon position mapped to the moon window (so the moon completes its arc inside the visible moon window)
-  // Handle wrap-around: moonWindowEnd may be > 1
-  const computeMoonProgressForTime = (t: number) => {
-    // normalize t into continuous scale where moonWindowStart < moonWindowEnd
-    let tCont = t;
-    if (t < moonWindowStart) tCont = t + 1;
-    const windowStart = moonWindowStart;
-    const windowEnd = moonWindowEnd; // > windowStart on continuous scale
-    const raw = (tCont - windowStart) / (windowEnd - windowStart);
-    return Math.max(0, Math.min(1, raw));
-  };
+  // No moon calculations needed for plain grey background
 
-  moonProgress = computeMoonProgressForTime(time);
-  const moonAngle = arcStart + (arcEnd - arcStart) * moonProgress;
-  const moonPos = getArcPosition(cx, cy, r, moonAngle);
-  // helper to check membership in moon window (wrap-aware)
-  const inMoonWindow = (t: number) => {
-    if (moonWindowStart < moonWindowEnd) return t >= moonWindowStart && t <= moonWindowEnd;
-    return t >= moonWindowStart || t <= (moonWindowEnd % 1);
-  };
-
-  // Compute moon opacity: ramp in before moonWindowStart and ramp out after moonWindowEnd (using continuous tCont)
-  let moonOpacity = 0;
-  // convert time into continuous scale anchored at nightStart for easier comparisons
-  let tCont = time >= nightStart ? time : time + 1;
-  const moonStartCont = moonWindowStart;
-  const moonEndCont = moonWindowEnd; // already > moonStartCont
-  if (tCont >= moonStartCont && tCont <= moonEndCont) {
-    // inside main window -> full visibility
-    // but allow small fade near edges
-    const edge = Math.min(tCont - moonStartCont, moonEndCont - tCont);
-    const edgeFrac = Math.min(1, edge / FADE_LENGTH);
-    moonOpacity = Math.max(0.02, edgeFrac);
-  } else if (tCont >= moonStartCont - FADE_LENGTH && tCont < moonStartCont) {
-    // fading in
-    moonOpacity = (tCont - (moonStartCont - FADE_LENGTH)) / FADE_LENGTH;
-  } else if (tCont > moonEndCont && tCont <= moonEndCont + FADE_LENGTH) {
-    // fading out
-    moonOpacity = 1 - (tCont - moonEndCont) / FADE_LENGTH;
-  }
-  moonOpacity = Math.max(0, Math.min(1, moonOpacity));
-
-  // Sky color palettes for key phases
-  const SKY_PALETTES = {
-    dawn: ['#f9d29d', '#f6f1d3', '#a1c4fd'],
-    day: ['#87ceeb', '#f6f1d3', '#a1c4fd'],
-    dusk: ['#f9d29d', '#f6f1d3', '#fdc094'],
-    night: ['#232946', '#232946', '#181d2b'],
-  } as const;
-
-  // Interpolate between palettes based on time for gentle transitions.
-  function lerp(a: number, b: number, t: number) {
-    return a + (b - a) * t;
-  }
-
-  function interpColor(c1: string, c2: string, t: number) {
-    // Simple hex color interpolation
-    const p1 = parseInt(c1.replace('#', ''), 16);
-    const p2 = parseInt(c2.replace('#', ''), 16);
-    const r1 = (p1 >> 16) & 0xff;
-    const g1 = (p1 >> 8) & 0xff;
-    const b1 = p1 & 0xff;
-    const r2 = (p2 >> 16) & 0xff;
-    const g2 = (p2 >> 8) & 0xff;
-    const b2 = p2 & 0xff;
-    const r = Math.round(lerp(r1, r2, t));
-    const g = Math.round(lerp(g1, g2, t));
-    const b = Math.round(lerp(b1, b2, t));
-    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
-  }
-
-  // Determine which two palettes to blend between and blend factor
-  let skyGradient: string[];
-  if (time < PHASES.dawnEnd) {
-    // dawn -> early day blend
-    const t = time / PHASES.dawnEnd; // 0..1
-    skyGradient = [
-      interpColor(SKY_PALETTES.dawn[0], SKY_PALETTES.day[0], t),
-      interpColor(SKY_PALETTES.dawn[1], SKY_PALETTES.day[1], t),
-      interpColor(SKY_PALETTES.dawn[2], SKY_PALETTES.day[2], t),
-    ];
-  } else if (time < PHASES.dayEnd) {
-    // day (stable)
-    skyGradient = SKY_PALETTES.day.slice();
-  } else if (time < PHASES.duskEnd) {
-    // day -> dusk blend
-    const t = (time - PHASES.dayEnd) / (PHASES.duskEnd - PHASES.dayEnd);
-    skyGradient = [
-      interpColor(SKY_PALETTES.day[0], SKY_PALETTES.dusk[0], t),
-      interpColor(SKY_PALETTES.day[1], SKY_PALETTES.dusk[1], t),
-      interpColor(SKY_PALETTES.day[2], SKY_PALETTES.dusk[2], t),
-    ];
-  } else {
-    // dusk -> night -> dawn blend (wrap). We'll compute a blended factor where 0 at duskEnd and 1 at next dawnEnd
-    const segmentStart = PHASES.duskEnd;
-    const segmentEnd = PHASES.dawnEnd + 1.0;
-    let segT = (time >= segmentStart ? (time - segmentStart) : (time + 1 - segmentStart)) / (segmentEnd - segmentStart);
-    segT = Math.max(0, Math.min(1, segT));
-    // Blend dusk->night at first half, then night->dawn at second half for a smoother loop
-    if (segT < 0.5) {
-      const t = segT * 2; // 0..1 for dusk->night
-      skyGradient = [
-        interpColor(SKY_PALETTES.dusk[0], SKY_PALETTES.night[0], t),
-        interpColor(SKY_PALETTES.dusk[1], SKY_PALETTES.night[1], t),
-        interpColor(SKY_PALETTES.dusk[2], SKY_PALETTES.night[2], t),
-      ];
-    } else {
-      const t = (segT - 0.5) * 2; // 0..1 for night->dawn
-      skyGradient = [
-        interpColor(SKY_PALETTES.night[0], SKY_PALETTES.dawn[0], t),
-        interpColor(SKY_PALETTES.night[1], SKY_PALETTES.dawn[1], t),
-        interpColor(SKY_PALETTES.night[2], SKY_PALETTES.dawn[2], t),
-      ];
-    }
-  }
-
-  // Stars for night
-  // Star visibility ramps in/out smoothly across dusk and dawn, but respect PAUSE so stars appear after the pause
-  const nightWindowStart = PHASES.duskEnd + PAUSE_LENGTH;
-  const rampLen = 0.12; // fraction of cycle to ramp in/out
-  let starFactor = 0;
-  if (time >= nightWindowStart || time < (PHASES.dawnEnd)) {
-    // if within night sensible region, compute distance to nearest edge to determine ramp
-    // handle wrapped regions by normalizing into [0,1..]
-    let tNorm = time;
-    if (time < nightWindowStart) tNorm = time + 1;
-    const startNorm = nightWindowStart;
-    const endNorm = nextDawnEnd - PAUSE_LENGTH;
-    const progress = Math.max(0, Math.min(1, (tNorm - startNorm) / (endNorm - startNorm)));
-    // ramp from 0..1 over first rampLen portion and ramp down over last rampLen portion
-    if (progress < rampLen) starFactor = progress / rampLen;
-    else if (progress > 1 - rampLen) starFactor = (1 - progress) / rampLen;
-    else starFactor = 1;
-  }
-  starFactor = Math.max(0, Math.min(1, starFactor));
-  // More stars, color variation, and twinkling
-  const STAR_COUNT = 60;
-  const STAR_COLORS = ["#fff", "#ffe9b0", "#b0d0ff"];
-  const [starSeeds] = useState(() =>
-    Array.from({ length: STAR_COUNT }, () => [Math.random(), Math.random(), Math.random(), Math.floor(Math.random() * STAR_COLORS.length)])
-  );
-  // Twinkling: animate opacity with time and a phase offset
-  const stars = starSeeds.map(([x, y, r, colorIdx], i) => {
-    // Twinkle: use time and index for phase
-    const twinkle = 0.6 + 0.4 * Math.abs(Math.sin(time * 2 * Math.PI * 2 + i));
-    return (
-      <circle
-        key={i}
-        cx={x * 100}
-        cy={y * 35}
-        r={r * 0.22 + 0.10}
-        fill={STAR_COLORS[colorIdx as number]}
-        opacity={twinkle * starFactor}
-        style={{ transition: 'opacity 0.3s' }}
-      />
-    );
-  });
+  // Static light grey sky (user requested no animated sky elements)
+  const skyGradient = ['#e6e7e8', '#e6e7e8', '#e6e7e8'];
 
   return (
     <svg
@@ -274,40 +46,46 @@ export function AnimatedSky() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+
+        {/* Cartoon cloud gradient and lighter soft edge for puffiness */}
+        <linearGradient id="cartoonCloud" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="45%" stopColor="#e6e6e8" />
+          <stop offset="100%" stopColor="#bdbfc2" />
+        </linearGradient>
+        <linearGradient id="cartoonShade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#c9cbd0" />
+          <stop offset="100%" stopColor="#9ea1a6" />
+        </linearGradient>
+        <filter id="cloudBlur" x="-15%" y="-15%" width="130%" height="130%">
+          <feGaussianBlur stdDeviation="0.6" />
+        </filter>
       </defs>
 
       {/* Background */}
       <rect x="0" y="0" width="100" height="70" fill="url(#sky)" />
 
-    {/* Stars (visible as a ramp in/out) */}
-    {starFactor > 0 && stars}
+    {/* Modular clouds using Cloud component */}
+    <g transform="translate(0,-2)" opacity={0.98}>
+      <Cloud x={14} y={18} scale={0.9} variant="large" />
+      <Cloud x={66} y={18} scale={1.1} variant="large" />
+      <Cloud x={10} y={18} scale={0.9} variant="large" />
+      <Cloud x={70} y={18} scale={1.1} variant="large" />
+      <Cloud x={14} y={8} scale={0.9} variant="large" />
+      <Cloud x={66} y={8} scale={1.1} variant="large" />
+      <Cloud x={10} y={8} scale={0.9} variant="large" />
+      <Cloud x={70} y={8} scale={1.1} variant="large" />
+      <Cloud x={40} y={19} scale={0.95} variant="mid" />
+      <Cloud x={28} y={12} scale={0.9} variant="mid" />
+      <Cloud x={80} y={12} scale={0.95} variant="mid" />
+      <Cloud x={0} y={12} scale={0.95} variant="mid" />
+      <Cloud x={30} y={9} scale={0.95} variant="mid" />
+      <Cloud x={18} y={2} scale={0.9} variant="mid" />
+      <Cloud x={70} y={2} scale={0.95} variant="mid" />
+      <Cloud x={100} y={2} scale={0.95} variant="mid" />
+    </g>
 
-      {/* Sun: render until duskEnd (sun fully sets) */}
-      {time < PHASES.duskEnd && (
-        <circle
-          cx={sunPos.x}
-          cy={sunPos.y}
-          r="5"
-          fill="#ffe066"
-          filter="url(#sunGlow)"
-          opacity={sunOpacity}
-          style={{ transition: 'opacity 1s linear' }}
-        />
-      )}
-
-      {/* Moon: render only when computed to be in the moon window (avoid showing default 0,0) */}
-      {inMoonWindow(time) && (
-        <circle
-          cx={moonPos.x}
-          cy={moonPos.y}
-          r="4.5"
-          fill="#fffbe6"
-          stroke="#e0e0e0"
-          strokeWidth="0.5"
-          opacity={moonOpacity}
-          style={{ transition: 'opacity 1s linear' }}
-        />
-      )}
+      {/* No sun or moon — plain grey background per user preference */}
 
       {/* Mountains with snow peaks using Mountain component */}
       <Mountain
@@ -342,6 +120,81 @@ export function AnimatedSky() {
         <ellipse cx="18" cy="72.5" rx="1.1" ry="0.5" fill="#b0a99f" opacity="0.8" />
         <ellipse cx="75" cy="73" rx="1.5" ry="0.7" fill="#b0a99f" opacity="0.7" />
       </g>
+
+      {/* Rain layer: thin blue dash-like drops. Rendered after grass/dirt so they appear in front of mountains/bushes but behind trees. */}
+      {(() => {
+        // deterministic pseudo-random generator per index (no hooks)
+        const rnd = (n: number) => Math.abs(Math.sin(n * 12.9898 + 78.233) * 43758.5453) % 1;
+        const drops = Array.from({ length: 120 }).map((_, i) => {
+          const r1 = rnd(i);
+          const r2 = rnd(i + 101);
+          const r3 = rnd(i + 202);
+          const x = +(r1 * 100).toFixed(2); // 0..100 (viewBox coords)
+          const startY = +(6 + r2 * 12).toFixed(2); // start around cloud area
+          const len = 2 + r3 * 3; // length of dash in viewBox units
+          const delay = +(r3 * 2.4).toFixed(2);
+          const dur = +(0.9 + r1 * 1.6).toFixed(2);
+          // wind: small leftward x offset over duration
+          const windStrength = 6; // how many viewBox units to move left at max
+          const windOffset = +(r2 * windStrength).toFixed(2);
+          return { x, startY, len, delay, dur, windOffset };
+        });
+
+        const endY = 74; // fall past viewBox bottom
+
+        return (
+          <g pointerEvents="none" aria-hidden="true">
+            {drops.map((d, idx) => (
+              <line
+                key={idx}
+                x1={d.x}
+                x2={d.x}
+                y1={d.startY}
+                y2={d.startY + d.len}
+                stroke="#4da6ff"
+                strokeWidth={0.18}
+                strokeLinecap="round"
+                opacity={0.85}
+              >
+                  <animate
+                    attributeName="y1"
+                    from={String(d.startY)}
+                    to={String(endY)}
+                    dur={`${d.dur}s`}
+                    begin={`${d.delay}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="y2"
+                    from={String(d.startY + d.len)}
+                    to={String(endY + d.len)}
+                    dur={`${d.dur}s`}
+                    begin={`${d.delay}s`}
+                    repeatCount="indefinite"
+                  />
+                  {/* horizontal drift to the left (light wind) */}
+                  <animate
+                    attributeName="x1"
+                    from={String(d.x)}
+                    to={String(Math.max(0, d.x - d.windOffset))}
+                    dur={`${d.dur}s`}
+                    begin={`${d.delay}s`}
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="x2"
+                    from={String(d.x)}
+                    to={String(Math.max(0, d.x - d.windOffset))}
+                    dur={`${d.dur}s`}
+                    begin={`${d.delay}s`}
+                    repeatCount="indefinite"
+                  />
+                <animate attributeName="opacity" values="0.9;0.9;0" keyTimes="0;0.95;1" dur={`${d.dur}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
+              </line>
+            ))}
+          </g>
+        );
+      })()}
 
       {/* Distributed Trees Across Landscape using Tree component */}
       <g>
