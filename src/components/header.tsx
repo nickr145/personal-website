@@ -1,5 +1,6 @@
 // src/components/Header.tsx
 import { useState } from 'preact/hooks';
+import MotionToggle from './MotionToggle';
 
 const nav = [
   { href: '#about', label: 'About' },
@@ -26,6 +27,9 @@ export function Header() {
             </a>
           ))}
         </nav>
+        <div class="ml-auto">
+          <MotionToggle />
+        </div>
       </div>
 
       {/* Mobile menu */}

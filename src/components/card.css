@@ -1,7 +1,7 @@
 
 .card {
-  background: rgba(255,255,255,0.7);
-  border: 2px solid #fff;
+  background: rgba(255,255,255,0.78);
+  border: 1px solid rgba(255,255,255,0.85);
   border-radius: 16px;
   padding: 2rem 1.5rem;
   margin: 1rem;
@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  box-shadow: none;
+  box-shadow: 0 6px 18px rgba(17,17,17,0.04);
   backdrop-filter: blur(6px);
 }
 

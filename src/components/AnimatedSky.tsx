@@ -2,6 +2,7 @@
 import Tree from './Tree';
 import Mountain from './Mountain';
 import Cloud from './Cloud';
+import Rain from './Rain';
 
 export function AnimatedSky() {
 
@@ -121,80 +122,8 @@ export function AnimatedSky() {
         <ellipse cx="75" cy="73" rx="1.5" ry="0.7" fill="#b0a99f" opacity="0.7" />
       </g>
 
-      {/* Rain layer: thin blue dash-like drops. Rendered after grass/dirt so they appear in front of mountains/bushes but behind trees. */}
-      {(() => {
-        // deterministic pseudo-random generator per index (no hooks)
-        const rnd = (n: number) => Math.abs(Math.sin(n * 12.9898 + 78.233) * 43758.5453) % 1;
-        const drops = Array.from({ length: 120 }).map((_, i) => {
-          const r1 = rnd(i);
-          const r2 = rnd(i + 101);
-          const r3 = rnd(i + 202);
-          const x = +(r1 * 100).toFixed(2); // 0..100 (viewBox coords)
-          const startY = +(6 + r2 * 12).toFixed(2); // start around cloud area
-          const len = 2 + r3 * 3; // length of dash in viewBox units
-          const delay = +(r3 * 2.4).toFixed(2);
-          const dur = +(0.9 + r1 * 1.6).toFixed(2);
-          // wind: small leftward x offset over duration
-          const windStrength = 6; // how many viewBox units to move left at max
-          const windOffset = +(r2 * windStrength).toFixed(2);
-          return { x, startY, len, delay, dur, windOffset };
-        });
-
-        const endY = 74; // fall past viewBox bottom
-
-        return (
-          <g pointerEvents="none" aria-hidden="true">
-            {drops.map((d, idx) => (
-              <line
-                key={idx}
-                x1={d.x}
-                x2={d.x}
-                y1={d.startY}
-                y2={d.startY + d.len}
-                stroke="#4da6ff"
-                strokeWidth={0.18}
-                strokeLinecap="round"
-                opacity={0.85}
-              >
-                  <animate
-                    attributeName="y1"
-                    from={String(d.startY)}
-                    to={String(endY)}
-                    dur={`${d.dur}s`}
-                    begin={`${d.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="y2"
-                    from={String(d.startY + d.len)}
-                    to={String(endY + d.len)}
-                    dur={`${d.dur}s`}
-                    begin={`${d.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                  {/* horizontal drift to the left (light wind) */}
-                  <animate
-                    attributeName="x1"
-                    from={String(d.x)}
-                    to={String(Math.max(0, d.x - d.windOffset))}
-                    dur={`${d.dur}s`}
-                    begin={`${d.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                  <animate
-                    attributeName="x2"
-                    from={String(d.x)}
-                    to={String(Math.max(0, d.x - d.windOffset))}
-                    dur={`${d.dur}s`}
-                    begin={`${d.delay}s`}
-                    repeatCount="indefinite"
-                  />
-                <animate attributeName="opacity" values="0.9;0.9;0" keyTimes="0;0.95;1" dur={`${d.dur}s`} begin={`${d.delay}s`} repeatCount="indefinite" />
-              </line>
-            ))}
-          </g>
-        );
-      })()}
+      {/* Rain (modular) - medium intensity with light left wind */}
+      <Rain intensity="medium" windDirection="left" windStrength={6} />
 
       {/* Distributed Trees Across Landscape using Tree component */}
       <g>

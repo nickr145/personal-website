@@ -5,3 +5,30 @@
 /* Optional: smooth fonts + better defaults */
 html { scroll-behavior: smooth; }
 :root { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Card micro-interactions */
+.card {
+	transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms cubic-bezier(.2,.9,.2,1);
+	will-change: transform;
+}
+
+.card:hover,
+.card:focus-visible {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 20px rgba(17,17,17,0.08), 0 2px 6px rgba(17,17,17,0.06);
+}
+
+.card:focus-visible {
+	outline: 3px solid rgba(66,133,244,0.18);
+	outline-offset: 4px;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.card,
+	* {
+		transition: none !important;
+		animation: none !important;
+		transform: none !important;
+	}
+}
