@@ -5,3 +5,175 @@
 /* Optional: smooth fonts + better defaults */
 html { scroll-behavior: smooth; }
 :root { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Card micro-interactions */
+.card {
+	transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms cubic-bezier(.2,.9,.2,1);
+	will-change: transform;
+}
+
+.card:hover,
+.card:focus-visible {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 20px rgba(17,17,17,0.08), 0 2px 6px rgba(17,17,17,0.06);
+}
+
+.card:focus-visible {
+	outline: 3px solid rgba(66,133,244,0.18);
+	outline-offset: 4px;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.card,
+	* {
+		transition: none !important;
+		animation: none !important;
+		transform: none !important;
+	}
+}
+
+/* Page layout helpers */
+.page-content {
+	position: relative;
+	z-index: 1;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 2rem 1rem;
+	justify-content: center; /* center vertically in viewport */
+}
+
+.title-row {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2rem;
+}
+
+/* Align title to grid width */
+.title-row .card-title-box {
+	max-width: 1200px; /* match cards grid max width */
+	width: 100%;
+}
+
+.card-title-box {
+	max-width: 420px; /* match card max-width */
+	width: 100%;
+	background: rgba(255,255,255,0.9);
+	border-radius: 16px;
+	padding: 1.1rem 1.6rem;
+	font-weight: 700;
+	font-size: 1.9rem;
+	text-align: center;
+	box-shadow: 0 6px 18px rgba(17,17,17,0.04);
+	display: flex;
+	align-items: center;
+	justify-content: center; /* ensure text is centered */
+}
+
+/* Stronger rule to override any card padding/layout and guarantee centering */
+.card.card-title-box {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	text-align: center !important;
+	padding: 1.25rem 1.6rem !important;
+}
+
+
+
+.cards-grid {
+  width: 100%;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "about projects"
+    "badges projects"
+    "contact projects";
+  gap: 1rem 2.25rem; /* reduced vertical gap between left stacked cards */
+  align-items: start; /* align to top */
+  justify-content: center;
+}
+
+.about-box { grid-area: about; }
+.projects-box { grid-area: projects; }
+.badges-box { grid-area: badges; }
+.contact-box { grid-area: contact; }
+
+.badges-box { grid-area: badges; }
+
+/* Ensure card elements fill their grid area */
+.cards-grid .card { width: 100%; max-width: none; }
+
+/* Adjustable minimum heights so the Projects box can span the two left boxes visually. */
+
+
+:root {
+	--about-min-h: 140px;
+	--badges-min-h: 100px;
+	--contact-min-h: 160px;
+	--grid-vertical-gap: 1rem;
+}
+
+.about-box .card { min-height: var(--about-min-h); }
+.badges-box .card { min-height: var(--badges-min-h); }
+.contact-box .card { min-height: var(--contact-min-h); }
+
+/* Projects min-height equals sum of the three left boxes plus the vertical gaps between them */
+.projects-box .card {
+	min-height: calc(var(--about-min-h) + var(--badges-min-h) + var(--contact-min-h) + (var(--grid-vertical-gap) * 2) + var(--projects-extra, 0px));
+}
+
+/* Optional extra height for Projects so it extends further down. Tweak this value to taste. */
+:root {
+	--projects-extra: 120px;
+}
+
+/* Make the projects card compact and allow inner scrolling for long lists */
+.projects-box .card {
+	display: flex;
+	flex-direction: column;
+	/* limit the visual height of the projects card so it doesn't dominate the page */
+	max-height: 640px;
+}
+
+.projects-box .card .card-content {
+	/* allow the content area to scroll while keeping the header/title visible */
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	padding-right: 0.5rem; /* room for scrollbar */
+}
+
+/* Optional: visually nicer thin scrollbar on supported browsers */
+.projects-box .card .card-content::-webkit-scrollbar { width: 10px; }
+.projects-box .card .card-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px; }
+
+@media (max-width: 900px) {
+	.cards-grid { grid-template-columns: 1fr; }
+	.card { max-width: 100%; min-width: 0; }
+	.card-title-box { max-width: 90%; }
+}
+
+/* Hobbies full-width below the grid */
+.hobbies-fullwidth {
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 1.5rem;
+}
+
+/* Ensure the hobby card inside the full-width container spans the container (matches title width) */
+.hobbies-fullwidth .card {
+	width: 100%;
+	max-width: none;
+}
+
+/* Center the Hobbies card title */
+.hobbies-fullwidth .card .card-title {
+	text-align: center;
+	width: 100%;
+	margin-left: 0; /* ensure centered regardless of inherited margins */
+}
