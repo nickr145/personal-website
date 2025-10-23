@@ -2,13 +2,11 @@
 export const fit4MeTitle = "Fit4Me - Personalized Fitness Tracking App (In Development)";
 export const fit4MeDescription =
 `
-Fit4Me is an end-to-end Android fitness platform currently under development as a collaborative team project. 
-Built with Jetpack Compose and Kotlin on the client side and powered by a Node.js + Express backend with 
-PostgreSQL, it delivers personalized workout programs, real-time messaging, session tracking, and smart 
-partner matching based on user goals, schedules, and experience levels. The system leverages RESTful APIs 
-for data operations and WebSocket channels for live interaction, ensuring a responsive, seamless user 
-experience. While still in progress, Fit4Me is designed to provide a scalable, user-focused fitness 
-solution that balances sleek UI/UX with strong backend performance.
+Fit4Me is an Android fitness app built with Jetpack Compose, Kotlin, 
+and a Node.js + PostgreSQL backend. It offers personalized workouts, 
+real-time chat, session tracking, and smart partner matching through 
+RESTful APIs and WebSockets. Designed for scalability and seamless UX, 
+it combines sleek design with strong backend performance.
 `
 export const fit4MeTags = [
   "android",
@@ -28,13 +26,11 @@ export const fit4MeRepo = "https://github.com/grace-ful/cs446-team-project";
 export const cropTitle = "Crop Yield Prediction & Risk Mitigation using Deep Learning";
 export const cropDescription =
 `
-Developed a machine learning framework to predict crop yields and assess agricultural risk using 
-real-world data on rainfall, temperature, pesticide use, and crop type. Utilized Random Forest and 
-Lasso Regression for feature selection and interpretable yield prediction, then engineered temporal 
-features and implemented an LSTM model for sequential analysis. Built a dynamic risk scoring system 
-to help optimize resource allocation and provide actionable insights for farmers. 
-This group project demonstrated the value of predictive analytics for sustainable, 
-data-driven decision-making in agriculture.
+Developed a machine learning framework that predicts crop yields and 
+assesses agricultural risk using real-world data. The project combined Random Forest, 
+Lasso Regression, and LSTM models for accurate, interpretable predictions and created 
+a dynamic risk scoring system to support sustainable farming decisions. 
+This group effort showcased the power of predictive analytics in agriculture.
 `
 export const cropTags = [
   "python",
@@ -53,11 +49,28 @@ export const cropRepo = "https://github.com/nickr145/ml-crop-yield-prediction";
 
 // Skystones
 export const skystonesTitle = "Skystones (SwiftUI)";
-export const skystonesDescription = "Turn-based strategy with PVC/PVP modes, difficulty levels, score box, and audio.";
+export const skystonesDescription = 
+`
+A turn-based strategy game inspired by SkyStones, featuring both 
+Player vs Computer (PVC) and Player vs Player (PVP) modes. 
+It includes multiple difficulty levels to challenge players of all skill levels, 
+a score box for tracking progress and performance, and immersive audio effects to 
+enhance gameplay. The game combines tactical decision-making with strategic planning, 
+offering an engaging and competitive experience.
+`
 export const skystonesTags = ["SwiftUI", "Game", "MVVM"];
 export const skystonesRepo = "https://github.com/yourname/skystones";
 
 // Password Generator
 export const pwgenTitle = "Password Generator";
-export const pwgenDescription = "Complexity-driven password generator with playful animations and history.";
+export const pwgenDescription = 
+`
+Built with SwiftUI, this app lets users generate strong, customizable passwords 
+with multiple complexity levels. It features an engaging, animated interface that 
+makes creating passwords fun and intuitive. All generated passwords are securely 
+saved and can be accessed later through Face ID authentication, ensuring privacy and 
+security. Users can easily review their password history and have the option to clear 
+it with a confirmation prompt, providing full control over their data.
+`
 export const pwgenTags = ["SwiftUI"];
+export const pwgenRepo = "https://github.com/nickr145/PasswordGenerator";
