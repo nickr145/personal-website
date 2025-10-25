@@ -28,11 +28,14 @@ export default function HobbiesDropdowns() {
       {open === 'sketch' && (
         <div className="hobby-dropdown-panel">
           <div className="hobby-scroller">
-            {sketches.map((img, i) => (
-              <button key={img.id} onClick={() => openLightbox(sketches, i)} style={{ border: 'none', padding: 0, background: 'transparent' }}>
-                <img src={img.src} alt={img.alt} style={{ width: 220, height: 140, objectFit: 'cover', borderRadius: 8, marginRight: 8 }} loading="lazy" />
-              </button>
-            ))}
+            {sketches.map((img, i) => {
+              const thumb = img.src.replace('/images/hobbies/sketches/', '/images/hobbies/sketches/thumbs/');
+              return (
+                <button key={img.id} className="hobby-thumb-button" onClick={() => openLightbox(sketches, i)} aria-label={`Open ${img.alt}`}>
+                  <img className="hobby-thumb" src={thumb} alt={img.alt} loading="lazy" />
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
@@ -40,11 +43,14 @@ export default function HobbiesDropdowns() {
       {open === 'photo' && (
         <div className="hobby-dropdown-panel">
           <div className="hobby-scroller">
-            {photos.length === 0 ? <div style={{ padding: 12 }}>No photos yet</div> : photos.map((img, i) => (
-              <button key={img.id} onClick={() => openLightbox(photos, i)} style={{ border: 'none', padding: 0, background: 'transparent' }}>
-                <img src={img.src} alt={img.alt} style={{ width: 220, height: 140, objectFit: 'cover', borderRadius: 8, marginRight: 8 }} loading="lazy" />
-              </button>
-            ))}
+            {photos.length === 0 ? <div style={{ padding: 12 }}>No photos yet</div> : photos.map((img, i) => {
+              const thumb = img.src.replace('/images/hobbies/photography/', '/images/hobbies/photography/thumbs/');
+              return (
+                <button key={img.id} className="hobby-thumb-button" onClick={() => openLightbox(photos, i)} aria-label={`Open ${img.alt}`}>
+                  <img className="hobby-thumb" src={thumb} alt={img.alt} loading="lazy" />
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
