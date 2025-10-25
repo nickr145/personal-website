@@ -9,8 +9,8 @@ import { Badges } from "./components/badges";
 
 export function App() {
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', width: '100vw', overflow: 'hidden' }}>
-      <AnimatedSky />
+    <div style={{ position: 'relative', minHeight: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#faffaf' }}>
+      {/* <AnimatedSky /> */}
       <div className="page-content">
         <div className="title-row">
           <div className="card card-title-box" role="heading" aria-level={1}>Nicholas Rebello</div>
