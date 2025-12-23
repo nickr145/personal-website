@@ -1,30 +1,37 @@
 // src/app.tsx
-
-import { AnimatedSky } from "./components/AnimatedSky";
-import { About } from "./components/about";
+import { ProfileCard } from "./components/profileCard";
 import { Projects } from "./components/projects";
-import { Contact } from "./components/contact";
-import { Hobbies } from "./components/hobbies";
-import { Badges } from "./components/badges";
+import { About } from "./components/about";
+import { SideNavigation } from "./components/SideNavigation";
 
 export function App() {
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', width: '100vw', overflow: 'hidden', backgroundColor: '#faffaf' }}>
-      {/* <AnimatedSky /> */}
-      <div className="page-content">
-        <div className="title-row">
-          <div className="card card-title-box" role="heading" aria-level={1}>Nicholas Rebello</div>
-        </div>
+    <main className="layout-root">
+      <div className="layout-grid">
+        {/* LEFT: sticky navigation */}
+        <aside className="layout-left">
+          <SideNavigation />
+        </aside>
 
-        <div className="cards-grid" role="main">
-          <div className="about-box"><About /></div>
-          <div className="projects-box"><Projects /></div>
-          <div className="badges-box"><Badges /></div>
-          <div className="contact-box"><Contact /></div>
-        </div>
+        {/* RIGHT: scrolling narrative */}
+        <section className="layout-right">
+          <div className="section" id="profile">
+            <ProfileCard />
+          </div>
 
-        <div className="hobbies-fullwidth"><Hobbies /></div>
+          <div className="section" id="about">
+            <About />
+          </div>
+
+          <div className="section" id="projects">
+            <Projects />
+          </div>
+
+          <div className="section">
+            {/*<Contact />*/}
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

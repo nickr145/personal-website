@@ -4,7 +4,19 @@
 
 /* Optional: smooth fonts + better defaults */
 html { scroll-behavior: smooth; }
-:root { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+/* Design tokens: page + card colours. Tweak these to change card/page contrast. */
+:root {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	/* page background (dark) */
+	--page-bg: #0b0b0c;
+	/* card background should be just slightly lighter than the page background */
+	--card-bg: rgba(255,255,255,0.04);
+	/* subtle card border (slightly lighter than the page) */
+	--card-border: rgba(255,255,255,0.06);
+	/* card text color when using dark card backgrounds */
+	--card-text: #ffffff;
+}
 
 /* Card micro-interactions */
 .card {
@@ -84,30 +96,48 @@ html { scroll-behavior: smooth; }
 
 
 
-.cards-grid {
-  width: 100%;
-  max-width: 1200px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "about projects"
-    "badges projects"
-    "contact projects";
-  gap: 1rem 2.25rem; /* reduced vertical gap between left stacked cards */
-  align-items: start; /* align to top */
-  justify-content: center;
+/* Main two-column split: left column fixed/sticky, right column scrolls */
+.main-split {
+	width: 100%;
+	/* match the title/card container width so left and right edges align */
+	max-width: 1200px;
+	display: flex;
+	/* horizontal gap between left and right columns */
+	gap: 3.5rem;
+	align-items: flex-start;
+	justify-content: center;
 }
 
-.about-box { grid-area: about; }
-.projects-box { grid-area: projects; }
-.badges-box { grid-area: badges; }
-.contact-box { grid-area: contact; }
+.left-column {
+	/* slightly narrower left column to free up space for Projects */
+	flex: 0 0 300px;
+	max-width: 300px;
+	/* keep left column visible while the right column scrolls */
+	position: sticky;
+	top: 2.5rem; /* sits just below the title row */
+	align-self: flex-start;
+}
 
-.badges-box { grid-area: badges; }
+/* .right-column {
+	flex: 1 1 auto;
+	min-width: 0;
+	/* make the right column the only scrollable region */
+	/* max-height: calc(100vh - 4rem);
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+} */
 
-/* Ensure card elements fill their grid area */
-.cards-grid .card { width: 100%; max-width: none; }
+/* Keep base selectors for boxes so components still style correctly */
+.about-box { width: 100%; }
+.projects-box { width: 100%; }
+
+/* 
+Ensure the title card and the main grid share the same max-width so the
+   left edge of the About column and the right edge of the Projects column
+   line up with the title card edges. */
+.card.card-title-box {
+	max-width: 1200px;
+}
 
 /* Adjustable minimum heights so the Projects box can span the two left boxes visually. */
 
@@ -135,17 +165,19 @@ html { scroll-behavior: smooth; }
 
 /* Make the projects card compact and allow inner scrolling for long lists */
 .projects-box .card {
-	display: flex;
-	flex-direction: column;
-	/* limit the visual height of the projects card so it doesn't dominate the page */
-	max-height: 640px;
+	 display: block; /* allow the card to size naturally inside the right-column */
+	 /* Make the Projects card wider than the default card width so it fills the
+		 available area in the right column while leaving the About card at the
+		 default card size. Tune max-width as needed. */
+	 max-width: 860px; /* wider than the base card max-width (420px) */
+	 width: 100%;
+	 /* allow the card to shrink on smaller viewports but not below 320px */
+	 min-width: 320px;
 }
 
-.projects-box .card .card-content {
-	/* allow the content area to scroll while keeping the header/title visible */
-	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
-	padding-right: 0.5rem; /* room for scrollbar */
+.right-column .projects-box .card .card-content {
+	overflow: visible; /* let the right-column handle scrolling */
+	padding-right: 0.5rem;
 }
 
 /* Optional: visually nicer thin scrollbar on supported browsers */
@@ -153,9 +185,14 @@ html { scroll-behavior: smooth; }
 .projects-box .card .card-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px; }
 
 @media (max-width: 900px) {
-	.cards-grid { grid-template-columns: 1fr; }
+	/* Stack columns on small screens — normal single-column flow */
+	.main-split { flex-direction: column; }
+	.left-column, .right-column { position: static; max-height: none; }
 	.card { max-width: 100%; min-width: 0; }
 	.card-title-box { max-width: 90%; }
+	/* Remove any visual offsets on small screens so stacking looks correct */
+	.projects-box .card { transform: none; margin-left: 0; }
+	.about-box .card { transform: none; }
 }
 
 /* Hobbies full-width below the grid */
@@ -237,3 +274,233 @@ html { scroll-behavior: smooth; }
 
 .hobby-scroller::-webkit-scrollbar { height: 8px; }
 .hobby-scroller::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 6px; }
+
+/* ===== Layout Core ===== */
+
+.layout-root {
+	min-height: 100vh;
+	background: var(--page-bg, #0b0b0c);
+	padding: 3rem 1.5rem;
+}
+
+.layout-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Sticky left column */
+.layout-left {
+  position: sticky;
+  top: 3rem;
+}
+
+/* Right column content flow */
+.layout-right {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make cards inside the right column span the full right-column width
+	 so their right edges extend to the layout's edge (matches the provided
+	 reference). This overrides the base .card max-width which is smaller. */
+.layout-right .card {
+	max-width: none;
+	width: 100%;
+	min-width: 0; /* prevent overflow from base min-width */
+}
+
+/* Section spacing */
+.section {
+  margin-bottom: 4rem;
+}
+
+/* Mobile fallback */
+@media (max-width: 900px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .layout-left {
+    position: static;
+  }
+}
+
+/* ===== Profile Card ===== */
+
+.profile-card {
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+/* Make the profile card visually transparent and remove its border/shadow */
+.profile-card {
+	background: transparent !important;
+	border: none !important;
+	box-shadow: none !important;
+	backdrop-filter: none !important;
+}
+
+.profile-avatar {
+  width: 196px;
+  height: 196px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-avatar {
+	display: block;
+	margin: 0 auto;
+}
+
+.profile-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0;
+}
+
+.profile-subtitle {
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.profile-icons {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 0.75rem;
+	font-size: 0.9rem;
+	justify-content: center; /* center the icons horizontally */
+	align-items: center;
+}
+
+/* Icon button used in the profile card */
+.icon-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	color: var(--card-text, #ffffff);
+	background: transparent;
+	border-radius: 8px;
+	transition: color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.icon-button:hover {
+	color: #ffffff;
+	transform: translateY(-2px);
+	background: rgba(255,255,255,0.04); /* subtle tint on hover to stand out */
+}
+
+.icon-button:focus-visible {
+	outline: 2px solid rgba(66,133,244,0.5);
+	outline-offset: 2px;
+}
+
+/* ===== Projects Section ===== */
+
+/* Project item wrapper — horizontal flex layout */
+.project-item {
+  display: flex;
+  gap: 1rem; /* space between image and details */
+  align-items: flex-start;
+}
+
+/* Project image (left side, square format) */
+.project-image {
+  width: 120px; /* fixed square width */
+  height: 120px; /* enforce square */
+  flex-shrink: 0; /* prevent image from shrinking */
+  aspect-ratio: 1 / 1; /* enforce square aspect ratio */
+  object-fit: cover; /* crop image to fill square without distortion */
+  object-position: center; /* center the visible part of the image */
+  border-radius: 8px;
+  display: block;
+  background: rgba(255,255,255,0.08); /* placeholder background */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Project details (right side: title + description) */
+.project-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* GitHub icon link styling */
+.github-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #ffffff;
+  transition: color 200ms ease, transform 200ms ease;
+  cursor: pointer;
+}
+
+.github-icon-link:hover {
+  color: #888888;
+  transform: scale(1.1);
+}
+
+.github-icon-link:focus-visible {
+  outline: 2px solid rgba(66,133,244,0.5);
+  outline-offset: 2px;
+}
+
+/* ===== Side Navigation ===== */
+
+.side-navigation {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: var(--card-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 200ms ease;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid rgba(66,133,244,0.5);
+  outline-offset: 2px;
+}
+
+.nav-link.active {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.3);
+  color: #ffffff;
+  font-weight: 600;
+}

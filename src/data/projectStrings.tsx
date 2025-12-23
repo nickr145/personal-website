@@ -1,5 +1,27 @@
+// projectStrings.tsx
+
+// RRPS
+export const rrpsTitle = "RRPS - Repeated Rock Paper Scissors Agent";
+export const rrpsDescription = 
+`
+Developed an AI agent to play Repeated Rock Paper Scissors (RRPS) using Python. The agent employs a combination of 
+pattern recognition and statistical analysis to predict opponent moves and adapt its strategy accordingly. 
+By analyzing historical game data, the agent identifies trends and adjusts its playstyle to maximize winning chances 
+over multiple rounds. This project showcases the application of machine learning techniques in game theory and strategic decision-making.
+`
+export const rrpsTags = [
+  "python",
+  "machine learning",
+  "reinforcement learning",
+  "game theory",
+  "statistical analysis",
+  "pattern recognition",
+  "strategic AI",
+];
+export const rrpsRepo = "https://github.com/nickr145/Repeated-Rock-Paper-Scissors-Agent";
+
 // Fit4Me
-export const fit4MeTitle = "Fit4Me - Personalized Fitness Tracking App (In Development)";
+export const fit4MeTitle = "Fit4Me - Personalized Fitness Tracking App";
 export const fit4MeDescription =
 `
 Fit4Me is an Android fitness app built with Jetpack Compose, Kotlin, 
@@ -58,7 +80,7 @@ a score box for tracking progress and performance, and immersive audio effects t
 enhance gameplay. The game combines tactical decision-making with strategic planning, 
 offering an engaging and competitive experience.
 `
-export const skystonesTags = ["SwiftUI", "Game", "MVVM"];
+export const skystonesTags = ["SwiftUI", "iOS", "Game Development", "MVVM", "Game AI"];
 export const skystonesRepo = "https://github.com/yourname/skystones";
 
 // Password Generator
@@ -72,5 +94,30 @@ saved and can be accessed later through Face ID authentication, ensuring privacy
 security. Users can easily review their password history and have the option to clear 
 it with a confirmation prompt, providing full control over their data.
 `
-export const pwgenTags = ["SwiftUI"];
+export const pwgenTags = ["SwiftUI", "iOS", "Security", "Biometric Auth", "Local Storage"];
 export const pwgenRepo = "https://github.com/nickr145/PasswordGenerator";
+
+export const expTrackerTitle = "Expense Tracker";
+export const expTrackerDescription = 
+`
+An intuitive iOS app developed using SwiftUI that helps users track their expenses 
+and manage budgets effectively. The app features a clean and user-friendly interface, 
+allowing users to easily log expenses, categorize them, and view detailed reports. 
+With built-in budget management tools, users can set spending limits and receive 
+notifications when they approach their budget thresholds. The app also supports 
+data visualization through charts and graphs, providing insights into spending habits.
+`
+export const expTrackerTags = ["SwiftUI", "iOS", "Finance", "Data Visualization", "Local Storage", "Notifications"];
+export const expTrackerRepo = "https://github.com/nickr145/ExpenseTracker";
+
+export const chessTitle = "Chess Engine";
+export const chessDescription = 
+`
+Developed a fully functional chess engine in C++ emphasizing modular, object-oriented design principles. 
+The project demonstrates clean architecture through well-defined classes and interfaces for game logic, 
+piece behavior, move validation, and board state management. Each component—from piece types to move generators 
+to board representation—was designed as an independent, reusable module. This project showcases best practices 
+in OOP modularization, including separation of concerns, encapsulation, and maintainable code organization.
+`
+export const chessTags = ["C++", "OOP", "Game Logic", "Modular Design", "Clean Architecture", "Software Engineering"];
+export const chessRepo = "https://github.com/nickr145/modular-chess-engine";
