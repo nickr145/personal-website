@@ -1,7 +1,9 @@
 
 .card {
-  background: rgba(255,255,255,0.78);
-  border: 1px solid rgba(255,255,255,0.85);
+  /* use design tokens defined in global stylesheet; fall back to previous
+     light values for safety if variables are not present */
+  background: var(--card-bg, rgba(255,255,255,0.78));
+  border: 1px solid var(--card-border, rgba(255,255,255,0.85));
   border-radius: 16px;
   padding: 1.75rem 1.5rem;
   margin: 0; /* remove per-card margin so grid controls spacing */
@@ -20,9 +22,12 @@
   font-weight: 700;
   margin-bottom: 1rem;
   letter-spacing: 1px;
+  color: #ffffff;
 }
 
 .card-content {
   font-size: 1.05rem;
-  color: #222;
+  /* pick a readable text color relative to the card background; default to
+     dark text for existing light card styles */
+  color: var(--card-text, #ffffff);
 }
