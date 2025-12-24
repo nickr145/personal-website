@@ -20,9 +20,23 @@
 .card-title {
   font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin: 0;
   letter-spacing: 1px;
   color: #ffffff;
+}
+
+.card-title-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem; /* keep spacing between header and content */
+}
+
+.card-title-action {
+  display: flex;
+  align-items: center;
 }
 
 .card-content {

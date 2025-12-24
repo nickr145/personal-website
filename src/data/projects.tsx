@@ -12,7 +12,8 @@ export type Project = {
   tags: string[];
   link?: string;
   repo?: string;
-  image?: string; /* optional image path (square format) */
+  image?: string;
+  year: number;
 };
 
 export const projects: Project[] = [
@@ -21,47 +22,54 @@ export const projects: Project[] = [
     description: strings.rrpsDescription,
     tags: strings.rrpsTags,
     repo: strings.rrpsRepo,
-    image: rrpsImage
+    image: rrpsImage,
+    year: 2025,
   },
   {
     title: strings.fit4MeTitle,
     description: strings.fit4MeDescription,
     tags: strings.fit4MeTags,
     repo: strings.fit4MeRepo,
-    image: fit4MeImage
+    image: fit4MeImage,
+    year: 2025,
   },
   {
     title: strings.cropTitle,
     description: strings.cropDescription,
     tags: strings.cropTags,
     repo: strings.cropRepo,
-    image: lazLogo
+    image: lazLogo,
+    year: 2025,
   },
   {
     title: strings.skystonesTitle,
     description: strings.skystonesDescription,
     tags: strings.skystonesTags,
     repo: strings.skystonesRepo,
-    image: skystoneImage
+    image: skystoneImage,
+    year: 2024,
   },
   {
     title: strings.chessTitle,
     description: strings.chessDescription,
     tags: strings.chessTags,
     repo: strings.chessRepo,
-    image: chessImage
+    image: chessImage,
+    year: 2023,
   },
   {
     title: strings.expTrackerTitle,
     description: strings.expTrackerDescription,
     tags: strings.expTrackerTags,
     repo: strings.expTrackerRepo,
-    image: expTrackerImage
+    image: expTrackerImage,
+    year: 2024,
   },
   {
     title: strings.pwgenTitle,
     description: strings.pwgenDescription,
     tags: strings.pwgenTags,
     repo: strings.pwgenRepo,
+    year: 2024,
   },
-];
+].sort((a, b) => b.year - a.year);
