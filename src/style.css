@@ -504,3 +504,213 @@ Ensure the title card and the main grid share the same max-width so the
   color: #ffffff;
   font-weight: 600;
 }
+
+/* ===== Projects Collection Page ===== */
+
+.projects-collection-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--card-text);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 200ms ease;
+}
+
+.back-button:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.back-button:focus-visible {
+  outline: 2px solid rgba(66,133,244,0.5);
+  outline-offset: 2px;
+}
+
+.projects-collection-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--card-text);
+}
+
+.projects-collection-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.projects-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--card-text);
+}
+
+.projects-table thead {
+  border-bottom: 2px solid rgba(255,255,255,0.12);
+}
+
+.projects-table th {
+  text-align: left;
+  padding: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.7);
+}
+
+.projects-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 200ms ease;
+}
+
+.projects-table tbody tr:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.projects-table td {
+  padding: 1.5rem 1rem;
+  vertical-align: middle;
+}
+
+.year-cell {
+  font-weight: 500;
+  width: 80px;
+  color: rgba(255,255,255,0.7);
+}
+
+.project-name-cell {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.tags-cell {
+  flex: 1;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.8);
+  transition: all 200ms ease;
+}
+
+.tag:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.link-cell {
+  text-align: center;
+  width: 60px;
+}
+
+.link-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: rgba(255,255,255,0.7);
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+
+.link-icon:hover {
+  color: var(--card-text);
+  transform: scale(1.15);
+}
+
+.link-icon:focus-visible {
+  outline: 2px solid rgba(66,133,244,0.5);
+  outline-offset: 2px;
+}
+
+/* View All Projects Link */
+.view-all-projects-link {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0;
+  margin: 0;
+}
+
+.view-all-link {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  color: var(--card-text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+
+.view-all-link:hover {
+  transform: translateX(4px);
+  color: rgba(255,255,255,0.9);
+}
+
+.view-all-link:focus-visible {
+  outline: 2px solid rgba(66,133,244,0.5);
+  outline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  .projects-collection-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .projects-collection-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .projects-table {
+    font-size: 0.9rem;
+  }
+
+  .projects-table th,
+  .projects-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .year-cell {
+    display: none;
+  }
+
+  .tags-container {
+    gap: 0.3rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+}

@@ -2,10 +2,23 @@ import Card from './Card';
 import { projects } from '../data/projects';
 
 export function Projects() {
+  const topProjects = projects.slice(0, 4);
+
   return (
-    <Card title="Projects">
+    <Card
+      title="Projects"
+      headerAction={
+        projects.length > 4 ? (
+          <div className="view-all-projects-link" style={{ margin: 0 }}>
+            <a href="/projects" className="view-all-link">
+              View All Projects →
+            </a>
+          </div>
+        ) : null
+      }
+    >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5em' }}>
-        {projects.map((p) => (
+        {topProjects.map((p) => (
           <div key={p.title} className="project-item">
             {/* Project image (left side, square format) */}
             {p.image && (
