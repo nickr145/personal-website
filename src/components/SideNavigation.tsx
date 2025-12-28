@@ -4,8 +4,9 @@ export function SideNavigation() {
   const [activeSection, setActiveSection] = useState<string>('profile');
 
   const sections = [
-    { id: 'about', label: 'About' },
     { id: 'projects', label: 'Projects' },
+    { id: 'experiences', label: 'Experiences' },
+    { id: 'hobbies', label: 'Hobbies' },
   ];
 
   useEffect(() => {
