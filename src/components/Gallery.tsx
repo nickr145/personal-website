@@ -1,15 +1,10 @@
 import { hobbies } from '../data/hobbies';
-import { useState, useEffect } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import GalleryModal from './GalleryModal';
 
 export function Gallery() {
   const photos = hobbies.filter(h => h.category === 'photography');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
 
   return (
     <main className="layout-root">

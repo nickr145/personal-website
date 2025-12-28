@@ -12,14 +12,6 @@ import { Sketchbook } from "./components/Sketchbook";
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'projects' | 'gallery' | 'sketchbook'>('home');
-  const [savedScrollPosition, setSavedScrollPosition] = useState(0);
-
-  // Disable automatic scroll restoration
-  useEffect(() => {
-    if (window.history.scrollRestoration) {
-      window.history.scrollRestoration = 'manual';
-    }
-  }, []);
 
   // Handle browser back/forward
   useEffect(() => {
@@ -28,20 +20,12 @@ export function App() {
       if (path === '/projects') setCurrentPage('projects');
       else if (path === '/gallery') setCurrentPage('gallery');
       else if (path === '/sketchbook') setCurrentPage('sketchbook');
-      else {
-        setCurrentPage('home');
-        // Restore scroll position when returning to home
-        setTimeout(() => {
-          window.scrollY = savedScrollPosition;
-          document.documentElement.scrollTop = savedScrollPosition;
-          document.body.scrollTop = savedScrollPosition;
-        }, 0);
-      }
+      else setCurrentPage('home');
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [savedScrollPosition]);
+  }, []);
 
   // Handle navigation
   useEffect(() => {
@@ -54,19 +38,8 @@ export function App() {
       }
     };
 
-    const handleGalleryNav = () => {
-      // Save scroll position before navigating
-      setSavedScrollPosition(window.scrollY || document.documentElement.scrollTop);
-      window.history.pushState({}, '', '/gallery');
-      setCurrentPage('gallery');
-    };
-
-    const handleSketchbookNav = () => {
-      // Save scroll position before navigating
-      setSavedScrollPosition(window.scrollY || document.documentElement.scrollTop);
-      window.history.pushState({}, '', '/sketchbook');
-      setCurrentPage('sketchbook');
-    };
+    const handleGalleryNav = () => setCurrentPage('gallery');
+    const handleSketchbookNav = () => setCurrentPage('sketchbook');
 
     document.addEventListener('click', handleNavigation, true);
     window.addEventListener('navigate-to-gallery', handleGalleryNav);
