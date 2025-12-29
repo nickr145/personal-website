@@ -8,7 +8,6 @@ import { SideNavigation } from "./components/SideNavigation";
 import { ProjectsCollection } from "./components/ProjectsCollection";
 import { Gallery } from "./components/Gallery";
 import { Sketchbook } from "./components/Sketchbook";
-import { ThemeDropdown } from "./components/ThemeDropdown";
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<
