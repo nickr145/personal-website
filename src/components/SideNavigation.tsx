@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ThemeDropdown } from './ThemeDropdown';
 
 export function SideNavigation() {
   const [activeSection, setActiveSection] = useState<string>('profile');
@@ -45,13 +46,17 @@ export function SideNavigation() {
             <button
               className={`nav-link ${activeSection === section.id ? 'active' : ''}`}
               onClick={() => handleNavClick(section.id)}
-              aria-current={activeSection === section.id ? 'page' : undefined}
             >
               {section.label}
             </button>
           </li>
         ))}
       </ul>
+
+      {/* Bottom section */}
+      <div className="sidenav-bottom">
+        <ThemeDropdown />
+      </div>
     </nav>
   );
 }

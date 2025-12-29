@@ -1,0 +1,39 @@
+:root {
+  --page-bg: #0b0b0c;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --card-text: #ffffff;
+  --accent: #ffffff;
+}
+
+/* Neon */
+[data-theme="neon"] {
+  --page-bg: #050507;
+  --card-bg: rgba(0,255,255,0.06);
+  --card-border: rgba(0,255,255,0.35);
+  --accent: #00ffff;
+}
+
+/* Teal */
+[data-theme="teal"] {
+  --page-bg: #081818;
+  --card-bg: rgba(0,128,128,0.08);
+  --card-border: rgba(0,128,128,0.3);
+  --accent: #3ce3c8;
+}
+
+/* Lavender */
+[data-theme="lavender"] {
+  --page-bg: #0e0c14;
+  --card-bg: rgba(170,150,255,0.08);
+  --card-border: rgba(170,150,255,0.25);
+  --accent: #b8a8ff;
+}
+
+/* Midnight */
+[data-theme="midnight"] {
+  --page-bg: #05060a;
+  --card-bg: rgba(30,40,90,0.12);
+  --card-border: rgba(80,120,255,0.25);
+  --accent: #7aa2ff;
+}
