@@ -284,10 +284,10 @@ Ensure the title card and the main grid share the same max-width so the
 }
 
 .layout-grid {
-  max-width: 1100px;
+  max-width: 1300px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: minmax(180px, 210px) minmax(0, 1fr);
   gap: 3rem;
   align-items: start;
 }
@@ -316,6 +316,7 @@ Ensure the title card and the main grid share the same max-width so the
 /* Section spacing */
 .section {
   margin-bottom: 1rem;
+  display: block;
 }
 
 /* Mobile fallback */
@@ -331,50 +332,58 @@ Ensure the title card and the main grid share the same max-width so the
 
 /* ===== Profile Card ===== */
 
-.profile-card {
-  align-items: center;
-  text-align: center;
-  gap: 0.75rem;
+#profile {
+  margin-bottom: 3.5rem;
 }
 
-/* Make the profile card visually transparent and remove its border/shadow */
 .profile-card {
-	background: transparent !important;
+  gap: 0.75rem;
+  max-width: none;
+  width: 100%;
+  background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
 	backdrop-filter: none !important;
+  padding-bottom: 0.5rem;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .profile-avatar {
-  width: 196px;
-  height: 196px;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
   object-fit: cover;
-}
-
-.profile-avatar {
-	display: block;
-	margin: 0 auto;
+  margin: 0 auto 0.75rem;
 }
 
 .profile-name {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600;
   margin: 0.5rem 0 0;
 }
 
 .profile-subtitle {
-  font-size: 0.95rem;
-  color: #fff;
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.profile-icons svg {
+  width: 22px;
+  height: 22px;
 }
 
 .profile-icons {
 	display: flex;
-	gap: 0.75rem;
-	margin-top: 0.75rem;
+	gap: 1.1rem;
+	margin-top: 0.9rem;
 	font-size: 0.9rem;
 	justify-content: center; /* center the icons horizontally */
 	align-items: center;
+  width: 100%;
 }
 
 /* Icon button used in the profile card */
@@ -461,7 +470,17 @@ Ensure the title card and the main grid share the same max-width so the
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
+}
+
+.side-navigation {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 6rem); /* adjust to match your top offset */
+}
+
+.sidenav-bottom {
+  margin-top: auto;
 }
 
 .nav-list {
@@ -475,12 +494,12 @@ Ensure the title card and the main grid share the same max-width so the
 
 .nav-link {
   display: block;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.85rem;
   color: var(--card-text);
   background: transparent;
   border: 1px solid transparent;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -554,6 +573,23 @@ Ensure the title card and the main grid share the same max-width so the
   max-width: 1400px;
   margin: 0 auto;
 }
+
+.projects-table {
+  max-width: 900px;
+  width: 100%;
+}
+
+.profile-wrapper {
+  max-width: 860px;      /* SAME as Projects card */
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;    /* centers wrapper in layout-right */
+  margin-bottom: 4rem;
+
+  display: flex;
+  justify-content: center; /* centers ProfileCard inside the rail */
+}
+
 
 .projects-table {
   width: 100%;
@@ -881,4 +917,59 @@ Ensure the title card and the main grid share the same max-width so the
     padding: 1.5rem;
   }
 }
+
+.theme-dropdown {
+  position: relative;
+}
+
+.theme-trigger {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--card-text);
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+}
+
+.theme-menu {
+  position: absolute;
+  bottom: 120%;
+  left: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.theme-option {
+  background: transparent;
+  color: var(--card-text);
+  border: none;
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  border-radius: 6px;
+}
+
+.theme-option:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.theme-option.active {
+  font-weight: 600;
+}
+
+.nav-link.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#profile .profile-card {
+  max-width: 860px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
