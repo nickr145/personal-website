@@ -15,7 +15,7 @@ const sketches: HobbyImage[] = [
   {
     id: 'IMG_7574',
     category: 'sketch',
-    src: '/src/data/images/sketches/IMG_7574.jpg',
+    src: '/images/sketches/IMG_7574.jpg',
     alt: hobbiesStrings.sketch.IMG_7574.alt,
     caption: hobbiesStrings.sketch.IMG_7574.caption,
     width: 1200,
@@ -24,7 +24,7 @@ const sketches: HobbyImage[] = [
   {
     id: 'IMG_7610',
     category: 'sketch',
-    src: '/src/data/images/sketches/IMG_7610.jpg',
+    src: '/images/sketches/IMG_7610.jpg',
     alt: hobbiesStrings.sketch.IMG_7610.alt,
     caption: hobbiesStrings.sketch.IMG_7610.caption,
     width: 1200,
@@ -33,7 +33,7 @@ const sketches: HobbyImage[] = [
   {
     id: 'IMG_7806',
     category: 'sketch',
-    src: '/src/data/images/sketches/IMG_7806.jpg',
+    src: '/images/sketches/IMG_7806.jpg',
     alt: hobbiesStrings.sketch.IMG_7806.alt,
     caption: hobbiesStrings.sketch.IMG_7806.caption,
     width: 1200,
@@ -42,7 +42,7 @@ const sketches: HobbyImage[] = [
   {
     id: 'IMG_8446',
     category: 'sketch',
-    src: '/src/data/images/sketches/IMG_8446.jpg',
+    src: '/images/sketches/IMG_8446.jpg',
     alt: hobbiesStrings.sketch.IMG_8446.alt,
     caption: hobbiesStrings.sketch.IMG_8446.caption,
     width: 1200,
@@ -51,7 +51,7 @@ const sketches: HobbyImage[] = [
   {
     id: 'IMG_8787',
     category: 'sketch',
-    src: '/src/data/images/sketches/IMG_8787.jpg',
+    src: '/images/sketches/IMG_8787.jpg',
     alt: hobbiesStrings.sketch.IMG_8787.alt,
     caption: hobbiesStrings.sketch.IMG_8787.caption,
     width: 1200,
@@ -64,7 +64,7 @@ const photography: HobbyImage[] = [
   {
     id: 'aurora',
     category: 'photography',
-    src: '/src/data/images/photography/aurora.jpeg',
+    src: '/images/photography/aurora.jpeg',
     alt: hobbiesStrings.photography.aurora.alt,
     caption: hobbiesStrings.photography.aurora.caption,
     width: 1600,
@@ -73,7 +73,7 @@ const photography: HobbyImage[] = [
   {
     id: 'aurora2',
     category: 'photography',
-    src: '/src/data/images/photography/aurora2.jpeg',
+    src: '/images/photography/aurora2.jpeg',
     alt: hobbiesStrings.photography.aurora2.alt,
     caption: hobbiesStrings.photography.aurora2.caption,
     width: 1600,
@@ -82,7 +82,7 @@ const photography: HobbyImage[] = [
   {
     id: 'aurora3',
     category: 'photography',
-    src: '/src/data/images/photography/aurora3.jpeg',
+    src: '/images/photography/aurora3.jpeg',
     alt: hobbiesStrings.photography.aurora3.alt,
     caption: hobbiesStrings.photography.aurora3.caption,
     width: 1600,
@@ -91,7 +91,7 @@ const photography: HobbyImage[] = [
   {
     id: 'aurora4',
     category: 'photography',
-    src: '/src/data/images/photography/aurora4.jpeg',
+    src: '/images/photography/aurora4.jpeg',
     alt: hobbiesStrings.photography.aurora4.alt,
     caption: hobbiesStrings.photography.aurora4.caption,
     width: 1600,
@@ -100,7 +100,7 @@ const photography: HobbyImage[] = [
   {
     id: 'constellation_orion',
     category: 'photography',
-    src: '/src/data/images/photography/constellation_orion.jpeg',
+    src: '/images/photography/constellation_orion.jpeg',
     alt: hobbiesStrings.photography.constellation_orion.alt,
     caption: hobbiesStrings.photography.constellation_orion.caption,
     width: 1600,
@@ -109,7 +109,7 @@ const photography: HobbyImage[] = [
   {
     id: 'flower1',
     category: 'photography',
-    src: '/src/data/images/photography/flower1.jpeg',
+    src: '/images/photography/flower1.jpeg',
     alt: hobbiesStrings.photography.flower1.alt,
     caption: hobbiesStrings.photography.flower1.caption,
     width: 1600,
@@ -118,7 +118,7 @@ const photography: HobbyImage[] = [
   {
     id: 'flower2',
     category: 'photography',
-    src: '/src/data/images/photography/flower2.jpeg',
+    src: '/images/photography/flower2.jpeg',
     alt: hobbiesStrings.photography.flower2.alt,
     caption: hobbiesStrings.photography.flower2.caption,
     width: 1600,
@@ -127,7 +127,7 @@ const photography: HobbyImage[] = [
   {
     id: 'flower3',
     category: 'photography',
-    src: '/src/data/images/photography/flower3.jpeg',
+    src: '/images/photography/flower3.jpeg',
     alt: hobbiesStrings.photography.flower3.alt,
     caption: hobbiesStrings.photography.flower3.caption,
     width: 1600,
@@ -136,7 +136,7 @@ const photography: HobbyImage[] = [
   {
     id: 'flower4',
     category: 'photography',
-    src: '/src/data/images/photography/flower4.jpeg',
+    src: '/images/photography/flower4.jpeg',
     alt: hobbiesStrings.photography.flower4.alt,
     caption: hobbiesStrings.photography.flower4.caption,
     width: 1600,
@@ -145,7 +145,7 @@ const photography: HobbyImage[] = [
   {
     id: 'flower5',
     category: 'photography',
-    src: '/src/data/images/photography/flower5.jpeg',
+    src: '/images/photography/flower5.jpeg',
     alt: hobbiesStrings.photography.flower5.alt,
     caption: hobbiesStrings.photography.flower5.caption,
     width: 1600,
@@ -154,7 +154,7 @@ const photography: HobbyImage[] = [
   {
     id: 'geyser',
     category: 'photography',
-    src: '/src/data/images/photography/geyser.jpeg',
+    src: '/images/photography/geyser.jpeg',
     alt: hobbiesStrings.photography.geyser.alt,
     caption: hobbiesStrings.photography.geyser.caption,
     width: 1600,
@@ -163,7 +163,7 @@ const photography: HobbyImage[] = [
   {
     id: 'hawaii1',
     category: 'photography',
-    src: '/src/data/images/photography/hawaii1.jpeg',
+    src: '/images/photography/hawaii1.jpeg',
     alt: hobbiesStrings.photography.hawaii1.alt,
     caption: hobbiesStrings.photography.hawaii1.caption,
     width: 1600,
@@ -172,7 +172,7 @@ const photography: HobbyImage[] = [
   {
     id: 'milkyway1',
     category: 'photography',
-    src: '/src/data/images/photography/milkyway1.jpeg',
+    src: '/images/photography/milkyway1.jpeg',
     alt: hobbiesStrings.photography.milkyway1.alt,
     caption: hobbiesStrings.photography.milkyway1.caption,
     width: 1600,
@@ -181,7 +181,7 @@ const photography: HobbyImage[] = [
   {
     id: 'milkyway2',
     category: 'photography',
-    src: '/src/data/images/photography/milkyway2.jpeg',
+    src: '/images/photography/milkyway2.jpeg',
     alt: hobbiesStrings.photography.milkyway2.alt,
     caption: hobbiesStrings.photography.milkyway2.caption,
     width: 1600,
@@ -190,7 +190,7 @@ const photography: HobbyImage[] = [
   {
     id: 'moon1',
     category: 'photography',
-    src: '/src/data/images/photography/moon1.jpeg',
+    src: '/images/photography/moon1.jpeg',
     alt: hobbiesStrings.photography.moon1.alt,
     caption: hobbiesStrings.photography.moon1.caption,
     width: 1600,
@@ -199,7 +199,7 @@ const photography: HobbyImage[] = [
   {
     id: 'moon2',
     category: 'photography',
-    src: '/src/data/images/photography/moon2.jpeg',
+    src: '/images/photography/moon2.jpeg',
     alt: hobbiesStrings.photography.moon2.alt,
     caption: hobbiesStrings.photography.moon2.caption,
     width: 1600,
@@ -208,7 +208,7 @@ const photography: HobbyImage[] = [
   {
     id: 'moon3',
     category: 'photography',
-    src: '/src/data/images/photography/moon3.jpeg',
+    src: '/images/photography/moon3.jpeg',
     alt: hobbiesStrings.photography.moon3.alt,
     caption: hobbiesStrings.photography.moon3.caption,
     width: 1600,
@@ -217,7 +217,7 @@ const photography: HobbyImage[] = [
   {
     id: 'moon4',
     category: 'photography',
-    src: '/src/data/images/photography/moon4.jpeg',
+    src: '/images/photography/moon4.jpeg',
     alt: hobbiesStrings.photography.moon4.alt,
     caption: hobbiesStrings.photography.moon4.caption,
     width: 1600,
@@ -226,7 +226,7 @@ const photography: HobbyImage[] = [
   {
     id: 'nevada',
     category: 'photography',
-    src: '/src/data/images/photography/nevada.jpeg',
+    src: '/images/photography/nevada.jpeg',
     alt: hobbiesStrings.photography.nevada.alt,
     caption: hobbiesStrings.photography.nevada.caption,
     width: 1600,
@@ -235,7 +235,7 @@ const photography: HobbyImage[] = [
   {
     id: 'raven',
     category: 'photography',
-    src: '/src/data/images/photography/raven.jpeg',
+    src: '/images/photography/raven.jpeg',
     alt: hobbiesStrings.photography.raven.alt,
     caption: hobbiesStrings.photography.raven.caption,
     width: 1600,
@@ -244,7 +244,7 @@ const photography: HobbyImage[] = [
   {
     id: 'rock_arch',
     category: 'photography',
-    src: '/src/data/images/photography/rock_arch.jpeg',
+    src: '/images/photography/rock_arch.jpeg',
     alt: hobbiesStrings.photography.rock_arch.alt,
     caption: hobbiesStrings.photography.rock_arch.caption,
     width: 1600,
@@ -253,7 +253,7 @@ const photography: HobbyImage[] = [
   {
     id: 'sky1',
     category: 'photography',
-    src: '/src/data/images/photography/sky1.jpeg',
+    src: '/images/photography/sky1.jpeg',
     alt: hobbiesStrings.photography.sky1.alt,
     caption: hobbiesStrings.photography.sky1.caption,
     width: 1600,
@@ -262,7 +262,7 @@ const photography: HobbyImage[] = [
   {
     id: 'toronto_city',
     category: 'photography',
-    src: '/src/data/images/photography/toronto_city.jpeg',
+    src: '/images/photography/toronto_city.jpeg',
     alt: hobbiesStrings.photography.toronto_city.alt,
     caption: hobbiesStrings.photography.toronto_city.caption,
     width: 1600,
@@ -271,7 +271,7 @@ const photography: HobbyImage[] = [
   {
     id: 'utah_rain',
     category: 'photography',
-    src: '/src/data/images/photography/utah_rain.jpeg',
+    src: '/images/photography/utah_rain.jpeg',
     alt: hobbiesStrings.photography.utah_rain.alt,
     caption: hobbiesStrings.photography.utah_rain.caption,
     width: 1600,
@@ -280,7 +280,7 @@ const photography: HobbyImage[] = [
   {
     id: 'yellowstone_park_bison',
     category: 'photography',
-    src: '/src/data/images/photography/yellowstone_park_bison.jpeg',
+    src: '/images/photography/yellowstone_park_bison.jpeg',
     alt: hobbiesStrings.photography.yellowstone_park_bison.alt,
     caption: hobbiesStrings.photography.yellowstone_park_bison.caption,
     width: 1600,
@@ -289,7 +289,7 @@ const photography: HobbyImage[] = [
   {
     id: 'zion',
     category: 'photography',
-    src: '/src/data/images/photography/zion.jpeg',
+    src: '/images/photography/zion.jpeg',
     alt: hobbiesStrings.photography.zion.alt,
     caption: hobbiesStrings.photography.zion.caption,
     width: 1600,
