@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { ThemeDropdown } from './ThemeDropdown';
 
 export function SideNavigation() {
   const [activeSection, setActiveSection] = useState<string>('profile');
@@ -52,11 +51,6 @@ export function SideNavigation() {
           </li>
         ))}
       </ul>
-
-      {/* Bottom section */}
-      <div className="sidenav-bottom">
-        <ThemeDropdown />
-      </div>
     </nav>
   );
 }

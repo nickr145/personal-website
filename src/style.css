@@ -11,27 +11,49 @@ html { scroll-behavior: smooth; }
 	/* page background (dark) */
 	--page-bg: #0b0b0c;
 	/* card background should be just slightly lighter than the page background */
-	--card-bg: rgba(255,255,255,0.04);
+	--card-bg: rgba(255,255,255,0.05);
 	/* subtle card border (slightly lighter than the page) */
-	--card-border: rgba(255,255,255,0.06);
+	--card-border: rgba(255,255,255,0.08);
 	/* card text color when using dark card backgrounds */
 	--card-text: #ffffff;
+	/* gradient overlay for depth */
+	--card-gradient: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
 }
 
 /* Card micro-interactions */
 .card {
-	transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms cubic-bezier(.2,.9,.2,1);
+	transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms cubic-bezier(.2,.9,.2,1), background 180ms ease;
 	will-change: transform;
+	position: relative;
+	overflow: hidden;
+	background: var(--card-bg);
+	background-image: var(--card-gradient);
+	background-attachment: fixed;
+}
+
+.card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: radial-gradient(600px at 0% 0%, rgba(255,255,255,0.05) 0%, transparent 80%);
+	pointer-events: none;
 }
 
 .card:hover,
 .card:focus-visible {
-	transform: translateY(-4px);
-	box-shadow: 0 8px 20px rgba(17,17,17,0.08), 0 2px 6px rgba(17,17,17,0.06);
+	transform: translateY(-6px);
+	box-shadow: 
+		0 20px 40px rgba(0,0,0,0.3),
+		0 0px 20px rgba(17,17,17,0.2),
+		inset 0 1px 0 rgba(255,255,255,0.1);
+	background-image: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
 }
 
 .card:focus-visible {
-	outline: 3px solid rgba(66,133,244,0.18);
+	outline: 3px solid rgba(66,133,244,0.25);
 	outline-offset: 4px;
 }
 
@@ -281,9 +303,102 @@ Ensure the title card and the main grid share the same max-width so the
 	min-height: 100vh;
 	background: var(--page-bg, #0b0b0c);
 	padding: 3rem 1.5rem;
+	position: relative;
+	overflow-x: hidden;
+}
+
+/* ===== Animated Background Gradients ===== */
+
+@keyframes gradientShift1 {
+	0% {
+		background-position: 0% 50%;
+		opacity: 0.4;
+	}
+	25% {
+		opacity: 0.6;
+	}
+	50% {
+		background-position: 100% 50%;
+		opacity: 0.3;
+	}
+	75% {
+		opacity: 0.5;
+	}
+	100% {
+		background-position: 0% 50%;
+		opacity: 0.4;
+	}
+}
+
+@keyframes gradientShift2 {
+	0% {
+		background-position: 100% 50%;
+		opacity: 0.3;
+	}
+	25% {
+		opacity: 0.4;
+	}
+	50% {
+		background-position: 0% 50%;
+		opacity: 0.5;
+	}
+	75% {
+		opacity: 0.35;
+	}
+	100% {
+		background-position: 100% 50%;
+		opacity: 0.3;
+	}
+}
+
+/* ===== Layout Core ===== */
+
+.layout-root {
+	min-height: 100vh;
+	background: var(--page-bg, #0b0b0c);
+	padding: 3rem 1.5rem;
+	position: relative;
+	overflow-x: hidden;
+}
+
+/* Animated background mesh with floating gradients */
+.layout-root::before {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: 
+		radial-gradient(800px at 20% 50%, var(--gradient-1, rgba(66,133,244,0.12)) 0%, transparent 80%),
+		radial-gradient(1000px at 80% 80%, var(--gradient-2, rgba(100,200,255,0.08)) 0%, transparent 80%);
+	background-size: 200% 200%;
+	background-position: 0% 50%;
+	animation: gradientShift1 15s ease-in-out infinite;
+	pointer-events: none;
+	z-index: 0;
+}
+
+.layout-root::after {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: 
+		radial-gradient(900px at 60% 20%, var(--gradient-3, rgba(100,200,255,0.08)) 0%, transparent 80%),
+		radial-gradient(700px at 10% 90%, var(--gradient-4, rgba(66,133,244,0.06)) 0%, transparent 80%);
+	background-size: 200% 200%;
+	background-position: 100% 50%;
+	animation: gradientShift2 20s ease-in-out infinite;
+	pointer-events: none;
+	z-index: 0;
 }
 
 .layout-grid {
+  position: relative;
+  z-index: 1;
   max-width: 1300px;
   margin: 0 auto;
   display: grid;
@@ -922,6 +1037,13 @@ Ensure the title card and the main grid share the same max-width so the
   position: relative;
 }
 
+.theme-button-top-right {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
 .theme-trigger {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -932,8 +1054,8 @@ Ensure the title card and the main grid share the same max-width so the
 
 .theme-menu {
   position: absolute;
-  bottom: 120%;
-  left: 0;
+  top: 120%;
+  right: 0;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 10px;
