@@ -8,6 +8,7 @@ import { SideNavigation } from "./components/SideNavigation";
 import { ProjectsCollection } from "./components/ProjectsCollection";
 import { Gallery } from "./components/Gallery";
 import { Sketchbook } from "./components/Sketchbook";
+import { ThemeDropdown } from "./components/ThemeDropdown";
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<
@@ -54,19 +55,44 @@ export function App() {
   }, []);
 
   if (currentPage === "projects") {
-    return <ProjectsCollection />;
+    return (
+      <>
+        <div className="theme-button-top-right">
+          <ThemeDropdown />
+        </div>
+        <ProjectsCollection />
+      </>
+    );
   }
 
   if (currentPage === "gallery") {
-    return <Gallery />;
+    return (
+      <>
+        <div className="theme-button-top-right">
+          <ThemeDropdown />
+        </div>
+        <Gallery />
+      </>
+    );
   }
 
   if (currentPage === "sketchbook") {
-    return <Sketchbook />;
+    return (
+      <>
+        <div className="theme-button-top-right">
+          <ThemeDropdown />
+        </div>
+        <Sketchbook />
+      </>
+    );
   }
 
   return (
-    <main className="layout-root">
+    <>
+      <div className="theme-button-top-right">
+        <ThemeDropdown />
+      </div>
+      <main className="layout-root">
       <div className="layout-grid">
         {/* LEFT: sticky navigation */}
         <aside className="layout-left">
@@ -98,5 +124,6 @@ export function App() {
         </section>
       </div>
     </main>
+    </>
   );
 }
