@@ -4,9 +4,11 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 type Theme =
   | 'neutral'
   | 'neon'
-  | 'teal'
   | 'lavender'
-  | 'midnight';
+  | 'rose'
+  | 'forest'
+  | 'sunset'
+  | 'ocean';
 
 const ThemeContext = createContext<{
   theme: Theme;

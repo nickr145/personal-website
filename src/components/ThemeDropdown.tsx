@@ -4,9 +4,11 @@ import { useTheme } from '../contexts/ThemeContext';
 const themes = [
   'neutral',
   'neon',
-  'teal',
   'lavender',
-  'midnight',
+  'rose',
+  'forest',
+  'sunset',
+  'ocean',
 ] as const;
 
 export function ThemeDropdown() {
@@ -33,8 +35,8 @@ export function ThemeDropdown() {
                 setOpen(false);
               }}
             >
-              {theme === t && '✓ '}
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              <span className="theme-option-check">{theme === t ? '✓' : ''}</span>
+              <span className="theme-option-text">{t.charAt(0).toUpperCase() + t.slice(1)}</span>
             </button>
           ))}
         </div>
