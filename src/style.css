@@ -2,642 +2,889 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 
-/* Optional: smooth fonts + better defaults */
 html { scroll-behavior: smooth; }
-/* Design tokens: page + card colours. Tweak these to change card/page contrast. */
-:root {
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	/* page background (dark) */
-	--page-bg: #0b0b0c;
-	/* card background should be just slightly lighter than the page background */
-	--card-bg: rgba(255,255,255,0.05);
-	/* subtle card border (slightly lighter than the page) */
-	--card-border: rgba(255,255,255,0.08);
-	/* card text color when using dark card backgrounds */
-	--card-text: #ffffff;
-	/* gradient overlay for depth */
-	--card-gradient: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper, #f0ebe0);
+  color: var(--ink, #1a1a18);
+  font-family: 'EB Garamond', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Card micro-interactions */
-.card {
-	transition: transform 180ms cubic-bezier(.2,.9,.2,1), box-shadow 180ms cubic-bezier(.2,.9,.2,1), background 180ms ease;
-	will-change: transform;
-	position: relative;
-	overflow: hidden;
-	background: var(--card-bg);
-	background-image: var(--card-gradient);
-	background-attachment: fixed;
-}
+/* ═══════════════════════════════════════════════
+   FRONT PAGE (Toronto Star style, page 1 of spread)
+═══════════════════════════════════════════════ */
 
-.card::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: radial-gradient(600px at 0% 0%, rgba(255,255,255,0.05) 0%, transparent 80%);
-	pointer-events: none;
-}
-
-.card:hover,
-.card:focus-visible {
-	transform: translateY(-6px);
-	box-shadow: 
-		0 20px 40px rgba(0,0,0,0.3),
-		0 0px 20px rgba(17,17,17,0.2),
-		inset 0 1px 0 rgba(255,255,255,0.1);
-	background-image: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
-}
-
-.card:focus-visible {
-	outline: 3px solid rgba(66,133,244,0.25);
-	outline-offset: 4px;
-}
-
-/* Reduce motion preference */
-@media (prefers-reduced-motion: reduce) {
-	.card,
-	* {
-		transition: none !important;
-		animation: none !important;
-		transform: none !important;
-	}
-}
-
-/* Page layout helpers */
-.page-content {
-	position: relative;
-	z-index: 1;
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 2rem 1rem;
-	justify-content: center; /* center vertically in viewport */
-}
-
-.title-row {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	margin-bottom: 2rem;
-}
-
-/* Align title to grid width */
-.title-row .card-title-box {
-	max-width: 1200px; /* match cards grid max width */
-	width: 100%;
-}
-
-.card-title-box {
-	max-width: 420px; /* match card max-width */
-	width: 100%;
-	background: rgba(255,255,255,0.9);
-	border-radius: 16px;
-	padding: 1.1rem 1.6rem;
-	font-weight: 700;
-	font-size: 1.9rem;
-	text-align: center;
-	box-shadow: 0 6px 18px rgba(17,17,17,0.04);
-	display: flex;
-	align-items: center;
-	justify-content: center; /* ensure text is centered */
-}
-
-/* Stronger rule to override any card padding/layout and guarantee centering */
-.card.card-title-box {
-	display: flex !important;
-	align-items: center !important;
-	justify-content: center !important;
-	text-align: center !important;
-	padding: 1.25rem 1.6rem !important;
-}
-
-
-
-/* Main two-column split: left column fixed/sticky, right column scrolls */
-.main-split {
-	width: 100%;
-	/* match the title/card container width so left and right edges align */
-	max-width: 1200px;
-	display: flex;
-	/* horizontal gap between left and right columns */
-	gap: 3.5rem;
-	align-items: flex-start;
-	justify-content: center;
-}
-
-.left-column {
-	/* slightly narrower left column to free up space for Projects */
-	flex: 0 0 300px;
-	max-width: 300px;
-	/* keep left column visible while the right column scrolls */
-	position: sticky;
-	top: 2.5rem; /* sits just below the title row */
-	align-self: flex-start;
-}
-
-/* .right-column {
-	flex: 1 1 auto;
-	min-width: 0;
-	/* make the right column the only scrollable region */
-	/* max-height: calc(100vh - 4rem);
-	overflow-y: auto;
-	-webkit-overflow-scrolling: touch;
-} */
-
-/* Keep base selectors for boxes so components still style correctly */
-.about-box { width: 100%; }
-.projects-box { width: 100%; }
-
-/* 
-Ensure the title card and the main grid share the same max-width so the
-   left edge of the About column and the right edge of the Projects column
-   line up with the title card edges. */
-.card.card-title-box {
-	max-width: 1200px;
-}
-
-/* Adjustable minimum heights so the Projects box can span the two left boxes visually. */
-
-
-:root {
-	--about-min-h: 140px;
-	--badges-min-h: 100px;
-	--contact-min-h: 160px;
-	--grid-vertical-gap: 1rem;
-}
-
-.about-box .card { min-height: var(--about-min-h); }
-.badges-box .card { min-height: var(--badges-min-h); }
-.contact-box .card { min-height: var(--contact-min-h); }
-
-/* Projects min-height equals sum of the three left boxes plus the vertical gaps between them */
-.projects-box .card {
-	min-height: calc(var(--about-min-h) + var(--badges-min-h) + var(--contact-min-h) + (var(--grid-vertical-gap) * 2) + var(--projects-extra, 0px));
-}
-
-/* Optional extra height for Projects so it extends further down. Tweak this value to taste. */
-:root {
-	--projects-extra: 120px;
-}
-
-/* Make the projects card compact and allow inner scrolling for long lists */
-.projects-box .card {
-	 display: block; /* allow the card to size naturally inside the right-column */
-	 /* Make the Projects card wider than the default card width so it fills the
-		 available area in the right column while leaving the About card at the
-		 default card size. Tune max-width as needed. */
-	 max-width: 860px; /* wider than the base card max-width (420px) */
-	 width: 100%;
-	 /* allow the card to shrink on smaller viewports but not below 320px */
-	 min-width: 320px;
-}
-
-.right-column .projects-box .card .card-content {
-	overflow: visible; /* let the right-column handle scrolling */
-	padding-right: 0.5rem;
-}
-
-/* Optional: visually nicer thin scrollbar on supported browsers */
-.projects-box .card .card-content::-webkit-scrollbar { width: 10px; }
-.projects-box .card .card-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 6px; }
-
-@media (max-width: 900px) {
-	/* Stack columns on small screens — normal single-column flow */
-	.main-split { flex-direction: column; }
-	.left-column, .right-column { position: static; max-height: none; }
-	.card { max-width: 100%; min-width: 0; }
-	.card-title-box { max-width: 90%; }
-	/* Remove any visual offsets on small screens so stacking looks correct */
-	.projects-box .card { transform: none; margin-left: 0; }
-	.about-box .card { transform: none; }
-}
-
-/* Hobbies full-width below the grid */
-.hobbies-fullwidth {
+.front-page {
+  position: relative;
   width: 100%;
-  max-width: 1200px;
-  margin-top: 1.5rem;
+  height: 100%;
+  overflow: hidden;
 }
 
-/* Ensure the hobby card inside the full-width container spans the container (matches title width) */
-.hobbies-fullwidth .card {
-	width: 100%;
-	max-width: none;
+/* Three.js canvas — fills the page behind the content */
+.front-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 
-/* Center the Hobbies card title */
-.hobbies-fullwidth .card .card-title {
-	text-align: center;
-	width: 100%;
-	margin-left: 0; /* ensure centered regardless of inherited margins */
+.front-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
 }
 
-/* Hobby dropdown toggles and panels */
-.hobby-toggle {
-	background: rgba(255,255,255,0.95);
-	border: 1px solid rgba(0,0,0,0.06);
-	padding: 0.5rem 0.9rem;
-	border-radius: 8px;
-	cursor: pointer;
-}
-
-.hobby-dropdown-panel {
-	margin-top: 10px;
-	padding: 10px 4px;
-	background: rgba(255,255,255,0.85);
-	border-radius: 10px;
-}
-
-.hobby-scroller {
-	display: flex;
-	overflow-x: auto;
-	padding-bottom: 6px;
-}
-
-/* Hobby thumbnail styling: fixed, small, non-stretching thumbnails for scroller */
-.hobby-thumb-button {
-	border: none;
-	padding: 0;
-	background: transparent;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	flex: 0 0 auto; /* don't shrink or grow in the horizontal scroller */
-	margin-right: 8px;
-	overflow: hidden; /* ensure image stays within rounded corners */
-	border-radius: 8px;
-}
-
-.hobby-thumb {
-	width: 140px; /* slightly smaller */
-	height: 90px; /* slightly smaller */
-	object-fit: cover; /* crop to fill without distortion */
-	object-position: center center; /* keep center in view */
-	border-radius: 8px;
-	display: block;
-	background: #f6f7f8; /* neutral background to avoid visual gaps */
-	box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-	transition: transform 120ms ease; /* subtle hover pop */
-}
-
-.hobby-thumb-button:focus .hobby-thumb,
-.hobby-thumb-button:hover .hobby-thumb {
-	transform: scale(1.03);
-}
-
-@media (max-width: 700px) {
-	.hobby-thumb { width: 110px; height: 72px; }
-}
-
-.hobby-scroller::-webkit-scrollbar { height: 8px; }
-.hobby-scroller::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 6px; }
-
-/* ===== Layout Core ===== */
-
-.layout-root {
-	min-height: 100vh;
-	background: var(--page-bg, #0b0b0c);
-	padding: 3rem 1.5rem;
-	position: relative;
-	overflow-x: hidden;
-}
-
-/* ===== Animated Bokeh Bubbles ===== */
-
-@keyframes bokeh1 {
-	0% {
-		transform: translate(0, 0);
-		opacity: 0.3;
-	}
-	25% {
-		opacity: 0.6;
-	}
-	50% {
-		transform: translate(100px, -100px);
-		opacity: 0.4;
-	}
-	75% {
-		opacity: 0.55;
-	}
-	100% {
-		transform: translate(0, 0);
-		opacity: 0.3;
-	}
-}
-
-@keyframes bokeh2 {
-	0% {
-		transform: translate(-50px, 50px);
-		opacity: 0.4;
-	}
-	25% {
-		opacity: 0.5;
-	}
-	50% {
-		transform: translate(150px, 0);
-		opacity: 0.6;
-	}
-	75% {
-		opacity: 0.45;
-	}
-	100% {
-		transform: translate(-50px, 50px);
-		opacity: 0.4;
-	}
-}
-
-/* ===== Layout Core ===== */
-
-.layout-root {
-	min-height: 100vh;
-	background: var(--page-bg, #0b0b0c);
-	padding: 3rem 1.5rem;
-	position: relative;
-	overflow-x: hidden;
-}
-
-/* Animated bokeh bubbles background */
-.layout-root::before {
-	content: '';
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: 
-		radial-gradient(700px at 30% 40%, var(--gradient-1, rgba(66,133,244,0.35)) 0%, transparent 70%),
-		radial-gradient(900px at 70% 70%, var(--gradient-2, rgba(100,200,255,0.28)) 0%, transparent 70%);
-	filter: blur(80px);
-	animation: bokeh1 5s ease-in-out infinite;
-	pointer-events: none;
-	z-index: 0;
-}
-
-.layout-root::after {
-	content: '';
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: 
-		radial-gradient(800px at 50% 30%, var(--gradient-3, rgba(100,200,255,0.28)) 0%, transparent 70%),
-		radial-gradient(650px at 20% 80%, var(--gradient-4, rgba(66,133,244,0.25)) 0%, transparent 70%);
-	filter: blur(80px);
-	animation: bokeh2 7s ease-in-out infinite;
-	pointer-events: none;
-	z-index: 0;
-}
-
-.layout-grid {
+/* Translucent paper layer over the canvas */
+.front-content {
   position: relative;
   z-index: 1;
-  max-width: 1300px;
-  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 3rem 1rem;
+  background: rgba(240, 235, 224, 0.88);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+[data-theme="nightprint"] .front-content { background: rgba(13, 13, 11, 0.88); }
+[data-theme="sepia"]      .front-content { background: rgba(232, 220, 200, 0.88); }
+[data-theme="telegraph"]  .front-content { background: rgba(238, 242, 248, 0.88); }
+[data-theme="herald"]     .front-content { background: rgba(240, 245, 238, 0.88); }
+[data-theme="noir"]       .front-content { background: rgba(244, 240, 236, 0.88); }
+
+/* ── Masthead block (top of front page) ── */
+
+.front-masthead-block {
+  text-align: center;
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+}
+
+.front-masthead-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.2rem, 3.2vw, 2.2rem);
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink, #1a1a18);
+  margin: 0.35rem 0;
+  line-height: 1.1;
+}
+
+.front-thick-rule {
+  height: 4px;
+  background: var(--ink, #1a1a18);
+  margin: 0.3rem 0;
+}
+
+.front-gold-rule {
+  height: 2px;
+  background: var(--gold, #c8a84b);
+  margin: 0.25rem 0;
+}
+
+.front-dateline {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+  padding: 0.3rem 0;
+}
+
+/* ── Main story: photo + article text ── */
+
+.front-story {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0.75rem;
+}
+
+.front-story-photo {
+  flex-shrink: 0;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.front-photo-img {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center top;
+  filter: sepia(0.12) contrast(1.04);
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.4));
+  display: block;
+}
+
+.front-photo-caption {
+  font-family: 'Courier New', monospace;
+  font-size: 0.63rem;
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+/* Vertical column rule separating photo from text */
+.front-story-text {
+  flex: 1;
+  border-left: 1px solid var(--gold, #c8a84b);
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.front-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+  font-weight: 700;
+  color: var(--ink, #1a1a18);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.front-byline-rule {
+  height: 1px;
+  background: var(--ink, #1a1a18);
+  margin: 0 0 0.85rem;
+  flex-shrink: 0;
+}
+
+.front-body {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.72;
+  color: var(--ink, #1a1a18);
+  margin: 0 0 1rem 0;
+  flex: 1;
+}
+
+.front-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ink-faint, rgba(26,26,24,0.15));
+  flex-shrink: 0;
+}
+
+.front-contact-link {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem;
+  color: var(--ink, #1a1a18);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 140ms;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.front-contact-link:hover {
+  border-bottom-color: var(--ink-fade, rgba(26,26,24,0.4));
+}
+
+/* ── Index / teasers bar (bottom of front page) ── */
+
+.front-teasers {
+  flex-shrink: 0;
+}
+
+.front-teasers-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 0.45rem 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-fade, rgba(26,26,24,0.7));
+}
+
+.front-teaser-dot {
+  color: var(--mast, #b5121b);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* Loading placeholder while FrontPage lazy-loads */
+.front-page-loading {
+  width: 100%;
+  height: 100%;
+  background: var(--paper, #f0ebe0);
+}
+
+/* ═══════════════════════════════════════════════
+   STICKY MASTHEAD NAV
+═══════════════════════════════════════════════ */
+
+.newspaper-masthead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--paper, #f0ebe0);
+  border-top: 3px solid var(--ink, #1a1a18);
+  border-bottom: 1px solid var(--ink-fade, rgba(26,26,24,0.35));
+  padding: 0 2rem;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.masthead-brand {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink, #1a1a18);
+  white-space: nowrap;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.masthead-nav {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.masthead-nav button {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--ink, #1a1a18);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.9rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms, color 150ms;
+}
+
+.masthead-nav button:hover,
+.masthead-nav button.active {
+  border-bottom-color: var(--ink, #1a1a18);
+}
+
+.masthead-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.masthead-date {
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* theme dropdown inside masthead */
+.theme-dropdown {
+  position: relative;
+}
+
+.theme-trigger {
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.4));
+  color: var(--ink, #1a1a18);
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+
+.theme-trigger:hover {
+  background: var(--ink, #1a1a18);
+  color: var(--paper, #f0ebe0);
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--paper, #f0ebe0);
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.35));
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 120px;
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.10);
+  z-index: 200;
+}
+
+.theme-option {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink, #1a1a18);
+  border: none;
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 120ms;
+}
+
+.theme-option:hover {
+  background: var(--ink-faint, rgba(26,26,24,0.08));
+}
+
+.theme-option.active {
+  font-weight: 700;
+}
+
+.theme-option-check {
+  min-width: 1rem;
+  color: var(--accent, #b5121b);
+  font-weight: 700;
+}
+
+.theme-option-text { flex: 1; }
+
+.theme-button-top-right {
+  position: fixed;
+  top: 1rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+/* ═══════════════════════════════════════════════
+   NEWSPAPER CONTENT AREA
+═══════════════════════════════════════════════ */
+
+.newspaper-content {
+  background: var(--paper, #f0ebe0);
+  min-height: 100vh;
+}
+
+/* ── 3-Column Grid ── */
+
+.newspaper-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 210px) minmax(0, 1fr);
-  gap: 3rem;
+  grid-template-columns: 210px 1px minmax(0, 1fr) 1px 300px;
+  gap: 0 2.5rem;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
   align-items: start;
 }
 
-/* Sticky left column */
-.layout-left {
-  position: sticky;
-  top: 3rem;
+.newspaper-rule {
+  width: 1px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    var(--gold, #c8a84b) 5%,
+    var(--gold, #c8a84b) 95%,
+    transparent 100%);
+  align-self: stretch;
+  opacity: 0.7;
 }
 
-/* Right column content flow */
-.layout-right {
-  display: flex;
-  flex-direction: column;
+.newspaper-col {
+  min-width: 0;
 }
 
-/* Make cards inside the right column span the full right-column width
-	 so their right edges extend to the layout's edge (matches the provided
-	 reference). This overrides the base .card max-width which is smaller. */
-.layout-right .card {
-	max-width: none;
-	width: 100%;
-	min-width: 0; /* prevent overflow from base min-width */
-}
+/* ── Section headers ── */
 
-/* Section spacing */
-.section {
-  margin-bottom: 1rem;
+.section-eyebrow {
   display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mast, #b5121b);
+  margin-bottom: 0.3rem;
 }
 
-/* Mobile fallback */
-@media (max-width: 900px) {
-  .layout-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .layout-left {
-    position: static;
-  }
+.section-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--ink, #1a1a18);
+  margin: 0 0 1.2rem 0;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--ink, #1a1a18);
+  line-height: 1.2;
 }
 
-/* ===== Profile Card ===== */
+/* ── About column ── */
 
-#profile {
-  margin-bottom: 3.5rem;
+.newspaper-about { width: 100%; }
+
+.about-photo-wrap {
+  margin-bottom: 1rem;
 }
 
-.profile-card {
-  gap: 0.75rem;
-  max-width: none;
+.about-photo {
   width: 100%;
-  background: transparent !important;
-	border: none !important;
-	box-shadow: none !important;
-	backdrop-filter: none !important;
-  padding-bottom: 0.5rem;
-  padding-top: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  filter: sepia(0.12) contrast(1.04);
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.4));
+}
+
+.about-photo-caption {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+  margin: 0.35rem 0 0;
+  letter-spacing: 0.04em;
+  font-style: italic;
   text-align: center;
 }
 
-.profile-avatar {
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 0 auto 0.75rem;
+.about-bio {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: var(--ink, #1a1a18);
+  margin: 0 0 1rem 0;
 }
 
-.profile-name {
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0.5rem 0 0;
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-top: 1px solid var(--ink-fade, rgba(26,26,24,0.35));
+  padding-top: 0.75rem;
 }
 
-.profile-subtitle {
-  font-size: 1rem;
-  opacity: 0.85;
+.about-link {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.88rem;
+  color: var(--ink, #1a1a18);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 140ms;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.profile-icons svg {
-  width: 22px;
-  height: 22px;
+.about-link:hover {
+  border-bottom-color: var(--ink-fade, rgba(26,26,24,0.4));
 }
 
-.profile-icons {
-	display: flex;
-	gap: 1.1rem;
-	margin-top: 0.9rem;
-	font-size: 0.9rem;
-	justify-content: center; /* center the icons horizontally */
-	align-items: center;
+/* ── Project articles ── */
+
+.newspaper-article {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--ink-faint, rgba(26,26,24,0.15));
+  break-inside: avoid;
+}
+
+.newspaper-article:last-of-type {
+  border-bottom: none;
+}
+
+.article-headline-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.article-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink, #1a1a18);
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.article-repo-link {
+  font-size: 0.9rem;
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: color 140ms;
+  padding-top: 0.1rem;
+}
+
+.article-repo-link:hover {
+  color: var(--ink, #1a1a18);
+}
+
+.article-body {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem;
+  line-height: 1.68;
+  color: var(--ink, #1a1a18);
+  margin: 0 0 0.65rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.article-tag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.4));
+  color: var(--ink-fade, rgba(26,26,24,0.6));
+}
+
+.section-read-more {
+  display: block;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--ink, #1a1a18);
+  text-decoration: none;
+  margin-top: 1.2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--ink-faint, rgba(26,26,24,0.15));
+  text-align: right;
+  transition: color 140ms;
+}
+
+.section-read-more:hover {
+  color: var(--mast, #b5121b);
+}
+
+/* ── Experience briefs ── */
+
+.newspaper-brief {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--ink-faint, rgba(26,26,24,0.15));
+  break-inside: avoid;
+}
+
+.newspaper-brief:last-of-type {
+  border-bottom: none;
+}
+
+.brief-dateline {
+  font-family: 'Courier New', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mast, #b5121b);
+  margin-bottom: 0.25rem;
+}
+
+.brief-headline {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  color: var(--ink, #1a1a18);
+  line-height: 1.3;
+}
+
+.brief-body {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--ink, #1a1a18);
+  margin: 0 0 0.5rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.brief-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.brief-tag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.4rem;
+  border: 1px solid var(--ink-faint, rgba(26,26,24,0.2));
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+}
+
+/* ═══════════════════════════════════════════════
+   NEWSPAPER SPREAD + PAGE-FLIP ANIMATION
+═══════════════════════════════════════════════ */
+
+.newspaper-spread {
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: column;
+  max-width: 1380px;
+  margin: 0 auto;
   width: 100%;
 }
 
-/* Icon button used in the profile card */
-.icon-button {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 36px;
-	height: 36px;
-	color: var(--card-text, #ffffff);
-	background: transparent;
-	border-radius: 8px;
-	transition: color 180ms ease, transform 180ms ease, background 180ms ease;
+/* Perspective wrapper — pages flip inside here */
+.spread-scene {
+  perspective: 1500px;
+  perspective-origin: 50% 28%;
+  flex: 1;
+  min-height: 0;
 }
 
-.icon-button:hover {
-	color: #ffffff;
-	transform: translateY(-2px);
-	background: rgba(255,255,255,0.04); /* subtle tint on hover to stand out */
-}
-
-.icon-button:focus-visible {
-	outline: 2px solid rgba(66,133,244,0.5);
-	outline-offset: 2px;
-}
-
-/* ===== Projects Section ===== */
-
-/* Project item wrapper — horizontal flex layout */
-.project-item {
+.spread-page {
+  background: var(--paper, #f0ebe0);
+  border: 1px solid var(--ink-faint, rgba(26,26,24,0.15));
+  box-shadow: 2px 4px 18px rgba(0,0,0,0.07);
+  padding: 2.5rem 3rem;
+  height: 100%;
+  overflow-y: auto;
   display: flex;
-  gap: 1rem; /* space between image and details */
+  flex-direction: column;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Front page: full-bleed, no padding, overflow hidden so the Three.js canvas fills it */
+.spread-page--front {
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+}
+
+.spread-page-body--front {
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Flip keyframes ── */
+
+@keyframes exit-fwd {
+  0%   { transform: rotateY(0deg);   opacity: 1;   }
+  100% { transform: rotateY(-90deg); opacity: 0;   }
+}
+@keyframes enter-fwd {
+  0%   { transform: rotateY(90deg);  opacity: 0;   }
+  100% { transform: rotateY(0deg);   opacity: 1;   }
+}
+@keyframes exit-bwd {
+  0%   { transform: rotateY(0deg);   opacity: 1;   }
+  100% { transform: rotateY(90deg);  opacity: 0;   }
+}
+@keyframes enter-bwd {
+  0%   { transform: rotateY(-90deg); opacity: 0;   }
+  100% { transform: rotateY(0deg);   opacity: 1;   }
+}
+
+/* Forward: page folds away to the left, next unfolds from the right */
+.page-exit-fwd {
+  transform-origin: left center;
+  animation: exit-fwd 300ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+.page-enter-fwd {
+  transform-origin: right center;
+  animation: enter-fwd 340ms cubic-bezier(0, 0.55, 0.45, 1) forwards;
+}
+
+/* Backward: mirror of forward */
+.page-exit-bwd {
+  transform-origin: right center;
+  animation: exit-bwd 300ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+.page-enter-bwd {
+  transform-origin: left center;
+  animation: enter-bwd 340ms cubic-bezier(0, 0.55, 0.45, 1) forwards;
+}
+
+/* ── Spread page header (eyebrow + headline + page number) ── */
+
+.spread-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--gold, #c8a84b);
+}
+
+.spread-page-num {
+  font-family: 'Courier New', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-fade, rgba(26,26,24,0.5));
+  white-space: nowrap;
+  padding-bottom: 0.1rem;
+}
+
+.spread-page-body {
+  flex: 1;
+}
+
+/* ── Projects in 2-column CSS columns ── */
+
+.spread-projects-grid {
+  columns: 2;
+  column-gap: 3rem;
+  column-rule: 1px solid rgba(200,168,75,0.45);
+}
+
+.spread-projects-grid .section-read-more {
+  column-span: all;
+}
+
+/* ── Navigation footer ── */
+
+.spread-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 0 3.5rem;
+  border-top: 1px solid var(--ink-faint, rgba(26,26,24,0.18));
+  margin-top: 0.25rem;
+}
+
+.spread-nav-btn {
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink, #1a1a18);
+  background: none;
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.38));
+  padding: 0.45rem 1.1rem;
+  cursor: pointer;
+  transition: background 140ms, color 140ms;
+  min-width: 110px;
+}
+
+.spread-nav-btn:hover:not(:disabled) {
+  background: var(--ink, #1a1a18);
+  color: var(--paper, #f0ebe0);
+}
+
+.spread-nav-btn:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.spread-indicators {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.spread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-fade, rgba(26,26,24,0.28));
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 140ms, transform 140ms;
+}
+
+.spread-dot:hover {
+  background: var(--ink, #1a1a18);
+  transform: scale(1.25);
+}
+
+.spread-dot--active {
+  background: var(--ink, #1a1a18);
+  transform: scale(1.2);
+}
+
+/* ── Full-width hobbies ── */
+
+.newspaper-fullwidth {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 5rem;
+  border-top: 1px solid var(--ink-faint, rgba(26,26,24,0.2));
+}
+
+.hobbies-newspaper {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
 }
 
-/* Project image (left side, square format) */
-.project-image {
-  width: 120px; /* fixed square width */
-  height: 120px; /* enforce square */
-  flex-shrink: 0; /* prevent image from shrinking */
-  aspect-ratio: 1 / 1; /* enforce square aspect ratio */
-  object-fit: cover; /* crop image to fill square without distortion */
-  object-position: center; /* center the visible part of the image */
-  border-radius: 8px;
-  display: block;
-  background: rgba(255,255,255,0.08); /* placeholder background */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-/* Project details (right side: title + description) */
-.project-details {
-  flex: 1;
+.hobbies-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* GitHub icon link styling */
-.github-icon-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  color: #ffffff;
-  transition: color 200ms ease, transform 200ms ease;
+.newspaper-button {
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink, #1a1a18);
+  background: none;
+  border: 1px solid var(--ink, #1a1a18);
+  padding: 0.5rem 1.2rem;
   cursor: pointer;
+  transition: background 150ms, color 150ms;
 }
 
-.github-icon-link:hover {
-  color: #888888;
-  transform: scale(1.1);
+.newspaper-button:hover {
+  background: var(--ink, #1a1a18);
+  color: var(--paper, #f0ebe0);
 }
 
-.github-icon-link:focus-visible {
-  outline: 2px solid rgba(66,133,244,0.5);
-  outline-offset: 2px;
-}
-
-/* ===== Side Navigation ===== */
-
-.side-navigation {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.side-navigation {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 6rem); /* adjust to match your top offset */
-}
-
-.sidenav-bottom {
-  margin-top: auto;
-}
-
-.nav-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.nav-link {
-  display: block;
-  padding: 0.6rem 0.85rem;
-  color: var(--card-text);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-  transition: all 200ms ease;
-  text-decoration: none;
-}
-
-.nav-link:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.12);
-}
-
-.nav-link:focus-visible {
-  outline: 2px solid rgba(66,133,244,0.5);
-  outline-offset: 2px;
-}
-
-.nav-link.active {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.3);
-  color: #ffffff;
-  font-weight: 600;
-}
-
-/* ===== Projects Collection Page ===== */
+/* ═══════════════════════════════════════════════
+   SUB-PAGES (ProjectsCollection, Gallery, Sketchbook)
+═══════════════════════════════════════════════ */
 
 .projects-collection-header {
   display: flex;
@@ -646,39 +893,36 @@ Ensure the title card and the main grid share the same max-width so the
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--ink-faint, rgba(26,26,24,0.2));
 }
 
 .back-button {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: var(--card-text);
+  background: none;
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.4));
+  color: var(--ink, #1a1a18);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: all 200ms ease;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 150ms, color 150ms;
 }
 
 .back-button:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.2);
-}
-
-.back-button:focus-visible {
-  outline: 2px solid rgba(66,133,244,0.5);
-  outline-offset: 2px;
+  background: var(--ink, #1a1a18);
+  color: var(--paper, #f0ebe0);
 }
 
 .projects-collection-header h1 {
-  font-size: 2.5rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.2rem;
   font-weight: 700;
   margin: 0;
-  color: var(--card-text);
+  color: var(--ink, #1a1a18);
 }
 
 .projects-collection-container {
@@ -688,29 +932,12 @@ Ensure the title card and the main grid share the same max-width so the
 }
 
 .projects-table {
+  width: 100%;
   max-width: 900px;
-  width: 100%;
-}
-
-.profile-wrapper {
-  max-width: 860px;      /* SAME as Projects card */
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;    /* centers wrapper in layout-right */
-  margin-bottom: 4rem;
-
-  display: flex;
-  justify-content: center; /* centers ProfileCard inside the rail */
-}
-
-
-.projects-table {
-  width: 100%;
   border-collapse: collapse;
-  color: var(--card-text);
+  color: var(--ink, #1a1a18);
 }
 
-/* Gallery grid inside collection container */
 .projects-collection-container .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -718,68 +945,62 @@ Ensure the title card and the main grid share the same max-width so the
 }
 
 .projects-table thead {
-  border-bottom: 2px solid rgba(255,255,255,0.12);
+  border-bottom: 2px solid var(--ink-fade, rgba(26,26,24,0.4));
 }
 
 .projects-table th {
   text-align: left;
   padding: 1rem;
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.1em;
+  color: var(--ink-fade, rgba(26,26,24,0.6));
 }
 
 .projects-table tbody tr {
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--ink-faint, rgba(26,26,24,0.12));
   transition: background 200ms ease;
 }
 
 .projects-table tbody tr:hover {
-  background: rgba(255,255,255,0.02);
+  background: var(--ink-faint, rgba(26,26,24,0.04));
 }
 
 .projects-table td {
-  padding: 1.5rem 1rem;
+  padding: 1.25rem 1rem;
   vertical-align: middle;
 }
 
 .year-cell {
-  font-weight: 500;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
   width: 80px;
-  color: rgba(255,255,255,0.7);
+  color: var(--ink-fade, rgba(26,26,24,0.6));
 }
 
 .project-name-cell {
-  font-weight: 600;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
   font-size: 1rem;
-}
-
-.tags-cell {
-  flex: 1;
+  color: var(--ink, #1a1a18);
 }
 
 .tags-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .tag {
-  display: inline-block;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 6px;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.8);
-  transition: all 200ms ease;
-}
-
-.tag:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.2);
+  font-family: 'Courier New', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.35));
+  color: var(--ink-fade, rgba(26,26,24,0.65));
 }
 
 .link-cell {
@@ -793,170 +1014,17 @@ Ensure the title card and the main grid share the same max-width so the
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: rgba(255,255,255,0.7);
-  transition: all 200ms ease;
+  color: var(--ink-fade, rgba(26,26,24,0.6));
+  transition: color 150ms;
   cursor: pointer;
 }
 
 .link-icon:hover {
-  color: var(--card-text);
+  color: var(--ink, #1a1a18);
   transform: scale(1.15);
 }
 
-.link-icon:focus-visible {
-  outline: 2px solid rgba(66,133,244,0.5);
-  outline-offset: 2px;
-}
-
-/* View All Projects Link */
-.view-all-projects-link {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0;
-  margin: 0;
-}
-
-.view-all-link {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  color: var(--card-text);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.view-all-link:hover {
-  transform: translateX(4px);
-  color: rgba(255,255,255,0.9);
-}
-
-.view-all-link:focus-visible {
-  outline: 2px solid rgba(66,133,244,0.5);
-  outline-offset: 4px;
-}
-
-@media (max-width: 900px) {
-  .projects-collection-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .projects-collection-header h1 {
-    font-size: 1.8rem;
-  }
-
-  .projects-table {
-    font-size: 0.9rem;
-  }
-
-  .projects-table th,
-  .projects-table td {
-    padding: 0.75rem 0.5rem;
-  }
-
-  .year-cell {
-    display: none;
-  }
-
-  .tags-container {
-    gap: 0.3rem;
-  }
-
-  .tag {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-  }
-}
-
-/* ===== Work Experience Section ===== */
-
-.work-experience-item {
-  padding: 1.25rem;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  transition: all 200ms ease;
-}
-
-.work-experience-item:hover {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.12);
-}
-
-.work-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.work-skills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.skill-tag {
-  display: inline-block;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 6px;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.8);
-  transition: all 200ms ease;
-}
-
-.skill-tag:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.2);
-  color: #ffffff;
-}
-
-/* ===== Hobbies Icons ===== */
-
-.hobbies-icons {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-  justify-content: flex-start;
-}
-
-.hobby-icon-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
-  color: var(--card-text);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 200ms ease;
-  font-weight: 500;
-}
-
-.hobby-icon-button:hover {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.2);
-  transform: translateY(-2px);
-}
-
-.hobby-icon-button svg {
-  stroke: currentColor;
-  width: 32px;
-  height: 32px;
-}
-
-/* ===== Gallery Grid ===== */
+/* ── Gallery ── */
 
 .gallery-grid {
   display: grid;
@@ -967,19 +1035,16 @@ Ensure the title card and the main grid share the same max-width so the
 
 .gallery-item {
   position: relative;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
+  border: 1px solid var(--ink-faint, rgba(26,26,24,0.15));
   overflow: hidden;
   cursor: pointer;
-  transition: all 200ms ease;
+  transition: box-shadow 200ms ease;
   padding: 0;
+  background: var(--card-bg, #f5f1e8);
 }
 
 .gallery-item:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: rgba(255,255,255,0.12);
-  transform: translateY(-4px);
+  box-shadow: 4px 6px 16px rgba(0,0,0,0.12);
 }
 
 .gallery-item img {
@@ -987,126 +1052,183 @@ Ensure the title card and the main grid share the same max-width so the
   height: 200px;
   object-fit: cover;
   display: block;
-  transition: transform 200ms ease;
+  transition: transform 250ms ease;
 }
 
 .gallery-item:hover img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .gallery-caption {
-  padding: 0.75rem;
-  font-size: 0.85rem;
-  color: rgba(255,255,255,0.7);
-  background: rgba(0,0,0,0.3);
+  padding: 0.6rem 0.75rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-fade, rgba(26,26,24,0.6));
   text-align: center;
+  background: var(--card-bg, #f5f1e8);
 }
 
-@media (max-width: 900px) {
-  .hobbies-icons {
+/* ── Hobbies icon buttons (legacy) ── */
+
+.hobby-icon-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--card-bg, #f5f1e8);
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.3));
+  color: var(--ink, #1a1a18);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 150ms, box-shadow 150ms;
+}
+
+.hobby-icon-button:hover {
+  background: var(--ink-faint, rgba(26,26,24,0.07));
+  box-shadow: 2px 3px 10px rgba(0,0,0,0.08);
+}
+
+.hobby-icon-button svg {
+  stroke: currentColor;
+  width: 28px;
+  height: 28px;
+}
+
+/* ── GitHub icon link ── */
+
+.github-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--ink-fade, rgba(26,26,24,0.55));
+  transition: color 150ms;
+  cursor: pointer;
+}
+
+.github-icon-link:hover {
+  color: var(--ink, #1a1a18);
+  transform: scale(1.1);
+}
+
+/* ═══════════════════════════════════════════════
+   CARD (used on legacy sub-pages)
+═══════════════════════════════════════════════ */
+
+.card {
+  background: var(--card-bg, #f5f1e8);
+  border: 1px solid var(--card-border, rgba(26,26,24,0.15));
+  border-radius: 0;
+  padding: 1.5rem;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 2px 3px 10px rgba(0,0,0,0.07);
+  will-change: transform;
+  transition: transform 400ms ease, box-shadow 400ms ease;
+}
+
+.card:hover {
+  box-shadow: 4px 6px 20px rgba(0,0,0,0.12);
+}
+
+/* ═══════════════════════════════════════════════
+   REDUCE MOTION
+═══════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .card, * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+
+@media (max-width: 1050px) {
+  .newspaper-grid {
+    grid-template-columns: 1fr;
+    padding: 2rem 1.5rem;
+    gap: 0;
+  }
+
+  .newspaper-rule {
+    display: none;
+  }
+
+  .newspaper-col {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--ink-faint, rgba(26,26,24,0.18));
+    margin-bottom: 2.5rem;
+  }
+
+  .newspaper-col:last-child {
+    border-bottom: none;
+  }
+
+  .spread-page {
+    padding: 1.75rem 1.5rem;
+  }
+
+  .spread-projects-grid {
+    columns: 1;
+    column-rule: none;
+  }
+
+  .newspaper-spread {
+    padding: 2rem 1.25rem 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero-overlay {
+    padding: 1.5rem 1.5rem;
+  }
+
+  .hero-main-name {
+    font-size: 2.2rem;
+  }
+
+  .hero-dateline {
     flex-direction: column;
+    gap: 0.2rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .masthead-nav {
+    display: none;
+  }
+
+  .masthead-date {
+    display: none;
+  }
+
+  .newspaper-fullwidth {
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .projects-collection-header {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 1rem;
   }
 
-  .hobby-icon-button {
-    width: 100%;
+  .projects-collection-header h1 {
+    font-size: 1.6rem;
   }
 
   .gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 1rem;
   }
-
-  .projects-collection-header {
-    padding: 1.5rem;
-    gap: 1rem;
-  }
-
-  .projects-collection-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .projects-collection-container {
-    padding: 1.5rem;
-  }
 }
-
-.theme-dropdown {
-  position: relative;
-}
-
-.theme-button-top-right {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  z-index: 1000;
-}
-
-.theme-trigger {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  color: var(--card-text);
-  padding: 0.5rem 0.9rem;
-  border-radius: 8px;
-}
-
-.theme-menu {
-  position: absolute;
-  top: 120%;
-  right: 0;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 0.4rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.theme-option {
-  background: transparent;
-  color: var(--card-text);
-  border: none;
-  padding: 0.4rem 0.75rem;
-  text-align: left;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.theme-option-check {
-  min-width: 1.2rem;
-  text-align: center;
-  font-weight: 600;
-  color: var(--accent);
-}
-
-.theme-option-text {
-  flex: 1;
-}
-
-.theme-option:hover {
-  background: rgba(255,255,255,0.08);
-}
-
-.theme-option.active {
-  font-weight: 600;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid var(--card-border);
-}
-
-.nav-link.active {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-
-#profile .profile-card {
-  max-width: 860px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-

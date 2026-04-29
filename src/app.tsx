@@ -1,129 +1,75 @@
-// src/app.tsx
-import { useState, useEffect } from "preact/hooks";
-import { ProfileCard } from "./components/profileCard";
-import { Projects } from "./components/projects";
-import { Experiences } from "./components/Experiences";
-import { Hobbies } from "./components/hobbies";
-import { SideNavigation } from "./components/SideNavigation";
-import { ProjectsCollection } from "./components/ProjectsCollection";
-import { Gallery } from "./components/Gallery";
-import { Sketchbook } from "./components/Sketchbook";
-import { ThemeDropdown } from "./components/ThemeDropdown";
+import { useState, useEffect } from 'preact/hooks';
+import { Masthead } from './components/Masthead';
+import { NewspaperSpread, SPREAD_SECTION_MAP } from './components/NewspaperSpread';
+import { ProjectsCollection } from './components/ProjectsCollection';
+import { Gallery } from './components/Gallery';
+import { Sketchbook } from './components/Sketchbook';
+
+type Page = 'home' | 'projects' | 'gallery' | 'sketchbook';
+
+const PATH_MAP: Record<Page, string> = {
+  home: '/', projects: '/projects', gallery: '/gallery', sketchbook: '/sketchbook',
+};
+
+function pathToPage(path: string): Page {
+  if (path === '/projects')   return 'projects';
+  if (path === '/gallery')    return 'gallery';
+  if (path === '/sketchbook') return 'sketchbook';
+  return 'home';
+}
 
 export function App() {
-  const [currentPage, setCurrentPage] = useState<
-    "home" | "projects" | "gallery" | "sketchbook"
-  >("home");
+  const [currentPage, setCurrentPage] = useState<Page>(
+    () => pathToPage(window.location.pathname)
+  );
+  const [spreadPage, setSpreadPage] = useState(0);
 
-  // Handle browser back/forward
+  const navigate = (page: Page) => {
+    window.history.pushState({}, '', PATH_MAP[page]);
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const flipToSection = (sectionId: string) => {
+    const idx = SPREAD_SECTION_MAP[sectionId];
+    if (idx !== undefined) setSpreadPage(idx);
+  };
+
   useEffect(() => {
-    const handlePopState = () => {
-      const path = window.location.pathname;
-      if (path === "/projects") setCurrentPage("projects");
-      else if (path === "/gallery") setCurrentPage("gallery");
-      else if (path === "/sketchbook") setCurrentPage("sketchbook");
-      else setCurrentPage("home");
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    const onPopState = () => setCurrentPage(pathToPage(window.location.pathname));
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
-  // Handle navigation
   useEffect(() => {
-    const handleNavigation = (e: Event) => {
-      const target = e.target as HTMLAnchorElement;
-      if (target.href?.endsWith("/projects")) {
-        e.preventDefault();
-        window.history.pushState({}, "", "/projects");
-        setCurrentPage("projects");
-      }
-    };
-
-    const handleGalleryNav = () => setCurrentPage("gallery");
-    const handleSketchbookNav = () => setCurrentPage("sketchbook");
-
-    document.addEventListener("click", handleNavigation, true);
-    window.addEventListener("navigate-to-gallery", handleGalleryNav);
-    window.addEventListener("navigate-to-sketchbook", handleSketchbookNav);
-
+    const toGallery    = () => navigate('gallery');
+    const toSketchbook = () => navigate('sketchbook');
+    window.addEventListener('navigate-to-gallery',    toGallery);
+    window.addEventListener('navigate-to-sketchbook', toSketchbook);
     return () => {
-      document.removeEventListener("click", handleNavigation, true);
-      window.removeEventListener("navigate-to-gallery", handleGalleryNav);
-      window.removeEventListener("navigate-to-sketchbook", handleSketchbookNav);
+      window.removeEventListener('navigate-to-gallery',    toGallery);
+      window.removeEventListener('navigate-to-sketchbook', toSketchbook);
     };
   }, []);
 
-  if (currentPage === "projects") {
-    return (
-      <>
-        <div className="theme-button-top-right">
-          <ThemeDropdown />
-        </div>
-        <ProjectsCollection />
-      </>
-    );
-  }
+  const masthead = (
+    <Masthead
+      currentPage={currentPage}
+      onNavigate={navigate}
+      onSectionFlip={flipToSection}
+    />
+  );
 
-  if (currentPage === "gallery") {
-    return (
-      <>
-        <div className="theme-button-top-right">
-          <ThemeDropdown />
-        </div>
-        <Gallery />
-      </>
-    );
-  }
-
-  if (currentPage === "sketchbook") {
-    return (
-      <>
-        <div className="theme-button-top-right">
-          <ThemeDropdown />
-        </div>
-        <Sketchbook />
-      </>
-    );
-  }
+  if (currentPage === 'projects')   return <>{masthead}<ProjectsCollection /></>;
+  if (currentPage === 'gallery')    return <>{masthead}<Gallery /></>;
+  if (currentPage === 'sketchbook') return <>{masthead}<Sketchbook /></>;
 
   return (
     <>
-      <div className="theme-button-top-right">
-        <ThemeDropdown />
-      </div>
-      <main className="layout-root">
-      <div className="layout-grid">
-        {/* LEFT: sticky navigation */}
-        <aside className="layout-left">
-          <SideNavigation />
-        </aside>
-
-        {/* RIGHT: scrolling narrative */}
-        <section className="layout-right">
-          <div className="content-column">
-            <div className="section" id="profile">
-              {/* <ProfileCard /> */}
-              <div className="profile-wrapper">
-                <ProfileCard />
-              </div>
-            </div>
-
-            <div className="section" id="projects">
-              <Projects />
-            </div>
-
-            <div className="section" id="experiences">
-              <Experiences />
-            </div>
-
-            <div className="section" id="hobbies">
-              <Hobbies />
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+      {masthead}
+      <main>
+        <NewspaperSpread targetPage={spreadPage} onPageChange={setSpreadPage} />
+      </main>
     </>
   );
 }

@@ -1,102 +1,90 @@
-:root {
-  --page-bg: #0b0b0c;
-  --card-bg: rgba(255,255,255,0.05);
-  --card-border: rgba(255,255,255,0.08);
-  --card-text: #ffffff;
-  --card-gradient: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
-  --gradient-1: rgba(200,180,100,0.35);
-  --gradient-2: rgba(220,200,120,0.28);
-  --gradient-3: rgba(210,190,110,0.28);
-  --gradient-4: rgba(190,170,90,0.25);
+/* ── Broadsheet (default light cream) ── */
+:root,
+[data-theme="broadsheet"] {
+  --paper:       #f0ebe0;
+  --ink:         #1a1a18;
+  --mast:        #b5121b;
+  --gold:        #c8a84b;
+  --ink-fade:    rgba(26, 26, 24, 0.50);
+  --ink-faint:   rgba(26, 26, 24, 0.15);
+  --card-bg:     #f5f1e8;
+  --card-border: rgba(26, 26, 24, 0.15);
+  --card-text:   #1a1a18;
+  --page-bg:     #f0ebe0;
+  --accent:      #b5121b;
 }
 
-/* Neon */
-[data-theme="neon"] {
-  --page-bg: #050507;
-  --card-bg: rgba(0,255,255,0.08);
-  --card-border: rgba(0,255,255,0.4);
-  --card-gradient: linear-gradient(135deg, rgba(0,255,255,0.12) 0%, rgba(0,255,200,0.04) 100%);
-  --accent: #00ffff;
-  --gradient-1: rgba(0,255,255,0.45);
-  --gradient-2: rgba(0,200,255,0.35);
-  --gradient-3: rgba(0,255,200,0.35);
-  --gradient-4: rgba(0,150,200,0.3);
+/* ── Nightprint (dark mode) ── */
+[data-theme="nightprint"] {
+  --paper:       #0d0d0b;
+  --ink:         #e8e0d0;
+  --mast:        #e5473f;
+  --gold:        #c8a84b;
+  --ink-fade:    rgba(232, 224, 208, 0.50);
+  --ink-faint:   rgba(232, 224, 208, 0.12);
+  --card-bg:     #1a1a18;
+  --card-border: rgba(232, 224, 208, 0.12);
+  --card-text:   #e8e0d0;
+  --page-bg:     #0d0d0b;
+  --accent:      #e5473f;
 }
 
-/* Lavender */
-[data-theme="lavender"] {
-  --page-bg: #0e0c14;
-  --card-bg: rgba(184,168,255,0.1);
-  --card-border: rgba(184,168,255,0.35);
-  --card-gradient: linear-gradient(135deg, rgba(184,168,255,0.12) 0%, rgba(150,120,255,0.04) 100%);
-  --accent: #b8a8ff;
-  --gradient-1: rgba(184,168,255,0.45);
-  --gradient-2: rgba(150,120,255,0.35);
-  --gradient-3: rgba(180,150,255,0.35);
-  --gradient-4: rgba(140,110,255,0.3);
+/* ── Sepia (vintage warm brown) ── */
+[data-theme="sepia"] {
+  --paper:       #e8dcc8;
+  --ink:         #3d2b10;
+  --mast:        #8b4513;
+  --gold:        #a07820;
+  --ink-fade:    rgba(61, 43, 16, 0.50);
+  --ink-faint:   rgba(61, 43, 16, 0.15);
+  --card-bg:     #ede2cc;
+  --card-border: rgba(61, 43, 16, 0.18);
+  --card-text:   #3d2b10;
+  --page-bg:     #e8dcc8;
+  --accent:      #8b4513;
 }
 
-/* Rose */
-[data-theme="rose"] {
-  --page-bg: #150a0f;
-  --card-bg: rgba(255,100,150,0.08);
-  --card-border: rgba(255,120,170,0.35);
-  --card-gradient: linear-gradient(135deg, rgba(255,120,170,0.12) 0%, rgba(200,80,130,0.04) 100%);
-  --accent: #ff78aa;
-  --gradient-1: rgba(255,120,170,0.45);
-  --gradient-2: rgba(255,80,140,0.35);
-  --gradient-3: rgba(255,100,150,0.35);
-  --gradient-4: rgba(220,70,120,0.3);
+/* ── Telegraph (cool blue newsprint) ── */
+[data-theme="telegraph"] {
+  --paper:       #eef2f8;
+  --ink:         #0d1e38;
+  --mast:        #1a4b8c;
+  --gold:        #4a7fd0;
+  --ink-fade:    rgba(13, 30, 56, 0.50);
+  --ink-faint:   rgba(13, 30, 56, 0.15);
+  --card-bg:     #f2f6fc;
+  --card-border: rgba(13, 30, 56, 0.14);
+  --card-text:   #0d1e38;
+  --page-bg:     #eef2f8;
+  --accent:      #1a4b8c;
 }
 
-/* Forest */
-[data-theme="forest"] {
-  --page-bg: #0a1410;
-  --card-bg: rgba(100,200,140,0.08);
-  --card-border: rgba(120,230,180,0.35);
-  --card-gradient: linear-gradient(135deg, rgba(120,230,180,0.12) 0%, rgba(80,180,130,0.04) 100%);
-  --accent: #78e6b4;
-  --gradient-1: rgba(120,230,180,0.45);
-  --gradient-2: rgba(100,210,160,0.35);
-  --gradient-3: rgba(110,220,170,0.35);
-  --gradient-4: rgba(80,190,140,0.3);
+/* ── Herald (green, Irish Times) ── */
+[data-theme="herald"] {
+  --paper:       #f0f5ee;
+  --ink:         #0f2010;
+  --mast:        #1a6b2a;
+  --gold:        #3a8a4a;
+  --ink-fade:    rgba(15, 32, 16, 0.50);
+  --ink-faint:   rgba(15, 32, 16, 0.14);
+  --card-bg:     #f5f9f3;
+  --card-border: rgba(15, 32, 16, 0.14);
+  --card-text:   #0f2010;
+  --page-bg:     #f0f5ee;
+  --accent:      #1a6b2a;
 }
 
-/* Sunset */
-[data-theme="sunset"] {
-  --page-bg: #1a0f05;
-  --card-bg: rgba(255,150,80,0.08);
-  --card-border: rgba(255,170,100,0.35);
-  --card-gradient: linear-gradient(135deg, rgba(255,170,100,0.12) 0%, rgba(200,120,60,0.04) 100%);
-  --accent: #ffaa64;
-  --gradient-1: rgba(255,170,100,0.45);
-  --gradient-2: rgba(255,140,70,0.35);
-  --gradient-3: rgba(255,160,90,0.35);
-  --gradient-4: rgba(220,130,60,0.3);
-}
-
-/* Ocean */
-[data-theme="ocean"] {
-  --page-bg: #050d18;
-  --card-bg: rgba(80,180,255,0.08);
-  --card-border: rgba(100,200,255,0.35);
-  --card-gradient: linear-gradient(135deg, rgba(100,200,255,0.12) 0%, rgba(60,150,220,0.04) 100%);
-  --accent: #64b4ff;
-  --gradient-1: rgba(100,200,255,0.45);
-  --gradient-2: rgba(80,180,255,0.35);
-  --gradient-3: rgba(90,190,255,0.35);
-  --gradient-4: rgba(60,160,240,0.3);
-}
-
-/* Cyberpunk */
-[data-theme="cyberpunk"] {
-  --page-bg: #0a0515;
-  --card-bg: rgba(255,80,200,0.08);
-  --card-border: rgba(100,200,255,0.35);
-  --card-gradient: linear-gradient(135deg, rgba(255,80,200,0.12) 0%, rgba(100,200,255,0.04) 100%);
-  --accent: #ff50c8;
-  --gradient-1: rgba(255,80,200,0.45);
-  --gradient-2: rgba(100,200,255,0.35);
-  --gradient-3: rgba(150,100,255,0.35);
-  --gradient-4: rgba(100,150,255,0.3);
+/* ── Noir (black + red, Le Monde) ── */
+[data-theme="noir"] {
+  --paper:       #f4f0ec;
+  --ink:         #0d0d0d;
+  --mast:        #cc0000;
+  --gold:        #555555;
+  --ink-fade:    rgba(13, 13, 13, 0.50);
+  --ink-faint:   rgba(13, 13, 13, 0.12);
+  --card-bg:     #faf8f5;
+  --card-border: rgba(13, 13, 13, 0.10);
+  --card-text:   #0d0d0d;
+  --page-bg:     #f4f0ec;
+  --accent:      #cc0000;
 }

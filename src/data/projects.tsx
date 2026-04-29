@@ -18,6 +18,30 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    title: strings.newsEdgeTitle,
+    description: strings.newsEdgeDescription,
+    tags: strings.newsEdgeTags,
+    repo: strings.newsEdgeRepo,
+    //image: ,
+    year: 2026,
+  },
+  {
+    title: strings.cityMindTitle,
+    description: strings.cityMindDescription,
+    tags: strings.cityMindTags,
+    repo: strings.cityMindRepo,
+    //image: ,
+    year: 2026,
+  },
+  {
+    title: strings.openLineTitle,
+    description: strings.openLineDescription,
+    tags: strings.openLineTags,
+    repo: strings.openLineRepo,
+    //image: ,
+    year: 2026,
+  },
+  {
     title: strings.rrpsTitle,
     description: strings.rrpsDescription,
     tags: strings.rrpsTags,
