@@ -1,74 +1,90 @@
 import { useState, useEffect } from 'preact/hooks';
 import { Masthead } from './components/Masthead';
-import { NewspaperSpread, SPREAD_SECTION_MAP } from './components/NewspaperSpread';
+import { NewspaperPage } from './components/NewspaperPage';
 import { ProjectsCollection } from './components/ProjectsCollection';
-import { Gallery } from './components/Gallery';
-import { Sketchbook } from './components/Sketchbook';
+import { GalleryCollection } from './components/GalleryCollection';
 
-type Page = 'home' | 'projects' | 'gallery' | 'sketchbook';
-
-const PATH_MAP: Record<Page, string> = {
-  home: '/', projects: '/projects', gallery: '/gallery', sketchbook: '/sketchbook',
-};
+type Page = 'home' | 'projects' | 'photography';
 
 function pathToPage(path: string): Page {
-  if (path === '/projects')   return 'projects';
-  if (path === '/gallery')    return 'gallery';
-  if (path === '/sketchbook') return 'sketchbook';
+  if (path === '/projects')    return 'projects';
+  if (path === '/photography') return 'photography';
   return 'home';
 }
+
+function pathToSection(path: string): string | null {
+  if (path === '/gallery')    return 'gallery';
+  if (path === '/sketchbook') return 'sketchbook';
+  return null;
+}
+
+const SECTION_URLS: Record<string, string> = {
+  gallery: '/gallery', sketchbook: '/sketchbook',
+};
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<Page>(
     () => pathToPage(window.location.pathname)
   );
-  const [spreadPage, setSpreadPage] = useState(0);
-
-  const navigate = (page: Page) => {
-    window.history.pushState({}, '', PATH_MAP[page]);
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const flipToSection = (sectionId: string) => {
-    const idx = SPREAD_SECTION_MAP[sectionId];
-    if (idx !== undefined) setSpreadPage(idx);
-  };
 
   useEffect(() => {
-    const onPopState = () => setCurrentPage(pathToPage(window.location.pathname));
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
+    const section = pathToSection(window.location.pathname);
+    if (section) {
+      setTimeout(() => {
+        document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }
   }, []);
 
+  const navigate = (page: Page) => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    window.history.pushState({}, '', page === 'home' ? '/' : `/${page}`);
+    setCurrentPage(page);
+    requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const url = SECTION_URLS[sectionId] ?? '/';
+    window.history.pushState({}, '', url);
+    setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
+
   useEffect(() => {
-    const toGallery    = () => navigate('gallery');
-    const toSketchbook = () => navigate('sketchbook');
-    window.addEventListener('navigate-to-gallery',    toGallery);
-    window.addEventListener('navigate-to-sketchbook', toSketchbook);
-    return () => {
-      window.removeEventListener('navigate-to-gallery',    toGallery);
-      window.removeEventListener('navigate-to-sketchbook', toSketchbook);
+    const onPopState = () => {
+      setCurrentPage(pathToPage(window.location.pathname));
+      const section = pathToSection(window.location.pathname);
+      if (section) {
+        setTimeout(() => {
+          document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
     };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   const masthead = (
     <Masthead
       currentPage={currentPage}
       onNavigate={navigate}
-      onSectionFlip={flipToSection}
+      onSectionFlip={scrollToSection}
     />
   );
 
-  if (currentPage === 'projects')   return <>{masthead}<ProjectsCollection /></>;
-  if (currentPage === 'gallery')    return <>{masthead}<Gallery /></>;
-  if (currentPage === 'sketchbook') return <>{masthead}<Sketchbook /></>;
+  if (currentPage === 'projects')    return <>{masthead}<ProjectsCollection /></>;
+  if (currentPage === 'photography') return <>{masthead}<GalleryCollection /></>;
 
   return (
     <>
       {masthead}
       <main>
-        <NewspaperSpread targetPage={spreadPage} onPageChange={setSpreadPage} />
+        <NewspaperPage
+          onViewAllProjects={() => navigate('projects')}
+          onViewAllPhotos={() => navigate('photography')}
+        />
       </main>
     </>
   );

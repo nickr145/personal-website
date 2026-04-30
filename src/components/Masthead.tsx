@@ -1,6 +1,6 @@
 import { ThemeDropdown } from './ThemeDropdown';
 
-type Page = 'home' | 'projects' | 'gallery' | 'sketchbook';
+type Page = 'home' | 'projects' | 'photography';
 
 interface MastheadProps {
   currentPage: Page;
@@ -12,7 +12,10 @@ const NAV_SECTIONS = [
   { id: 'profile',     label: 'About'      },
   { id: 'projects',    label: 'Projects'   },
   { id: 'experiences', label: 'Experience' },
-  { id: 'hobbies',     label: 'Hobbies'   },
+  { id: 'skills',      label: 'Skills'     },
+  { id: 'education',   label: 'Education'  },
+  { id: 'gallery',     label: 'Gallery'    },
+  { id: 'sketchbook',  label: 'Sketchbook' },
 ];
 
 export function Masthead({ currentPage, onNavigate, onSectionFlip }: MastheadProps) {
@@ -32,7 +35,7 @@ export function Masthead({ currentPage, onNavigate, onSectionFlip }: MastheadPro
   return (
     <header className="newspaper-masthead">
       <button className="masthead-brand" onClick={() => onNavigate('home')}>
-        The Nicholas Times
+        Nicholas J Rebello
       </button>
 
       <nav className="masthead-nav">
@@ -41,18 +44,6 @@ export function Masthead({ currentPage, onNavigate, onSectionFlip }: MastheadPro
             {label}
           </button>
         ))}
-        <button
-          className={currentPage === 'gallery' ? 'active' : ''}
-          onClick={() => onNavigate('gallery')}
-        >
-          Gallery
-        </button>
-        <button
-          className={currentPage === 'sketchbook' ? 'active' : ''}
-          onClick={() => onNavigate('sketchbook')}
-        >
-          Sketchbook
-        </button>
       </nav>
 
       <div className="masthead-right">

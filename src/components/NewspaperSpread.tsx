@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, lazy, Suspense } from 'preact/compat';
 import { Projects } from './projects';
 import { Experiences } from './Experiences';
-import { Hobbies } from './hobbies';
+import { galleryImages } from '../data/gallery';
+import { sketchImages } from '../data/sketchbook';
+import GalleryModal from './GalleryModal';
 
 // Three.js is heavy — lazy-load the front page so it splits into its own chunk
 const FrontPage = lazy(() =>
@@ -9,14 +11,15 @@ const FrontPage = lazy(() =>
 );
 
 const PAGES = [
-  { eyebrow: 'Front Page',   headline: 'The Nicholas Rebello Times', id: 'profile'     },
-  { eyebrow: 'Latest Work',  headline: 'Projects',                   id: 'projects'    },
-  { eyebrow: 'Career',       headline: 'Experience',                  id: 'experiences' },
-  { eyebrow: 'Arts & Leisure', headline: 'Hobbies',                  id: 'hobbies'     },
+  { eyebrow: 'Front Page',     headline: 'Nicholas J Rebello', id: 'profile'     },
+  { eyebrow: 'Latest Work',    headline: 'Projects',                   id: 'projects'    },
+  { eyebrow: 'Career',         headline: 'Experience',                 id: 'experiences' },
+  { eyebrow: 'Arts & Leisure', headline: 'Gallery',                    id: 'gallery'     },
+  { eyebrow: 'Arts & Leisure', headline: 'Sketchbook',                 id: 'sketchbook'  },
 ] as const;
 
 export const SPREAD_SECTION_MAP: Record<string, number> = {
-  profile: 0, projects: 1, experiences: 2, hobbies: 3,
+  profile: 0, projects: 1, experiences: 2, gallery: 3, sketchbook: 4,
 };
 
 type AnimPhase = '' | 'exit-fwd' | 'exit-bwd' | 'enter-fwd' | 'enter-bwd';
@@ -24,6 +27,62 @@ type AnimPhase = '' | 'exit-fwd' | 'exit-bwd' | 'enter-fwd' | 'enter-bwd';
 interface Props {
   targetPage: number;
   onPageChange: (idx: number) => void;
+}
+
+function GalleryPageContent() {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  return (
+    <>
+      <div className="gallery-grid">
+        {galleryImages.map((img, i) => (
+          <button
+            key={img.id}
+            className="gallery-item"
+            onClick={() => setLightboxIndex(i)}
+            aria-label={`Open ${img.alt}`}
+          >
+            <img src={img.src} alt={img.alt} loading="lazy" />
+            {img.caption && <div className="gallery-caption">{img.caption}</div>}
+          </button>
+        ))}
+      </div>
+      {lightboxIndex !== null && (
+        <GalleryModal
+          images={galleryImages}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
+    </>
+  );
+}
+
+function SketchbookPageContent() {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  return (
+    <>
+      <div className="gallery-grid">
+        {sketchImages.map((img, i) => (
+          <button
+            key={img.id}
+            className="gallery-item"
+            onClick={() => setLightboxIndex(i)}
+            aria-label={`Open ${img.alt}`}
+          >
+            <img src={img.src} alt={img.alt} loading="lazy" />
+            {img.caption && <div className="gallery-caption">{img.caption}</div>}
+          </button>
+        ))}
+      </div>
+      {lightboxIndex !== null && (
+        <GalleryModal
+          images={sketchImages}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
+    </>
+  );
 }
 
 function PageContent({ idx }: { idx: number }) {
@@ -35,11 +94,13 @@ function PageContent({ idx }: { idx: number }) {
         </Suspense>
       );
     case 1:
-      return <div className="spread-projects-grid"><Projects /></div>;
+      return <Projects />;
     case 2:
       return <Experiences />;
+    case 3:
+      return <GalleryPageContent />;
     default:
-      return <Hobbies />;
+      return <SketchbookPageContent />;
   }
 }
 
@@ -62,8 +123,8 @@ export function NewspaperSpread({ targetPage, onPageChange }: Props) {
       setTimeout(() => {
         setPhase('');
         locked.current = false;
-      }, 340);
-    }, 300);
+      }, 440);
+    }, 380);
   };
 
   // Respond to external targetPage changes (masthead nav)

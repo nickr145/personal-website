@@ -1,9 +1,9 @@
-import { hobbies } from '../data/hobbies';
+import { galleryImages } from '../data/gallery';
 import { useState } from 'preact/hooks';
 import GalleryModal from './GalleryModal';
 
 export function Gallery() {
-  const photos = hobbies.filter(h => h.category === 'photography');
+  const photos = galleryImages;
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (

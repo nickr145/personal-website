@@ -98,7 +98,7 @@ export const openLineTags = [
 export const openLineRepo = "https://github.com/nickr145/open-line";
 
 // RRPS
-export const rrpsTitle = "RRPS - Repeated Rock Paper Scissors Agent";
+export const rrpsTitle = "RRPS - Repeated Rock Paper Scissors AI Agent";
 export const rrpsDescription = 
 `
 Developed an AI agent to play Repeated Rock Paper Scissors (RRPS) using Python. The agent employs a combination of 

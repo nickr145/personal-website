@@ -40,7 +40,7 @@ function makePageTexture(headline: string, dark: boolean): THREE.CanvasTexture {
   ctx.fillStyle = bg;
   ctx.font = 'bold 13px Georgia, serif';
   ctx.textAlign = 'center';
-  ctx.fillText('THE NICHOLAS TIMES', W / 2, 30);
+  ctx.fillText('NICHOLAS J REBELLO', W / 2, 30);
 
   ctx.fillStyle = acc;
   ctx.fillRect(10, 46, W - 20, 2);

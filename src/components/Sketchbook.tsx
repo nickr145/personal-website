@@ -1,9 +1,9 @@
-import { hobbies } from '../data/hobbies';
+import { sketchImages } from '../data/sketchbook';
 import { useState } from 'preact/hooks';
 import GalleryModal from './GalleryModal';
 
 export function Sketchbook() {
-  const sketches = hobbies.filter(h => h.category === 'sketch');
+  const sketches = sketchImages;
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (

@@ -14,9 +14,12 @@ export function ProfileCard() {
 
       <p className="about-bio">
         Computer Science &amp; Business student at the University of Waterloo
-        and Wilfrid Laurier University. I build fast, delightful software
-        across mobile, web, and systems — with a focus on clean architecture
-        and user experience.
+        and Wilfrid Laurier University. Hi, I’m Nick - a Computer Science and Business student 
+        passionate about building technology that is practical, intelligent, and user-focused. 
+        I’m especially interested in AI, machine learning, fintech, and software engineering, 
+        with experience developing full-stack apps, mobile features, data-driven tools, and AI-powered products. 
+        Through internships, hackathons, and personal projects, I enjoy turning complex ideas into useful systems 
+        that solve real problems.
       </p>
 
       <div className="about-links">

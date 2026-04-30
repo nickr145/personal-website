@@ -5,6 +5,9 @@ import lazLogo from "../data/images/laz-logo.png";
 import expTrackerImage from "../data/images/expense-tracker.png";
 import rrpsImage from "../data/images/rrps.png";
 import chessImage from "../data/images/chess.jpg";
+import newsedgeImage from "../data/images/newsedge.png";
+import openLineImage from "../data/images/openline.png";
+import citymindImage from "../data/images/citymind.png";
 
 export type Project = {
   title: string;
@@ -22,7 +25,7 @@ export const projects: Project[] = [
     description: strings.newsEdgeDescription,
     tags: strings.newsEdgeTags,
     repo: strings.newsEdgeRepo,
-    //image: ,
+    image: newsedgeImage,
     year: 2026,
   },
   {
@@ -30,7 +33,7 @@ export const projects: Project[] = [
     description: strings.cityMindDescription,
     tags: strings.cityMindTags,
     repo: strings.cityMindRepo,
-    //image: ,
+    image: citymindImage,
     year: 2026,
   },
   {
@@ -38,7 +41,7 @@ export const projects: Project[] = [
     description: strings.openLineDescription,
     tags: strings.openLineTags,
     repo: strings.openLineRepo,
-    //image: ,
+    image: openLineImage,
     year: 2026,
   },
   {
@@ -89,11 +92,11 @@ export const projects: Project[] = [
     image: expTrackerImage,
     year: 2024,
   },
-  {
-    title: strings.pwgenTitle,
-    description: strings.pwgenDescription,
-    tags: strings.pwgenTags,
-    repo: strings.pwgenRepo,
-    year: 2024,
-  },
+  // {
+  //   title: strings.pwgenTitle,
+  //   description: strings.pwgenDescription,
+  //   tags: strings.pwgenTags,
+  //   repo: strings.pwgenRepo,
+  //   year: 2024,
+  // },
 ].sort((a, b) => b.year - a.year);
