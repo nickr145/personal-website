@@ -1,7 +1,104 @@
 // projectStrings.tsx
 
+// NewsEdge
+export const newsEdgeTitle = "NewsEdge - Real-Time Market Sentiment Intelligence";
+export const newsEdgeDescription =
+`
+NewsEdge is a real-time stock news sentiment platform that combines live market news ingestion, financial NLP, machine learning predictions, and risk analytics into an interactive React dashboard. The platform streams stock-related news through Alpaca News WebSocket, supports historical backfill through REST and web scraping, and filters articles by ticker relevance to reduce noisy cross-market results.
+The backend uses Redis Streams and Celery workers for asynchronous ingestion, scoring, persistence, and model workflows, with PostgreSQL or SQLite for storing articles, sentiment scores, predictions, and price labels. NewsEdge applies FinBERT for financial-domain sentiment analysis, with VADER as a fallback, and uses an XGBoost prediction model powered by sentiment features and technical indicators such as RSI, momentum, Bollinger Band position, and volume ratio. The dashboard visualizes live news, sentiment trends, price overlays, prediction signals, SHAP explanations, watchlists, and risk metrics including volatility, beta, drawdown, and cumulative return.
+`;
+export const newsEdgeTags = [
+  "AI", 
+  "FinTech", 
+  "Stock Market", 
+  "Sentiment Analysis", 
+  "Financial NLP", 
+  "React", 
+  "Vite", 
+  "FastAPI", 
+  "Python", 
+  "Alpaca API", 
+  "WebSockets", 
+  "Redis Streams", 
+  "Celery", 
+  "PostgreSQL", 
+  "SQLite", 
+  "FinBERT", 
+  "VADER", 
+  "XGBoost", 
+  "SHAP", 
+  "Risk Analytics", 
+  "Machine Learning", 
+  "Docker", 
+  "Alembic", 
+  "Pytest"
+];
+export const newsEdgeRepo = "https://github.com/nickr145/news-edge";
+
+// CityMind
+export const cityMindTitle = "CityMind - Municipal Data Intelligence for Smarter Cities";
+export const cityMindDescription = 
+`
+CityMind, developed during the FCI x LangChain: Building the Future Cities Hackathon, is a 
+municipal data intelligence web app designed to make city data easier to access, understand, 
+and use across departments. The app enables plain-language querying across real municipal datasets, 
+including building permits, water mains, and transit data, helping users extract insights without needing 
+to manually navigate complex data sources. Built with React, FastAPI, SQLite, LangGraph, and Claude Sonnet, 
+CityMind combines conversational AI with structured municipal data access. 
+The project also includes privacy-aware access controls and data labelling to balance usability with 
+responsible governance, ensuring that sensitive information can be handled appropriately while still 
+supporting faster, more informed decision-making.
+`
+export const cityMindTags = [
+  "AI", 
+  "Municipal Data", 
+  "Civic Tech", 
+  "Smart Cities", 
+  "React", 
+  "FastAPI", 
+  "Python", 
+  "SQLite", 
+  "LangGraph", 
+  "Claude Sonnet", 
+  "Conversational AI", 
+  "Data Governance", 
+  "Privacy-Aware AI", 
+  "Natural Language Querying", 
+  "Hackathon"
+];
+export const cityMindRepo = "https://github.com/nickr145/city-mind"
+
+// OpenLine
+export const openLineTitle = "OpenLine - AI Voice Practice for Real-World Calls";
+export const openLineDescription = 
+`
+OpenLine, developed during a 5-hour Waterloo AI & Data Science for Good Hackathon, is an AI-powered voice-practice web app 
+designed to help newcomers build confidence in everyday phone conversations. The app simulates six real-world call scenarios, 
+including doctor appointments, landlord requests, transit support, school inquiries, pharmacy calls, and utility services.
+I engineered a FastAPI backend with session-based conversation management and five core call lifecycle endpoints, integrating 
+Claude with ElevenLabs speech-to-text and text-to-speech for end-to-end voice interaction. OpenLine supports live transcription, 
+contextual hints, optional bilingual responses, and automated post-call transcript and debrief generation to help users review 
+and improve their communication skills.
+`
+export const openLineTags = [
+  "AI", 
+  "Voice AI", 
+  "FastAPI", 
+  "Python", 
+  "Claude API", 
+  "ElevenLabs", 
+  "Speech-to-Text", 
+  "Text-to-Speech", 
+  "React", "Web App", 
+  "Conversational AI", 
+  "Hackathon", 
+  "Accessibility", 
+  "Newcomer Support"
+];
+export const openLineRepo = "https://github.com/nickr145/open-line";
+
 // RRPS
-export const rrpsTitle = "RRPS - Repeated Rock Paper Scissors Agent";
+export const rrpsTitle = "RRPS - Repeated Rock Paper Scissors AI Agent";
 export const rrpsDescription = 
 `
 Developed an AI agent to play Repeated Rock Paper Scissors (RRPS) using Python. The agent employs a combination of 
@@ -97,6 +194,7 @@ it with a confirmation prompt, providing full control over their data.
 export const pwgenTags = ["SwiftUI", "iOS", "Security", "Biometric Auth", "Local Storage"];
 export const pwgenRepo = "https://github.com/nickr145/PasswordGenerator";
 
+// Expense Tracker
 export const expTrackerTitle = "Expense Tracker";
 export const expTrackerDescription = 
 `
@@ -110,6 +208,7 @@ data visualization through charts and graphs, providing insights into spending h
 export const expTrackerTags = ["SwiftUI", "iOS", "Finance", "Data Visualization", "Local Storage", "Notifications"];
 export const expTrackerRepo = "https://github.com/nickr145/ExpenseTracker";
 
+// Chess Engine
 export const chessTitle = "Chess Engine";
 export const chessDescription = 
 `

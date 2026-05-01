@@ -1,66 +1,73 @@
-import Card from './Card';
 import { projects } from '../data/projects';
 
+const GithubIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="project-link-icon" aria-hidden="true">
+    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+  </svg>
+);
+
+const WebsiteIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="project-link-icon" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+);
+
 export function Projects() {
-  const topProjects = projects.slice(0, 4);
+  const displayed = projects.slice(0, 5);
 
   return (
-    <Card
-      title="Projects"
-      headerAction={
-        projects.length > 4 ? (
-          <div className="view-all-projects-link" style={{ margin: 0 }}>
-            <a href="/projects" className="view-all-link">
-              View All Projects →
-            </a>
-          </div>
-        ) : null
-      }
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5em' }}>
-        {topProjects.map((p) => (
-          <div key={p.title} className="project-item">
-            {/* Project image (left side, square format) */}
-            {p.image && (
-              <img
-                src={p.image}
-                alt={p.title}
-                className="project-image"
-              />
-            )}
-            {/* Project details (right side: title + description) */}
-            <div className="project-details">
-              {/* Project title with optional GitHub icon link */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <h3 style={{ fontWeight: 600, fontSize: '1.1em', margin: 0 }}>
-                  {p.title}
-                </h3>
-                {p.repo && (
-                  <a
-                    href={p.repo}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="github-icon-link"
-                    aria-label={`View ${p.title} on GitHub`}
-                  >
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                    </svg>
-                  </a>
+    <div>
+      {displayed.map((p) => {
+        const paragraphs = p.description?.trim().split(/\n{2,}/) ?? [];
+        return (
+          <article key={p.title} className="project-article">
+            <div className="project-dateline">{p.year}</div>
+
+            <div className="project-headline-row">
+              <h3 className="project-headline">{p.title}</h3>
+              {(p.repo || p.link) && (
+                <div className="project-check-it-out">
+                  <span className="project-check-label">Check it out:</span>
+                  {p.repo && (
+                    <a href={p.repo} target="_blank" rel="noopener noreferrer" className="project-ext-link">
+                      <GithubIcon />
+                      Github
+                    </a>
+                  )}
+                  {p.link && (
+                    <a href={p.link} target="_blank" rel="noopener noreferrer" className="project-ext-link">
+                      <WebsiteIcon />
+                      Website
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="project-body-wrap">
+              {p.image && (
+                <div className="project-photo">
+                  <img src={p.image} alt={p.title} className="project-photo-img" />
+                </div>
+              )}
+              <div className="project-text">
+                {paragraphs.map((para, i) => (
+                  <p key={i} className="project-description">{para.trim()}</p>
+                ))}
+                {p.tags.length > 0 && (
+                  <div className="project-tags">
+                    {p.tags.map((tag) => (
+                      <span key={tag} className="project-tag">{tag}</span>
+                    ))}
+                  </div>
                 )}
               </div>
-              {/* Project description */}
-              <p style={{ margin: 0 }}>{p.description}</p>
             </div>
-          </div>
-        ))}
-      </div>
-    </Card>
+          </article>
+        );
+      })}
+    </div>
   );
 }

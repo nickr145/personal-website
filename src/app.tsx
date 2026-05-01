@@ -1,129 +1,136 @@
-// src/app.tsx
-import { useState, useEffect } from "preact/hooks";
-import { ProfileCard } from "./components/profileCard";
-import { Projects } from "./components/projects";
-import { Experiences } from "./components/Experiences";
-import { Hobbies } from "./components/hobbies";
-import { SideNavigation } from "./components/SideNavigation";
-import { ProjectsCollection } from "./components/ProjectsCollection";
-import { Gallery } from "./components/Gallery";
-import { Sketchbook } from "./components/Sketchbook";
-import { ThemeDropdown } from "./components/ThemeDropdown";
+import { useState, useEffect } from 'preact/hooks';
+import { Masthead } from './components/Masthead';
+import { NewspaperPage } from './components/NewspaperPage';
+import { ProjectsCollection } from './components/ProjectsCollection';
+import { GalleryCollection } from './components/GalleryCollection';
+import { LoadingScreen } from './components/LoadingScreen';
+import { EasterEgg } from './components/EasterEgg';
+
+type Page = 'home' | 'projects' | 'photography';
+
+function pathToPage(path: string): Page {
+  if (path === '/projects')    return 'projects';
+  if (path === '/photography') return 'photography';
+  return 'home';
+}
+
+function pathToSection(path: string): string | null {
+  if (path === '/gallery')    return 'gallery';
+  if (path === '/sketchbook') return 'sketchbook';
+  return null;
+}
+
+const SECTION_URLS: Record<string, string> = {
+  gallery: '/gallery', sketchbook: '/sketchbook',
+};
+
+const KONAMI = [
+  'ArrowUp','ArrowUp','ArrowDown','ArrowDown',
+  'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight',
+  'b','a',
+];
 
 export function App() {
-  const [currentPage, setCurrentPage] = useState<
-    "home" | "projects" | "gallery" | "sketchbook"
-  >("home");
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState<Page>(
+    () => pathToPage(window.location.pathname)
+  );
+  const [progress, setProgress] = useState(0);
+  const [inkActive, setInkActive] = useState(false);
 
-  // Handle browser back/forward
+  // Reading progress bar
   useEffect(() => {
-    const handlePopState = () => {
-      const path = window.location.pathname;
-      if (path === "/projects") setCurrentPage("projects");
-      else if (path === "/gallery") setCurrentPage("gallery");
-      else if (path === "/sketchbook") setCurrentPage("sketchbook");
-      else setCurrentPage("home");
+    const update = () => {
+      const scrolled = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(height > 0 ? (scrolled / height) * 100 : 0);
     };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
   }, []);
 
-  // Handle navigation
+  // Konami code → ink splatter easter egg
   useEffect(() => {
-    const handleNavigation = (e: Event) => {
-      const target = e.target as HTMLAnchorElement;
-      if (target.href?.endsWith("/projects")) {
-        e.preventDefault();
-        window.history.pushState({}, "", "/projects");
-        setCurrentPage("projects");
+    let idx = 0;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === KONAMI[idx]) {
+        idx++;
+        if (idx === KONAMI.length) { setInkActive(true); idx = 0; }
+      } else {
+        idx = e.key === KONAMI[0] ? 1 : 0;
       }
     };
-
-    const handleGalleryNav = () => setCurrentPage("gallery");
-    const handleSketchbookNav = () => setCurrentPage("sketchbook");
-
-    document.addEventListener("click", handleNavigation, true);
-    window.addEventListener("navigate-to-gallery", handleGalleryNav);
-    window.addEventListener("navigate-to-sketchbook", handleSketchbookNav);
-
-    return () => {
-      document.removeEventListener("click", handleNavigation, true);
-      window.removeEventListener("navigate-to-gallery", handleGalleryNav);
-      window.removeEventListener("navigate-to-sketchbook", handleSketchbookNav);
-    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  if (currentPage === "projects") {
-    return (
-      <>
-        <div className="theme-button-top-right">
-          <ThemeDropdown />
-        </div>
-        <ProjectsCollection />
-      </>
-    );
-  }
+  useEffect(() => {
+    const section = pathToSection(window.location.pathname);
+    if (section) {
+      setTimeout(() => {
+        document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 400);
+    }
+  }, []);
 
-  if (currentPage === "gallery") {
-    return (
-      <>
-        <div className="theme-button-top-right">
-          <ThemeDropdown />
-        </div>
-        <Gallery />
-      </>
-    );
-  }
+  const navigate = (page: Page) => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    window.history.pushState({}, '', page === 'home' ? '/' : `/${page}`);
+    setCurrentPage(page);
+    requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
+  };
 
-  if (currentPage === "sketchbook") {
-    return (
-      <>
-        <div className="theme-button-top-right">
-          <ThemeDropdown />
-        </div>
-        <Sketchbook />
-      </>
-    );
-  }
+  const scrollToSection = (sectionId: string) => {
+    const url = SECTION_URLS[sectionId] ?? '/';
+    window.history.pushState({}, '', url);
+    setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      setCurrentPage(pathToPage(window.location.pathname));
+      const section = pathToSection(window.location.pathname);
+      if (section) {
+        setTimeout(() => {
+          document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  if (loading) return <LoadingScreen onDone={() => setLoading(false)} />;
+
+  const inkSplatter = inkActive && (
+    <EasterEgg onDone={() => setInkActive(false)} />
+  );
+
+  const masthead = (
+    <Masthead
+      currentPage={currentPage}
+      onNavigate={navigate}
+      onSectionFlip={scrollToSection}
+    />
+  );
+
+  if (currentPage === 'projects')    return <>{masthead}<ProjectsCollection />{inkSplatter}</>;
+  if (currentPage === 'photography') return <>{masthead}<GalleryCollection />{inkSplatter}</>;
 
   return (
     <>
-      <div className="theme-button-top-right">
-        <ThemeDropdown />
-      </div>
-      <main className="layout-root">
-      <div className="layout-grid">
-        {/* LEFT: sticky navigation */}
-        <aside className="layout-left">
-          <SideNavigation />
-        </aside>
-
-        {/* RIGHT: scrolling narrative */}
-        <section className="layout-right">
-          <div className="content-column">
-            <div className="section" id="profile">
-              {/* <ProfileCard /> */}
-              <div className="profile-wrapper">
-                <ProfileCard />
-              </div>
-            </div>
-
-            <div className="section" id="projects">
-              <Projects />
-            </div>
-
-            <div className="section" id="experiences">
-              <Experiences />
-            </div>
-
-            <div className="section" id="hobbies">
-              <Hobbies />
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+      <div className="reading-progress" style={{ width: `${progress}%` }} />
+      {masthead}
+      <main>
+        <NewspaperPage
+          onViewAllProjects={() => navigate('projects')}
+          onViewAllPhotos={() => navigate('photography')}
+        />
+      </main>
+      {inkSplatter}
     </>
   );
 }

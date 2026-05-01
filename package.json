@@ -13,10 +13,12 @@
     "framer-motion": "^12.23.12",
     "lucide-preact": "^0.539.0",
     "preact": "^10.27.0",
-    "tailwindcss": "^4.1.12"
+    "tailwindcss": "^4.1.12",
+    "three": "^0.177.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",
+    "@types/three": "^0.177.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.2"
   }
