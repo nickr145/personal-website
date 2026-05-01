@@ -41,6 +41,10 @@ export function Footer() {
           <p className="classified-note">Professional history &amp; connections</p>
         </div>
       </div>
+
+      <p className="footer-egg-hint" aria-hidden="true">
+        ↑ ↑ ↓ ↓ ← → ← → B A
+      </p>
     </footer>
   );
 }

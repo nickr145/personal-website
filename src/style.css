@@ -1850,6 +1850,17 @@ html.theme-transitioning {
   line-height: 1.5;
 }
 
+.footer-egg-hint {
+  font-family: 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-fade, rgba(26,26,24,0.5));
+  opacity: 0.4;
+  text-align: center;
+  margin-top: 2rem;
+  user-select: none;
+}
+
 /* ═══════════════════════════════════════════════
    LOADING SCREEN
 ═══════════════════════════════════════════════ */
