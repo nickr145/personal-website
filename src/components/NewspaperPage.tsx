@@ -1,8 +1,9 @@
-import { lazy, Suspense, useState } from 'preact/compat';
+import { lazy, Suspense, useState, useEffect } from 'preact/compat';
 import { Projects } from './projects';
 import { Experiences } from './Experiences';
 import { Skills } from './Skills';
 import { Education } from './Education';
+import { Footer } from './Footer';
 import { galleryImages } from '../data/gallery';
 import { sketchImages } from '../data/sketchbook';
 import GalleryModal from './GalleryModal';
@@ -75,6 +76,28 @@ interface NewspaperPageProps {
 }
 
 export function NewspaperPage({ onViewAllProjects, onViewAllPhotos }: NewspaperPageProps) {
+  // Scroll-triggered fade-in for all content sections
+  useEffect(() => {
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>('.np-section:not(.np-section--front)')
+    );
+    sections.forEach(s => s.classList.add('js-fade'));
+
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.remove('js-fade');
+          e.target.classList.add('section-visible');
+          obs.unobserve(e.target);
+        }
+      }),
+      { threshold: 0.06 }
+    );
+
+    sections.forEach(s => obs.observe(s));
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <div className="newspaper-page">
       <section id="profile" className="np-section np-section--front">
@@ -148,6 +171,8 @@ export function NewspaperPage({ onViewAllProjects, onViewAllPhotos }: NewspaperP
         </div>
         <SketchbookSection />
       </section>
+
+      <Footer />
     </div>
   );
 }
