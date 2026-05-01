@@ -1429,6 +1429,10 @@ body {
 }
 
 @media (max-width: 700px) {
+  .front-content {
+    padding: 1rem 1rem 1.5rem;
+  }
+
   .hero-overlay {
     padding: 1.5rem 1.5rem;
   }

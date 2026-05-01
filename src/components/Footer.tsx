@@ -8,7 +8,7 @@ export function Footer() {
 
       <div className="classifieds-grid">
         <div className="classified-box">
-          <div className="classified-category">Electronic Mail</div>
+          <div className="classified-category">E-Mail</div>
           <a href="mailto:nicholas.rebello@gmail.com" className="classified-link">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="classified-link-icon" aria-hidden="true">
               <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -38,19 +38,7 @@ export function Footer() {
             </svg>
             Nicholas Rebello
           </a>
-          <p className="classified-note">Professional history &amp; endorsements</p>
-        </div>
-
-        <div className="classified-box">
-          <div className="classified-category">University Mail</div>
-          <a href="mailto:nrebello@uwaterloo.ca" className="classified-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="classified-link-icon" aria-hidden="true">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="M2 7l10 7 10-7" />
-            </svg>
-            nrebello@uwaterloo.ca
-          </a>
-          <p className="classified-note">Academic correspondence welcome</p>
+          <p className="classified-note">Professional history &amp; connections</p>
         </div>
       </div>
     </footer>

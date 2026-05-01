@@ -48,10 +48,6 @@ export function Masthead({ currentPage, onNavigate, onSectionFlip }: MastheadPro
 
       <div className="masthead-right">
         <span className="masthead-date">{today}</span>
-        {/* Place your PDF at /public/Nicholas_Rebello_Resume.pdf */}
-        <a href="/Nicholas_Rebello_Resume.pdf" className="resume-btn" target="_blank" rel="noopener noreferrer">
-          Resume ↓
-        </a>
         <ThemeDropdown />
       </div>
     </header>
