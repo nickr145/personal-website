@@ -1,6 +1,6 @@
 import { ThemeDropdown } from './ThemeDropdown';
 
-type Page = 'home' | 'projects' | 'photography';
+type Page = 'home' | 'projects' | 'photography' | 'writings' | 'writing';
 
 interface MastheadProps {
   currentPage: Page;
@@ -9,8 +9,8 @@ interface MastheadProps {
 }
 
 const NAV_SECTIONS = [
-  { id: 'profile',     label: 'About'      },
   { id: 'projects',    label: 'Projects'   },
+  { id: 'writings',    label: 'Writings'   },
   { id: 'experiences', label: 'Experience' },
   { id: 'skills',      label: 'Skills'     },
   { id: 'education',   label: 'Education'  },

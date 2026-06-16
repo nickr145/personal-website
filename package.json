@@ -12,6 +12,7 @@
     "@tailwindcss/vite": "^4.1.12",
     "framer-motion": "^12.23.12",
     "lucide-preact": "^0.539.0",
+    "marked": "^18.0.5",
     "preact": "^10.27.0",
     "tailwindcss": "^4.1.12",
     "three": "^0.177.0"

@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { galleryImages } from '../data/gallery';
 import { sketchImages } from '../data/sketchbook';
 import GalleryModal from './GalleryModal';
+import { WritingsSection } from './WritingsSection';
 
 const FrontPage = lazy(() =>
   import('./FrontPage').then(m => ({ default: m.FrontPage }))
@@ -73,9 +74,11 @@ function SketchbookSection() {
 interface NewspaperPageProps {
   onViewAllProjects: () => void;
   onViewAllPhotos: () => void;
+  onViewAllWritings: () => void;
+  onOpenWriting: (slug: string) => void;
 }
 
-export function NewspaperPage({ onViewAllProjects, onViewAllPhotos }: NewspaperPageProps) {
+export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllWritings, onOpenWriting }: NewspaperPageProps) {
   // Scroll-triggered fade-in for all content sections
   useEffect(() => {
     const sections = Array.from(
@@ -117,6 +120,19 @@ export function NewspaperPage({ onViewAllProjects, onViewAllPhotos }: NewspaperP
           </button>
         </div>
         <Projects />
+      </section>
+
+      <section id="writings" className="np-section">
+        <div className="np-section-header">
+          <div>
+            <span className="section-eyebrow">Research &amp; Ideas</span>
+            <h2 className="section-headline">Writings</h2>
+          </div>
+          <button className="view-all-btn" onClick={onViewAllWritings}>
+            All Writings ↗
+          </button>
+        </div>
+        <WritingsSection onOpenWriting={onOpenWriting} />
       </section>
 
       <section id="experiences" className="np-section">
