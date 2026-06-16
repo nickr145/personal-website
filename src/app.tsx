@@ -3,15 +3,24 @@ import { Masthead } from './components/Masthead';
 import { NewspaperPage } from './components/NewspaperPage';
 import { ProjectsCollection } from './components/ProjectsCollection';
 import { GalleryCollection } from './components/GalleryCollection';
+import { WritingsCollection } from './components/WritingsCollection';
+import { WritingPost } from './components/WritingPost';
 import { LoadingScreen } from './components/LoadingScreen';
 import { EasterEgg } from './components/EasterEgg';
 
-type Page = 'home' | 'projects' | 'photography';
+type Page = 'home' | 'projects' | 'photography' | 'writings' | 'writing';
 
 function pathToPage(path: string): Page {
   if (path === '/projects')    return 'projects';
   if (path === '/photography') return 'photography';
+  if (path === '/writings')    return 'writings';
+  if (path.startsWith('/writings/')) return 'writing';
   return 'home';
+}
+
+function pathToSlug(path: string): string | null {
+  if (path.startsWith('/writings/')) return path.slice('/writings/'.length) || null;
+  return null;
 }
 
 function pathToSection(path: string): string | null {
@@ -34,6 +43,9 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<Page>(
     () => pathToPage(window.location.pathname)
+  );
+  const [currentSlug, setCurrentSlug] = useState<string | null>(
+    () => pathToSlug(window.location.pathname)
   );
   const [progress, setProgress] = useState(0);
   const [inkActive, setInkActive] = useState(false);
@@ -73,11 +85,17 @@ export function App() {
     }
   }, []);
 
-  const navigate = (page: Page) => {
+  const navigate = (page: Page, slug?: string) => {
     document.documentElement.style.scrollBehavior = 'auto';
     window.scrollTo(0, 0);
-    window.history.pushState({}, '', page === 'home' ? '/' : `/${page}`);
+    let url = '/';
+    if (page === 'projects')    url = '/projects';
+    if (page === 'photography') url = '/photography';
+    if (page === 'writings')    url = '/writings';
+    if (page === 'writing' && slug) url = `/writings/${slug}`;
+    window.history.pushState({}, '', url);
     setCurrentPage(page);
+    setCurrentSlug(slug ?? null);
     requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
   };
 
@@ -91,8 +109,10 @@ export function App() {
 
   useEffect(() => {
     const onPopState = () => {
-      setCurrentPage(pathToPage(window.location.pathname));
-      const section = pathToSection(window.location.pathname);
+      const path = window.location.pathname;
+      setCurrentPage(pathToPage(path));
+      setCurrentSlug(pathToSlug(path));
+      const section = pathToSection(path);
       if (section) {
         setTimeout(() => {
           document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -119,6 +139,19 @@ export function App() {
 
   if (currentPage === 'projects')    return <>{masthead}<ProjectsCollection />{inkSplatter}</>;
   if (currentPage === 'photography') return <>{masthead}<GalleryCollection />{inkSplatter}</>;
+  if (currentPage === 'writings')    return <>{masthead}<WritingsCollection onOpenWriting={slug => navigate('writing', slug)} onBack={() => { navigate('home'); setTimeout(() => document.getElementById('writings')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150); }} />{inkSplatter}</>;
+  if (currentPage === 'writing' && currentSlug) {
+    return (
+      <>
+        {masthead}
+        <WritingPost
+          slug={currentSlug}
+          onBack={() => navigate('writings')}
+        />
+        {inkSplatter}
+      </>
+    );
+  }
 
   return (
     <>
@@ -128,6 +161,8 @@ export function App() {
         <NewspaperPage
           onViewAllProjects={() => navigate('projects')}
           onViewAllPhotos={() => navigate('photography')}
+          onViewAllWritings={() => navigate('writings')}
+          onOpenWriting={slug => navigate('writing', slug)}
         />
       </main>
       {inkSplatter}
