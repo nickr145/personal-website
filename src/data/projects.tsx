@@ -1,4 +1,5 @@
 import * as strings from "./projectStrings";
+import efficientTokenizerImage from "../data/images/efficient-tokenizer.webp";
 import fit4MeImage from "../data/images/fit4me.png";
 import skystoneImage from "../data/images/skystone.png";
 import lazLogo from "../data/images/laz-logo.png";
@@ -15,11 +16,20 @@ export type Project = {
   tags: string[];
   link?: string;
   repo?: string;
+  writingSlug?: string;
   image?: string;
   year: number;
 };
 
 export const projects: Project[] = [
+  {
+    title: strings.efficientTokenizerTitle,
+    description: strings.efficientTokenizerDescription,
+    tags: strings.efficientTokenizerTags,
+    writingSlug: 'efficient-tokenizer',
+    image: efficientTokenizerImage,
+    year: 2026,
+  },
   {
     title: strings.newsEdgeTitle,
     description: strings.newsEdgeDescription,

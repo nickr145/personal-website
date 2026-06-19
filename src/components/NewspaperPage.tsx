@@ -13,12 +13,16 @@ const FrontPage = lazy(() =>
   import('./FrontPage').then(m => ({ default: m.FrontPage }))
 );
 
-const featuredPhotos = galleryImages.filter(img => img.rating === 5);
+const featuredPhotos = galleryImages.filter(img => img.rating === 5).slice(0, 5);
 
 function GallerySection() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   return (
     <>
+      <p className="section-intro">
+        A selection of my favourite shots - landscapes, wildlife, and night skies captured mostly on trips across North America.
+        Click any photo to open it full-screen; hover to reveal the caption.
+      </p>
       <div className="gallery-grid">
         {featuredPhotos.map((img, i) => (
           <button
@@ -47,6 +51,10 @@ function SketchbookSection() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   return (
     <>
+      <p className="section-intro">
+        Pencil and ink sketches from my spare time - portraits, studies, and whatever else I felt like drawing.
+        Click any sketch to open it full-screen.
+      </p>
       <div className="gallery-grid">
         {sketchImages.map((img, i) => (
           <button

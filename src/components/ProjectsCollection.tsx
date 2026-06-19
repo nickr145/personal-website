@@ -1,6 +1,11 @@
 import { useState } from 'preact/hooks';
 import { projects } from '../data/projects';
 
+function spaNavigate(path: string) {
+  window.history.pushState({}, '', path);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
 export function ProjectsCollection() {
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -77,6 +82,18 @@ export function ProjectsCollection() {
                         <path d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
+                  )}
+                  {project.writingSlug && (
+                    <button
+                      className="link-icon"
+                      onClick={() => spaNavigate(`/writings/${project.writingSlug}`)}
+                      aria-label={`Read writing for ${project.title}`}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                      </svg>
+                    </button>
                   )}
                 </td>
               </tr>

@@ -1,5 +1,25 @@
 // projectStrings.tsx
 
+// Efficient Tokenizer
+export const efficientTokenizerTitle = "Efficient Tokenizer - Significance-Aware BPE";
+export const efficientTokenizerDescription =
+`
+Designed a significance-aware Byte-Pair Encoding tokenizer using entropy-weighted merge selection rather than raw frequency, improving compression by 7% over standard BPE. Integrated the tokenizer with a transformer model and benchmarked it against character-level encoding, achieving a 6% perplexity improvement and 68% reduction in sequence length.
+Built a comprehensive benchmarking suite and token importance analysis pipeline using attention-based and gradient-based methods to interpret how the tokenizer interacts with downstream model behaviour.
+`;
+export const efficientTokenizerTags = [
+  "Python",
+  "PyTorch",
+  "NumPy",
+  "Pandas",
+  "Matplotlib",
+  "NLP",
+  "Tokenization",
+  "Information Theory",
+  "Transformers",
+  "Benchmarking",
+];
+
 // NewsEdge
 export const newsEdgeTitle = "NewsEdge - Real-Time Market Sentiment Intelligence";
 export const newsEdgeDescription =

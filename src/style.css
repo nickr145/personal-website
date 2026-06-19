@@ -602,12 +602,12 @@ body {
 
 .article-tag {
   font-family: 'Courier New', monospace;
-  font-size: 0.62rem;
+  font-size: 0.65rem;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   padding: 0.15rem 0.45rem;
-  border: 1px solid var(--ink-fade, rgba(26,26,24,0.4));
-  color: var(--ink-fade, rgba(26,26,24,0.6));
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.55));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 .section-read-more {
@@ -679,12 +679,12 @@ body {
 
 .brief-tag {
   font-family: 'Courier New', monospace;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.12rem 0.4rem;
-  border: 1px solid var(--ink-faint, rgba(26,26,24,0.2));
-  color: var(--ink-fade, rgba(26,26,24,0.55));
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.5));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 /* ═══════════════════════════════════════════════
@@ -721,6 +721,16 @@ body {
   margin-bottom: 2rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--gold, #c8a84b);
+}
+
+.section-intro {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  line-height: 1.72;
+  color: var(--ink-fade, rgba(26,26,24,0.72));
+  margin: 0 0 1.25rem 0;
+  max-width: 680px;
 }
 
 .view-all-btn {
@@ -861,12 +871,12 @@ body {
 
 .project-tag {
   font-family: 'Courier New', monospace;
-  font-size: 0.61rem;
+  font-size: 0.65rem;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   padding: 0.13rem 0.42rem;
-  border: 1px solid var(--ink-fade, rgba(26,26,24,0.35));
-  color: var(--ink-fade, rgba(26,26,24,0.6));
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.55));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 /* ── Skills section ── */
@@ -936,7 +946,7 @@ body {
   font-family: 'Courier New', monospace;
   font-size: 0.72rem;
   letter-spacing: 0.06em;
-  color: var(--ink-fade, rgba(26,26,24,0.68));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
   padding-top: 0.25rem;
   white-space: nowrap;
 }
@@ -975,7 +985,7 @@ body {
   font-size: 0.65rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--ink-fade, rgba(26,26,24,0.68));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 .education-courses {
@@ -1207,7 +1217,7 @@ body {
   font-family: 'Courier New', monospace;
   font-size: 0.8rem;
   width: 80px;
-  color: var(--ink-fade, rgba(26,26,24,0.6));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 .project-name-cell {
@@ -1229,8 +1239,8 @@ body {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.2rem 0.5rem;
-  border: 1px solid var(--ink-fade, rgba(26,26,24,0.35));
-  color: var(--ink-fade, rgba(26,26,24,0.65));
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.55));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 .link-cell {
@@ -1270,6 +1280,99 @@ body {
   padding: 0 2.5rem 4rem;
   max-width: 1380px;
   margin: 0 auto;
+}
+
+/* ── Full gallery page ── */
+
+.gallery-collection-body {
+  padding: 0 2.5rem 5rem;
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.gallery-group {}
+
+.gallery-group-header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--gold, #c8a84b);
+}
+
+.gallery-group-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink, #1a1a18);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.gallery-masonry {
+  columns: 3;
+  column-gap: 1rem;
+}
+
+.gallery-masonry-item {
+  display: block;
+  width: 100%;
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ink-faint, rgba(26,26,24,0.12));
+  cursor: pointer;
+  background: var(--card-bg, #f5f1e8);
+  padding: 0;
+  transition: box-shadow 200ms ease;
+}
+
+.gallery-masonry-item:hover {
+  box-shadow: 4px 6px 18px rgba(0,0,0,0.13);
+}
+
+.gallery-masonry-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 260ms ease;
+}
+
+.gallery-masonry-item:hover img {
+  transform: scale(1.03);
+}
+
+.gallery-masonry-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+  transition: transform 280ms ease;
+  background: rgba(10, 8, 5, 0.76);
+  color: #f0ebe0;
+  padding: 0.55rem 0.75rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  backdrop-filter: blur(3px);
+}
+
+.gallery-masonry-item:hover .gallery-masonry-caption {
+  transform: translateY(0);
+}
+
+@media (max-width: 1000px) {
+  .gallery-masonry { columns: 2; }
+  .gallery-collection-body { padding: 0 1.5rem 4rem; }
+}
+
+@media (max-width: 600px) {
+  .gallery-masonry { columns: 1; }
+  .gallery-collection-body { padding: 0 1rem 3rem; }
 }
 
 .gallery-item {
@@ -1666,9 +1769,9 @@ html.theme-transitioning {
 
 .timeline-date {
   font-family: 'Courier New', monospace;
-  font-size: 0.63rem;
+  font-size: 0.68rem;
   letter-spacing: 0.06em;
-  color: var(--ink-fade, rgba(26,26,24,0.65));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
   text-align: right;
   padding-top: 0.25rem;
   line-height: 1.6;
@@ -1694,7 +1797,7 @@ html.theme-transitioning {
   flex: 1;
   width: 2px;
   background: linear-gradient(to bottom, var(--gold, #c8a84b) 60%, transparent);
-  opacity: 0.5;
+  opacity: 0.75;
   margin-top: 4px;
 }
 
@@ -1753,12 +1856,12 @@ html.theme-transitioning {
 
 .timeline-tag {
   font-family: 'Courier New', monospace;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 0.12rem 0.4rem;
-  border: 1px solid var(--ink-faint, rgba(26,26,24,0.2));
-  color: var(--ink-fade, rgba(26,26,24,0.55));
+  border: 1px solid var(--ink-fade, rgba(26,26,24,0.5));
+  color: var(--ink-fade, rgba(26,26,24,0.82));
 }
 
 /* ═══════════════════════════════════════════════
@@ -1852,10 +1955,10 @@ html.theme-transitioning {
 
 .footer-egg-hint {
   font-family: 'Courier New', monospace;
-  font-size: 0.58rem;
+  font-size: 1.0rem;
   letter-spacing: 0.18em;
   color: var(--ink-fade, rgba(26,26,24,0.5));
-  opacity: 0.4;
+  opacity: 0.6;
   text-align: center;
   margin-top: 2rem;
   user-select: none;
