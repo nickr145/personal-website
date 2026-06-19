@@ -35,7 +35,7 @@ export function Masthead({ currentPage, onNavigate, onSectionFlip }: MastheadPro
   return (
     <header className="newspaper-masthead">
       <button className="masthead-brand" onClick={() => onNavigate('home')}>
-        Nicholas J Rebello
+        NJR
       </button>
 
       <nav className="masthead-nav">
