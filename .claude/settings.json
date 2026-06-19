@@ -9,7 +9,14 @@
       "Bash(npm init *)",
       "Bash(npm install *)",
       "Bash(node verify_writings.mjs)",
-      "Bash(pkill -f \"vite --port 5199\")"
+      "Bash(pkill -f \"vite --port 5199\")",
+      "Bash(gh api *)",
+      "Bash(python3 -c ' *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:nbviewer.org)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/nickr145/efficient-tokenizer/main/notebooks/analysis_week2.ipynb\" -o /tmp/analysis_week2.ipynb)",
+      "Bash(python3)",
+      "Read(//tmp/**)"
     ]
   }
 }
