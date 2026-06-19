@@ -11,7 +11,7 @@ const FrontPage = lazy(() =>
 );
 
 const PAGES = [
-  { eyebrow: 'Front Page',     headline: 'Nicholas J Rebello', id: 'profile'     },
+  { eyebrow: 'Front Page',     headline: 'NJR', id: 'profile'     },
   { eyebrow: 'Latest Work',    headline: 'Projects',                   id: 'projects'    },
   { eyebrow: 'Career',         headline: 'Experience',                 id: 'experiences' },
   { eyebrow: 'Arts & Leisure', headline: 'Gallery',                    id: 'gallery'     },

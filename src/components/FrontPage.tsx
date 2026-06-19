@@ -150,10 +150,10 @@ export function FrontPage() {
           <div className="front-story-text">
 
             <p className="front-body">
-              Hi, I'm Nick.
-              I'm a Computer Science and Business student passionate about building technology that is practical, intelligent, and user-focused.
+              Hi, I'm Nicholas.
+              I'm a Computer Science and Business Administration graduate from the University of Waterloo and Wilfrid Laurier University, passionate about building technology that is practical, intelligent, and user-focused.
               I'm especially interested in AI, machine learning, fintech, and software engineering,
-              with experience developing full-stack apps, mobile features, data-driven tools, and AI-powered products.
+              with experience in developing full-stack apps, mobile features, data-driven tools, and AI-powered products.
               Through internships, hackathons, and personal projects, I enjoy turning complex ideas into useful systems that solve real problems.
             </p>
 
