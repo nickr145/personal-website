@@ -84,9 +84,10 @@ interface NewspaperPageProps {
   onViewAllPhotos: () => void;
   onViewAllWritings: () => void;
   onOpenWriting: (slug: string) => void;
+  onInkTrigger: () => void;
 }
 
-export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllWritings, onOpenWriting }: NewspaperPageProps) {
+export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllWritings, onOpenWriting, onInkTrigger }: NewspaperPageProps) {
   // Scroll-triggered fade-in for all content sections
   useEffect(() => {
     const sections = Array.from(
@@ -196,7 +197,7 @@ export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllWri
         <SketchbookSection />
       </section>
 
-      <Footer />
+      <Footer onInkTrigger={onInkTrigger} />
     </div>
   );
 }

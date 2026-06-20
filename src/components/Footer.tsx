@@ -1,9 +1,15 @@
-export function Footer() {
+interface FooterProps {
+  onInkTrigger: () => void;
+}
+
+export function Footer({ onInkTrigger }: FooterProps) {
   return (
     <footer className="classifieds-footer">
       <div className="classifieds-header">
         <span className="classifieds-eyebrow">Notices &amp; Connections</span>
-        <h2 className="classifieds-title">Get In Touch</h2>
+        <h2 className="classifieds-title">
+          Get In <button className="touch-egg" onClick={onInkTrigger}>Touch</button>
+        </h2>
       </div>
 
       <div className="classifieds-grid">
@@ -42,9 +48,8 @@ export function Footer() {
         </div>
       </div>
 
-      <p className="footer-egg-hint" aria-hidden="true">
-        ↑ ↑ ↓ ↓ ← → ← → B A
-      </p>
+      <p className="footer-egg-hint" aria-hidden="true">↑ ↑ ↓ ↓ ← → ← → B A</p>
+      <p className="footer-mobile-hint" aria-hidden="true">on mobile? try tapping "Touch" :3</p>
     </footer>
   );
 }
