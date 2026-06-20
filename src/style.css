@@ -1964,6 +1964,27 @@ html.theme-transitioning {
   user-select: none;
 }
 
+.touch-egg {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.footer-mobile-hint {
+  display: none;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-fade, rgba(26,26,24,0.5));
+  opacity: 0.6;
+  text-align: center;
+  margin-top: 0.4rem;
+  user-select: none;
+}
+
 /* ═══════════════════════════════════════════════
    LOADING SCREEN
 ═══════════════════════════════════════════════ */
@@ -2560,6 +2581,173 @@ html.theme-transitioning {
     align-items: flex-start;
     gap: 0.75rem;
   }
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE NAV — hamburger + drawer
+═══════════════════════════════════════════════ */
+
+.masthead-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--ink, #1a1a18);
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 0;
+}
+
+.mobile-nav-drawer {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  background: var(--paper, #f0ebe0);
+  border-bottom: 2px solid var(--ink, #1a1a18);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  z-index: 99;
+  padding: 0.4rem 0;
+}
+
+.mobile-nav-item {
+  display: block;
+  width: 100%;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--ink, #1a1a18);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--ink-faint, rgba(26,26,24,0.12));
+  cursor: pointer;
+  text-align: left;
+  padding: 0.85rem 1.5rem;
+  letter-spacing: 0.02em;
+  transition: background 140ms;
+}
+
+.mobile-nav-item:last-child { border-bottom: none; }
+
+.mobile-nav-item:hover,
+.mobile-nav-item:active {
+  background: var(--ink-faint, rgba(26,26,24,0.07));
+}
+
+/* ═══════════════════════════════════════════════
+   COMPREHENSIVE MOBILE LAYOUT
+═══════════════════════════════════════════════ */
+
+@media (max-width: 700px) {
+  /* Show hamburger */
+  .masthead-hamburger { display: flex; }
+
+  /* Section padding */
+  .np-section { padding: 1.75rem 1.25rem; }
+
+  .np-section-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Front page story — stack photo above text */
+  .front-story {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .front-story-photo {
+    width: 110px;
+    align-self: center;
+  }
+
+  .front-story-text {
+    border-left: none;
+    border-top: 1px solid var(--gold, #c8a84b);
+    padding-left: 0;
+    padding-top: 1.25rem;
+  }
+
+  .front-dateline {
+    flex-wrap: wrap;
+    gap: 0.15rem;
+  }
+
+  /* Project articles — stack image above text */
+  .project-body-wrap {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .project-photo {
+    width: 100%;
+    max-width: 240px;
+  }
+
+  /* Skills — stack category label above chips */
+  .skills-row {
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.85rem 0;
+  }
+
+  .skills-category {
+    min-width: unset;
+    padding-top: 0;
+  }
+
+  /* Education — single column */
+  .education-article {
+    grid-template-columns: 1fr;
+    gap: 0.3rem 0;
+    padding: 1.25rem 0;
+  }
+
+  .education-period { padding-top: 0; }
+
+  /* Projects collection table — horizontal scroll */
+  .projects-collection-container { padding: 1rem; }
+  .projects-table { display: block; overflow-x: auto; }
+
+  /* Gallery captions — always visible (no hover on touch) */
+  .gallery-caption,
+  .gallery-item:hover .gallery-caption {
+    transform: translateY(0);
+  }
+
+  .gallery-masonry-caption,
+  .gallery-masonry-item:hover .gallery-masonry-caption {
+    transform: translateY(0);
+  }
+
+  /* Footer padding already in earlier block; reduce classifieds */
+  .classifieds-footer { padding: 1.5rem 1.25rem 2.5rem; }
+
+  /* Mobile footer hints */
+  .footer-mobile-hint { display: block; }
+  .touch-egg { border-bottom: 1px dashed var(--ink-fade, rgba(26,26,24,0.4)); }
+
+  /* WritingsCollection header */
+  .writings-collection-header {
+    padding: 1.25rem 1.25rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  /* Writing post */
+  .writing-post-layout {
+    padding: 1.25rem 1.25rem 3rem;
+  }
+}
+
+/* Extra-small screens (iPhone SE, etc.) */
+@media (max-width: 400px) {
+  .np-section { padding: 1.25rem 1rem; }
+  .front-masthead-title { font-size: clamp(1rem, 6vw, 1.6rem); }
+  .front-headline { font-size: clamp(1.5rem, 7vw, 2rem); }
+  .project-headline { font-size: 1.05rem; }
 }
 
 /* ═══════════════════════════════════════════════

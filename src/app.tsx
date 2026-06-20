@@ -163,6 +163,7 @@ export function App() {
           onViewAllPhotos={() => navigate('photography')}
           onViewAllWritings={() => navigate('writings')}
           onOpenWriting={slug => navigate('writing', slug)}
+          onInkTrigger={() => setInkActive(true)}
         />
       </main>
       {inkSplatter}
