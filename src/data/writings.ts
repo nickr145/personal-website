@@ -29,7 +29,7 @@ export const writings: Writing[] = [
     date: 'July 2026',
     summary:
       'An exploration of the famous unsolved problem in mathematics. We analyze the behavior of the Collatz sequence using computational methods, identify patterns, and discuss the implications for number theory and algorithm design.',
-    featured: false,
+    featured: true,
   },
 ];
 
