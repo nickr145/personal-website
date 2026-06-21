@@ -1,6 +1,10 @@
 import { useEffect, useRef, useMemo } from 'preact/hooks';
 import { marked } from 'marked';
+import markedKatex from 'marked-katex-extension';
+import 'katex/dist/katex.min.css';
 import { writings, writingContent } from '../data/writings';
+
+marked.use(markedKatex({ throwOnError: false }));
 
 interface TocItem {
   level: number;
