@@ -41,7 +41,9 @@ export function App() {
   const [currentPage, setCurrentPage] = useState<Page>(
     () => pathToPage(window.location.pathname)
   );
-  const [loading, setLoading] = useState(() => currentPage === 'home');
+  const [loading, setLoading] = useState(
+    () => currentPage === 'home' && window.location.hash === ''
+  );
   const [currentSlug, setCurrentSlug] = useState<string | null>(
     () => pathToSlug(window.location.pathname)
   );
