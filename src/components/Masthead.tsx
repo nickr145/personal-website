@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { ThemeDropdown } from './ThemeDropdown';
 
-type Page = 'home' | 'projects' | 'photography' | 'writings' | 'writing';
+type Page = 'home' | 'projects' | 'photography' | 'sketchbook' | 'writings' | 'writing';
 
 interface MastheadProps {
   currentPage: Page;

@@ -30,7 +30,11 @@ function globalIndex(groupIdx: number, localIdx: number): number {
   return offset + localIdx;
 }
 
-export function GalleryCollection() {
+interface GalleryCollectionProps {
+  onBack: () => void;
+}
+
+export function GalleryCollection({ onBack }: GalleryCollectionProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
@@ -38,7 +42,7 @@ export function GalleryCollection() {
       <div className="projects-collection-header">
         <button
           className="back-button"
-          onClick={() => window.history.back()}
+          onClick={onBack}
           aria-label="Go back"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

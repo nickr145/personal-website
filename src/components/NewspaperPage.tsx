@@ -82,12 +82,13 @@ function SketchbookSection() {
 interface NewspaperPageProps {
   onViewAllProjects: () => void;
   onViewAllPhotos: () => void;
+  onViewAllSketches: () => void;
   onViewAllWritings: () => void;
   onOpenWriting: (slug: string) => void;
   onInkTrigger: () => void;
 }
 
-export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllWritings, onOpenWriting, onInkTrigger }: NewspaperPageProps) {
+export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllSketches, onViewAllWritings, onOpenWriting, onInkTrigger }: NewspaperPageProps) {
   // Scroll-triggered fade-in for all content sections
   useEffect(() => {
     const sections = Array.from(
@@ -193,6 +194,9 @@ export function NewspaperPage({ onViewAllProjects, onViewAllPhotos, onViewAllWri
             <span className="section-eyebrow">Arts &amp; Leisure</span>
             <h2 className="section-headline">Sketchbook</h2>
           </div>
+          <button className="view-all-btn" onClick={onViewAllSketches}>
+            View All Sketches ↗
+          </button>
         </div>
         <SketchbookSection />
       </section>

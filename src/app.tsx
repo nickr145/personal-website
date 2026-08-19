@@ -3,12 +3,13 @@ import { Masthead } from './components/Masthead';
 import { NewspaperPage } from './components/NewspaperPage';
 import { ProjectsCollection } from './components/ProjectsCollection';
 import { GalleryCollection } from './components/GalleryCollection';
+import { SketchbookCollection } from './components/SketchbookCollection';
 import { WritingsCollection } from './components/WritingsCollection';
 import { WritingPost } from './components/WritingPost';
 import { LoadingScreen } from './components/LoadingScreen';
 import { EasterEgg } from './components/EasterEgg';
 
-type Page = 'home' | 'projects' | 'photography' | 'writings' | 'writing';
+type Page = 'home' | 'projects' | 'photography' | 'sketchbook' | 'writings' | 'writing';
 
 function normalizePath(path: string): string {
   return path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
@@ -18,6 +19,7 @@ function pathToPage(rawPath: string): Page {
   const path = normalizePath(rawPath);
   if (path === '/projects')    return 'projects';
   if (path === '/photography') return 'photography';
+  if (path === '/sketchbook')  return 'sketchbook';
   if (path === '/writings')    return 'writings';
   if (path.startsWith('/writings/')) return 'writing';
   return 'home';
@@ -36,10 +38,10 @@ const KONAMI = [
 ];
 
 export function App() {
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<Page>(
     () => pathToPage(window.location.pathname)
   );
+  const [loading, setLoading] = useState(() => currentPage === 'home');
   const [currentSlug, setCurrentSlug] = useState<string | null>(
     () => pathToSlug(window.location.pathname)
   );
@@ -88,6 +90,7 @@ export function App() {
     let url = '/';
     if (page === 'projects')    url = '/projects';
     if (page === 'photography') url = '/photography';
+    if (page === 'sketchbook')  url = '/sketchbook';
     if (page === 'writings')    url = '/writings';
     if (page === 'writing' && slug) url = `/writings/${slug}`;
     window.history.pushState({}, '', url);
@@ -133,8 +136,9 @@ export function App() {
     />
   );
 
-  if (currentPage === 'projects')    return <>{masthead}<ProjectsCollection />{inkSplatter}</>;
-  if (currentPage === 'photography') return <>{masthead}<GalleryCollection />{inkSplatter}</>;
+  if (currentPage === 'projects')    return <>{masthead}<ProjectsCollection onBack={() => { navigate('home'); setTimeout(() => scrollToSection('projects'), 150); }} />{inkSplatter}</>;
+  if (currentPage === 'photography') return <>{masthead}<GalleryCollection onBack={() => { navigate('home'); setTimeout(() => scrollToSection('gallery'), 150); }} />{inkSplatter}</>;
+  if (currentPage === 'sketchbook')  return <>{masthead}<SketchbookCollection onBack={() => { navigate('home'); setTimeout(() => scrollToSection('sketchbook'), 150); }} />{inkSplatter}</>;
   if (currentPage === 'writings')    return <>{masthead}<WritingsCollection onOpenWriting={slug => navigate('writing', slug)} onBack={() => { navigate('home'); setTimeout(() => scrollToSection('writings'), 150); }} />{inkSplatter}</>;
   if (currentPage === 'writing' && currentSlug) {
     return (
@@ -157,6 +161,7 @@ export function App() {
         <NewspaperPage
           onViewAllProjects={() => navigate('projects')}
           onViewAllPhotos={() => navigate('photography')}
+          onViewAllSketches={() => navigate('sketchbook')}
           onViewAllWritings={() => navigate('writings')}
           onOpenWriting={slug => navigate('writing', slug)}
           onInkTrigger={() => setInkActive(true)}
