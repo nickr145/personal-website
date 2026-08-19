@@ -10,7 +10,12 @@ import { EasterEgg } from './components/EasterEgg';
 
 type Page = 'home' | 'projects' | 'photography' | 'writings' | 'writing';
 
-function pathToPage(path: string): Page {
+function normalizePath(path: string): string {
+  return path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
+}
+
+function pathToPage(rawPath: string): Page {
+  const path = normalizePath(rawPath);
   if (path === '/projects')    return 'projects';
   if (path === '/photography') return 'photography';
   if (path === '/writings')    return 'writings';
@@ -18,20 +23,11 @@ function pathToPage(path: string): Page {
   return 'home';
 }
 
-function pathToSlug(path: string): string | null {
+function pathToSlug(rawPath: string): string | null {
+  const path = normalizePath(rawPath);
   if (path.startsWith('/writings/')) return path.slice('/writings/'.length) || null;
   return null;
 }
-
-function pathToSection(path: string): string | null {
-  if (path === '/gallery')    return 'gallery';
-  if (path === '/sketchbook') return 'sketchbook';
-  return null;
-}
-
-const SECTION_URLS: Record<string, string> = {
-  gallery: '/gallery', sketchbook: '/sketchbook',
-};
 
 const KONAMI = [
   'ArrowUp','ArrowUp','ArrowDown','ArrowDown',
@@ -77,13 +73,14 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    const section = pathToSection(window.location.pathname);
+    if (loading) return;
+    const section = window.location.hash.slice(1);
     if (section) {
       setTimeout(() => {
         document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 400);
+      }, 100);
     }
-  }, []);
+  }, [loading]);
 
   const navigate = (page: Page, slug?: string) => {
     document.documentElement.style.scrollBehavior = 'auto';
@@ -100,8 +97,7 @@ export function App() {
   };
 
   const scrollToSection = (sectionId: string) => {
-    const url = SECTION_URLS[sectionId] ?? '/';
-    window.history.pushState({}, '', url);
+    window.history.pushState({}, '', `/#${sectionId}`);
     setTimeout(() => {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
@@ -112,7 +108,7 @@ export function App() {
       const path = window.location.pathname;
       setCurrentPage(pathToPage(path));
       setCurrentSlug(pathToSlug(path));
-      const section = pathToSection(path);
+      const section = window.location.hash.slice(1);
       if (section) {
         setTimeout(() => {
           document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -139,7 +135,7 @@ export function App() {
 
   if (currentPage === 'projects')    return <>{masthead}<ProjectsCollection />{inkSplatter}</>;
   if (currentPage === 'photography') return <>{masthead}<GalleryCollection />{inkSplatter}</>;
-  if (currentPage === 'writings')    return <>{masthead}<WritingsCollection onOpenWriting={slug => navigate('writing', slug)} onBack={() => { navigate('home'); setTimeout(() => document.getElementById('writings')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150); }} />{inkSplatter}</>;
+  if (currentPage === 'writings')    return <>{masthead}<WritingsCollection onOpenWriting={slug => navigate('writing', slug)} onBack={() => { navigate('home'); setTimeout(() => scrollToSection('writings'), 150); }} />{inkSplatter}</>;
   if (currentPage === 'writing' && currentSlug) {
     return (
       <>
