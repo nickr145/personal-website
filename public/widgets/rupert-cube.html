@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prince Rupert's Cube</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #f6f2e7;
+    --panel-bg: #fffdf6;
+    --glass: #17140d;
+    --ink: #201b12;
+    --muted: #85795a;
+    --border: #ddd2b4;
+    --accent: #a86a2c;
+    --accent-ink: #fdf6ea;
+    --pass: #3f6b45;
+    --pass-bg: #e7efe4;
+    --fail: #9c3b30;
+    --fail-bg: #f6e6e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14120c;
+      --panel-bg: #1e1a11;
+      --glass: #0a0906;
+      --ink: #f0e9d8;
+      --muted: #ab9d78;
+      --border: #3a3221;
+      --accent: #d8a15c;
+      --accent-ink: #211705;
+      --pass: #8fc79a;
+      --pass-bg: #1e2c1f;
+      --fail: #e2897c;
+      --fail-bg: #34201c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14120c;
+    --panel-bg: #1e1a11;
+    --glass: #0a0906;
+    --ink: #f0e9d8;
+    --muted: #ab9d78;
+    --border: #3a3221;
+    --accent: #d8a15c;
+    --accent-ink: #211705;
+    --pass: #8fc79a;
+    --pass-bg: #1e2c1f;
+    --fail: #e2897c;
+    --fail-bg: #34201c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "EB Garamond", Georgia, serif;
+    padding: 18px;
+  }
+  h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.01em;
+    margin: 0 0 4px;
+    text-wrap: balance;
+  }
+  .sub { color: var(--muted); font-size: 0.92rem; margin: 0 0 16px; max-width: 60ch; }
+  .layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  #viewport {
+    flex: 1 1 420px;
+    min-width: 280px;
+    height: 460px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    box-shadow: inset 0 0 0 5px var(--panel-bg), inset 0 0 0 6px var(--border);
+    overflow: hidden;
+    position: relative;
+    background: var(--glass);
+  }
+  #viewport canvas { display: block; width: 100%; height: 100%; }
+  .hint {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #d8cdb0;
+    background: rgba(10, 9, 6, 0.55);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  #panel {
+    flex: 1 1 260px;
+    min-width: 240px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .row { margin-bottom: 13px; }
+  .row label {
+    display: flex;
+    justify-content: space-between;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .row label span.val {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  #nuRow.over-limit label span.val { color: var(--fail); font-weight: 600; }
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 600;
+    font-style: italic;
+    padding: 9px;
+    border-radius: 5px;
+    margin: 11px 0;
+    font-size: 0.95rem;
+  }
+  .status::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+    flex-shrink: 0;
+  }
+  .status.pass { background: var(--pass-bg); color: var(--pass); }
+  .status.fail { background: var(--fail-bg); color: var(--fail); }
+  .limit-warning {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: var(--fail);
+    text-align: center;
+    margin-top: -5px;
+    margin-bottom: 11px;
+    min-height: 1em;
+  }
+  .btnrow { display: flex; gap: 8px; margin-top: 7px; }
+  button {
+    flex: 1;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 4px;
+    padding: 9px 10px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.06); }
+  button:active { filter: brightness(0.94); }
+  button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .axis-note {
+    font-size: 0.76rem;
+    color: var(--muted);
+    margin-top: 11px;
+    line-height: 1.45;
+    border-top: 1px solid var(--border);
+    padding-top: 9px;
+  }
+  .axis-note code.mono { font-size: 0.72rem; }
+  .prose { max-width: 62ch; margin: 26px auto 4px; line-height: 1.6; font-size: 1.05rem; }
+  .prose p { margin: 0 0 14px; }
+  code.mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.85em;
+    background: var(--panel-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<h1>Prince Rupert's Cube</h1>
+<p class="sub">Drag inside the viewport to orbit, scroll to zoom. Search for a rotation that lets the inner cube pass through the outer one.</p>
+
+<div class="layout">
+  <div id="viewport"><div class="hint">drag to orbit &middot; scroll to zoom</div></div>
+
+  <div id="panel">
+    <div id="nuRow" class="row">
+      <label>Scale factor &nu;<span class="val" id="nuVal">1.000</span></label>
+      <input type="range" id="nu" min="0.8" max="1.1" step="0.001" value="1.0">
+    </div>
+    <div class="limit-warning" id="limitWarning"></div>
+
+    <div class="row">
+      <label>Rotation X<span class="val" id="rxVal">0&deg;</span></label>
+      <input type="range" id="rx" min="0" max="360" step="0.001" value="0">
+    </div>
+    <div class="row">
+      <label>Rotation Y<span class="val" id="ryVal">0&deg;</span></label>
+      <input type="range" id="ry" min="0" max="360" step="0.001" value="0">
+    </div>
+    <div class="row">
+      <label>Rotation Z<span class="val" id="rzVal">0&deg;</span></label>
+      <input type="range" id="rz" min="0" max="360" step="0.001" value="0">
+    </div>
+    <div class="row">
+      <label>Position along tunnel<span class="val" id="tVal">-3.00</span></label>
+      <input type="range" id="tunnel" min="-3" max="3" step="0.05" value="-3">
+    </div>
+
+    <div class="status fail" id="statusPill">checking...</div>
+
+    <div class="btnrow">
+      <button id="snapBtn">Snap to Nieuwland's solution</button>
+      <button id="animateBtn">Animate pass-through</button>
+    </div>
+
+    <div class="axis-note">
+      The tunnel is bored along the direction &eta; = (&minus;2/3, 1/3, 2/3), the axis Nieuwland's
+      1816 construction uses. This is fixed so the demo matches the paper's own optimal passage;
+      only the inner cube's rotation and scale are yours to search over.
+    </div>
+  </div>
+</div>
+
+<div class="prose">
+  <p>
+    A convex shape is said to have <strong>Rupert's property</strong> if you can bore a tunnel
+    through it and slide an identical copy of the shape through that tunnel. A cube has this
+    property, which is surprising the first time you hear it: a hole through a cube that lets
+    another whole cube pass through, without the two ever overlapping. The <strong>Nieuwland
+    number</strong> of a shape is the largest scale factor <code class="mono">&nu;</code> for
+    which a copy enlarged by that factor can still make the trip. For the cube, that number is
+    <code class="mono">3&radic;2/4</code>, about 1.06066, found by Pieter Nieuwland in 1816 and
+    still the largest known today.
+  </p>
+  <p>
+    The paper this widget accompanies gets at that number through <strong>polar duality</strong>,
+    a way of turning a convex shape inside out: every vertex of the original becomes a face of
+    the dual, and every face becomes a vertex. The authors show that if one shape passes through
+    another in a particular way, the dual of the second shape passes through the dual of the
+    first. Because the cube and octahedron are duals of each other, a passing certificate for one
+    can be converted into a passing certificate for the other, which is how the paper proves they
+    share the same Nieuwland number. Underneath, checking whether a passage is even possible
+    comes down to a system of quadratic inequalities relating a rotation, a projection direction,
+    and a translation, a shape that computer solvers can search directly.
+  </p>
+  <p>
+    To use the widget: drag the rotation sliders and watch the status pill above the buttons.
+    Green means the current orientation of the inner cube fits entirely within the tunnel bored
+    into the outer one; red means some corner pokes out. Push <code class="mono">&nu;</code>
+    past 1.06066 and the slider turns red, since no orientation is known to work beyond
+    Nieuwland's own limit. Click "Snap to Nieuwland's solution" to jump straight to his 1816
+    construction, and "Animate pass-through" to watch the inner cube slide the length of the
+    tunnel at that orientation.
+  </p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Paper constants (Nieuwland's 1816 construction, Section 3.2) ----------
+  var W1 = new THREE.Vector3(-0.5, 1, -1);
+  var W2 = new THREE.Vector3(1, 1, 0.5);
+  var W3 = new THREE.Vector3(0.5, -1, 1);
+  var W4 = new THREE.Vector3(-1, -1, -0.5);
+  var ETA = new THREE.Vector3(-2 / 3, 1 / 3, 2 / 3).normalize();
+  var NIEUWLAND_NU = (3 * Math.sqrt(2)) / 4;
+  var NIEUWLAND_LIMIT = NIEUWLAND_NU; // 1.06066...
+
+  var THETA = Math.atan2(ETA.y, ETA.x);
+  var PHI = Math.acos(ETA.z);
+
+  // Definition 6's M(theta, phi): projects R^3 onto the plane orthogonal to eta.
+  function projectPoint(v) {
+    var st = Math.sin(THETA), ct = Math.cos(THETA), sp = Math.sin(PHI), cp = Math.cos(PHI);
+    var x = -st * v.x + ct * v.y;
+    var y = -ct * cp * v.x - st * cp * v.y + sp * v.z;
+    return [x, y];
+  }
+
+  // ---------- 2D convex hull (monotone chain) ----------
+  function cross2(o, a, b) {
+    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  }
+  function convexHull2D(points) {
+    var pts = points.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+    if (pts.length <= 2) return pts;
+    var lower = [];
+    for (var i = 0; i < pts.length; i++) {
+      while (lower.length >= 2 && cross2(lower[lower.length - 2], lower[lower.length - 1], pts[i]) <= 0) lower.pop();
+      lower.push(pts[i]);
+    }
+    var upper = [];
+    for (var j = pts.length - 1; j >= 0; j--) {
+      while (upper.length >= 2 && cross2(upper[upper.length - 2], upper[upper.length - 1], pts[j]) <= 0) upper.pop();
+      upper.push(pts[j]);
+    }
+    lower.pop(); upper.pop();
+    return lower.concat(upper);
+  }
+
+  // Signed "how far inside" a point is from a convex polygon's boundary (negative = outside).
+  function polygonSignedInset(pt, hull) {
+    var min = Infinity;
+    for (var i = 0; i < hull.length; i++) {
+      var a = hull[i], b = hull[(i + 1) % hull.length];
+      var edge = [b[0] - a[0], b[1] - a[1]];
+      var toPt = [pt[0] - a[0], pt[1] - a[1]];
+      var cross = edge[0] * toPt[1] - edge[1] * toPt[0];
+      var len = Math.hypot(edge[0], edge[1]) || 1;
+      min = Math.min(min, cross / len);
+    }
+    return min; // hull from convexHull2D is CCW, so >= 0 means inside
+  }
+
+  // ---------- Q (outer cube) fixed projected hull, computed once ----------
+  var CUBE_CORNERS_LOCAL = [];
+  [-1, 1].forEach(function (x) {
+    [-1, 1].forEach(function (y) {
+      [-1, 1].forEach(function (z) {
+        CUBE_CORNERS_LOCAL.push(new THREE.Vector3(x, y, z));
+      });
+    });
+  });
+  var Q_HULL = convexHull2D(CUBE_CORNERS_LOCAL.map(projectPoint));
+
+  // ---------- Rotation U for Nieuwland's construction, derived from the paper's data ----------
+  function computeNieuwlandRotation() {
+    var dirA = W2.clone().sub(W1).normalize();
+    var dirB = W4.clone().sub(W1).normalize();
+    var dirC = ETA.clone().negate();
+    var det = dirA.dot(dirB.clone().cross(dirC));
+    if (det < 0) dirC.negate();
+    var m = new THREE.Matrix4().makeBasis(dirA, dirB, dirC);
+    var euler = new THREE.Euler().setFromRotationMatrix(m, "XYZ");
+    function deg(r) { var d = (r * 180) / Math.PI; return ((d % 360) + 360) % 360; }
+    return { rx: deg(euler.x), ry: deg(euler.y), rz: deg(euler.z) };
+  }
+  var NIEUWLAND_ANGLES = computeNieuwlandRotation();
+
+  // ---------- Containment check ----------
+  function checkContainment(nu, rxDeg, ryDeg, rzDeg) {
+    var euler = new THREE.Euler(
+      (rxDeg * Math.PI) / 180,
+      (ryDeg * Math.PI) / 180,
+      (rzDeg * Math.PI) / 180,
+      "XYZ"
+    );
+    var worst = Infinity;
+    for (var i = 0; i < CUBE_CORNERS_LOCAL.length; i++) {
+      var v = CUBE_CORNERS_LOCAL[i].clone().multiplyScalar(nu).applyEuler(euler);
+      var p = projectPoint(v);
+      worst = Math.min(worst, polygonSignedInset(p, Q_HULL));
+    }
+    return { passes: worst >= -1e-3, worst: worst };
+  }
+
+  // ---------- Three.js scene ----------
+  var viewport = document.getElementById("viewport");
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(45, viewport.clientWidth / viewport.clientHeight, 0.1, 100);
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+  viewport.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.65));
+  var dir1 = new THREE.DirectionalLight(0xffffff, 0.9);
+  dir1.position.set(4, 5, 6);
+  scene.add(dir1);
+  var dir2 = new THREE.DirectionalLight(0x88aaff, 0.35);
+  dir2.position.set(-5, -3, -4);
+  scene.add(dir2);
+
+  // Outer cube Q
+  var outerGeo = new THREE.BoxGeometry(2, 2, 2);
+  var outerMat = new THREE.MeshStandardMaterial({ color: 0x9aa7b0, transparent: true, opacity: 0.16, side: THREE.DoubleSide });
+  var outerMesh = new THREE.Mesh(outerGeo, outerMat);
+  scene.add(outerMesh);
+  var outerEdges = new THREE.LineSegments(new THREE.EdgesGeometry(outerGeo), new THREE.LineBasicMaterial({ color: 0xc9d3d8 }));
+  scene.add(outerEdges);
+
+  // Inner cube P
+  var innerGeo = new THREE.BoxGeometry(2, 2, 2);
+  var innerMat = new THREE.MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.4, metalness: 0.05 });
+  var innerMesh = new THREE.Mesh(innerGeo, innerMat);
+  scene.add(innerMesh);
+  var innerEdges = new THREE.LineSegments(new THREE.EdgesGeometry(innerGeo), new THREE.LineBasicMaterial({ color: 0x1b3d1d }));
+  innerMesh.add(innerEdges);
+
+  // eta axis indicator
+  var axisPts = [ETA.clone().multiplyScalar(-3.2), ETA.clone().multiplyScalar(3.2)];
+  var axisGeo = new THREE.BufferGeometry().setFromPoints(axisPts);
+  var axisLine = new THREE.Line(axisGeo, new THREE.LineDashedMaterial({ color: 0xd8b46a, dashSize: 0.12, gapSize: 0.08 }));
+  axisLine.computeLineDistances();
+  scene.add(axisLine);
+
+  // Custom mouse-drag orbit (no external controls library)
+  var radius = 6.2, orbitAzimuth = 0.9, orbitPolar = 1.15;
+  var dragging = false, lastX = 0, lastY = 0;
+  function updateCamera() {
+    var sp = Math.sin(orbitPolar);
+    camera.position.set(
+      radius * sp * Math.cos(orbitAzimuth),
+      radius * Math.cos(orbitPolar),
+      radius * sp * Math.sin(orbitAzimuth)
+    );
+    camera.lookAt(0, 0, 0);
+  }
+  updateCamera();
+  renderer.domElement.addEventListener("mousedown", function (e) { dragging = true; lastX = e.clientX; lastY = e.clientY; });
+  window.addEventListener("mouseup", function () { dragging = false; });
+  window.addEventListener("mousemove", function (e) {
+    if (!dragging) return;
+    orbitAzimuth -= (e.clientX - lastX) * 0.006;
+    orbitPolar = Math.min(Math.max(orbitPolar - (e.clientY - lastY) * 0.006, 0.15), Math.PI - 0.15);
+    lastX = e.clientX; lastY = e.clientY;
+    updateCamera();
+  });
+  renderer.domElement.addEventListener(
+    "wheel",
+    function (e) {
+      e.preventDefault();
+      radius = Math.min(Math.max(radius + e.deltaY * 0.004, 3.2), 14);
+      updateCamera();
+    },
+    { passive: false }
+  );
+  var touchLast = null;
+  renderer.domElement.addEventListener("touchstart", function (e) { if (e.touches.length === 1) touchLast = e.touches[0]; });
+  renderer.domElement.addEventListener("touchend", function () { touchLast = null; });
+  renderer.domElement.addEventListener(
+    "touchmove",
+    function (e) {
+      if (e.touches.length !== 1 || !touchLast) return;
+      e.preventDefault();
+      var t = e.touches[0];
+      orbitAzimuth -= (t.clientX - touchLast.clientX) * 0.006;
+      orbitPolar = Math.min(Math.max(orbitPolar - (t.clientY - touchLast.clientY) * 0.006, 0.15), Math.PI - 0.15);
+      touchLast = t;
+      updateCamera();
+    },
+    { passive: false }
+  );
+
+  window.addEventListener("resize", function () {
+    camera.aspect = viewport.clientWidth / viewport.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+  });
+
+  // ---------- UI wiring ----------
+  var nuInput = document.getElementById("nu");
+  var rxInput = document.getElementById("rx");
+  var ryInput = document.getElementById("ry");
+  var rzInput = document.getElementById("rz");
+  var tunnelInput = document.getElementById("tunnel");
+  var nuVal = document.getElementById("nuVal");
+  var rxVal = document.getElementById("rxVal");
+  var ryVal = document.getElementById("ryVal");
+  var rzVal = document.getElementById("rzVal");
+  var tVal = document.getElementById("tVal");
+  var nuRow = document.getElementById("nuRow");
+  var limitWarning = document.getElementById("limitWarning");
+  var statusPill = document.getElementById("statusPill");
+
+  function render() {
+    var nu = parseFloat(nuInput.value);
+    var rx = parseFloat(rxInput.value);
+    var ry = parseFloat(ryInput.value);
+    var rz = parseFloat(rzInput.value);
+    var t = parseFloat(tunnelInput.value);
+
+    nuVal.textContent = nu.toFixed(3);
+    rxVal.textContent = Math.round(rx) + "°";
+    ryVal.textContent = Math.round(ry) + "°";
+    rzVal.textContent = Math.round(rz) + "°";
+    tVal.textContent = t.toFixed(2);
+
+    innerMesh.scale.set(nu, nu, nu);
+    innerMesh.rotation.set((rx * Math.PI) / 180, (ry * Math.PI) / 180, (rz * Math.PI) / 180, "XYZ");
+    innerMesh.position.copy(ETA.clone().multiplyScalar(t));
+
+    var overLimit = nu > NIEUWLAND_LIMIT + 1e-6;
+    nuRow.classList.toggle("over-limit", overLimit);
+    limitWarning.textContent = overLimit ? "Exceeds the proven maximum for the cube (ν = 1.06066)" : "";
+
+    var result = checkContainment(nu, rx, ry, rz);
+    innerMat.color.set(result.passes ? 0x2e7d32 : 0xb3261e);
+    innerEdges.material.color.set(result.passes ? 0x1b3d1d : 0x5c1310);
+    statusPill.textContent = result.passes ? "Passes through" : "Does not fit";
+    statusPill.className = "status " + (result.passes ? "pass" : "fail");
+
+    renderer.render(scene, camera);
+  }
+
+  [nuInput, rxInput, ryInput, rzInput, tunnelInput].forEach(function (el) {
+    el.addEventListener("input", render);
+  });
+
+  document.getElementById("snapBtn").addEventListener("click", function () {
+    // Full precision: this is a zero-slack boundary case, so rounding here
+    // (e.g. toFixed) is enough numerical error to flip "passes" to "fails".
+    nuInput.value = String(NIEUWLAND_NU);
+    rxInput.value = String(NIEUWLAND_ANGLES.rx);
+    ryInput.value = String(NIEUWLAND_ANGLES.ry);
+    rzInput.value = String(NIEUWLAND_ANGLES.rz);
+    render();
+  });
+
+  var animating = false;
+  document.getElementById("animateBtn").addEventListener("click", function () {
+    if (animating) return;
+    animating = true;
+    var start = performance.now(), duration = 4000;
+    function step(now) {
+      var frac = Math.min((now - start) / duration, 1);
+      tunnelInput.value = (-3 + frac * 6).toFixed(2);
+      render();
+      if (frac < 1) requestAnimationFrame(step);
+      else animating = false;
+    }
+    requestAnimationFrame(step);
+  });
+
+  function loop() {
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  render();
+  loop();
+})();
+</script>
+</body>
+</html>

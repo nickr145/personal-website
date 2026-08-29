@@ -57,6 +57,32 @@ export function WritingPost({ slug, onBack }: WritingPostProps) {
     });
   }, [htmlContent]);
 
+  // Render any Mermaid diagrams. Script tags inside dangerouslySetInnerHTML
+  // content never execute, so Mermaid is loaded and run here instead.
+  useEffect(() => {
+    const el = articleRef.current;
+    if (!el) return;
+    const diagrams = el.querySelectorAll('pre.mermaid');
+    if (diagrams.length === 0) return;
+
+    const w = window as typeof window & { mermaid?: { initialize: (opts: object) => void; run: (opts: { nodes: NodeListOf<Element> }) => void } };
+
+    const renderDiagrams = () => {
+      w.mermaid?.initialize({ startOnLoad: false, theme: 'neutral' });
+      w.mermaid?.run({ nodes: diagrams });
+    };
+
+    if (w.mermaid) {
+      renderDiagrams();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
+    script.onload = renderDiagrams;
+    document.head.appendChild(script);
+  }, [htmlContent]);
+
   if (!writing || !rawContent) {
     return (
       <main className="layout-root">
