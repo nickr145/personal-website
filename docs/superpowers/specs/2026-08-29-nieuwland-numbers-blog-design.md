@@ -65,9 +65,14 @@ semicolons, or a spaced hyphen (" - ") instead.
 
 ## 4. Interactive widget
 
-Built as a standalone Claude Artifact (own URL), then embedded in the post via `<iframe>` with
-a "open fullscreen" fallback link (the site's markdown pipeline uses `marked.parse()` with no
-sanitizer, injected via `dangerouslySetInnerHTML`, so raw HTML embeds render and execute).
+Built as a standalone Claude Artifact (own URL). Originally planned as an `<iframe>` embed;
+confirmed during implementation (via a Playwright check against the published artifact) that
+Claude Artifacts send an X-Frame-Options / CSP `frame-ancestors` header that blocks external
+framing outright (`net::ERR_BLOCKED_BY_RESPONSE`), so the design fell back to its own documented
+contingency: a styled link-out card instead of an iframe. Separately, the artifact is private by
+default (per the Artifact tool's own publish note), so it must be shared from its share menu
+before the link works for anyone but the owner; this is a manual step outside any available
+tool, flagged to the user rather than silently assumed.
 
 Technical choice: vanilla Three.js (UMD build via cdnjs) rather than `@react-three/fiber`.
 React Three Fiber has no UMD build on the Artifact sandbox's allowed CDNs (cdnjs, jsdelivr/npm
