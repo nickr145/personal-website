@@ -27,6 +27,52 @@ The paper's proof of Theorem 14 rests on **polar duality**, a way of turning a c
 
 The paper's Theorem 10 makes this precise for the passing-through relation: if $P$ passes through $Q$ with a certificate that also satisfies one extra condition, then $Q^*$ passes through $P^*$ with a related certificate. That extra condition is not automatic, so the real work is showing it holds in the two cases that matter here. For the octahedron, it holds because of a simple counting fact: the octahedron has only 6 vertices, but they come in 3 antipodal pairs (each vertex has an exact opposite), so there are really only 3 independent directions to worry about, exactly the dimension of the space. For the cube, it holds because of Nieuwland's own 1816 construction: take the square with vertices $w_1 = (-\tfrac{1}{2}, 1, -1)$, $w_2 = (1, 1, \tfrac{1}{2})$, $w_3 = (\tfrac{1}{2}, -1, 1)$, $w_4 = (-1, -1, -\tfrac{1}{2})$, and the direction $\eta = (-\tfrac{2}{3}, \tfrac{1}{3}, \tfrac{2}{3})$, which is perpendicular to all four points. Offsetting each $w_i$ by $\pm\nu\eta$, using $\nu = \frac{3\sqrt{2}}{4}$, produces the 8 vertices of the passing cube, and because the projection of that cube along $\eta$ lands exactly on the square, which itself sits inside the original cube, the passage works with no room to spare.
 
+<figure style="margin: 2rem auto; max-width: 420px; text-align: center;">
+<svg viewBox="60 60 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nieuwland's construction: a square cross-section offset along eta produces the eight vertices of the passing cube" style="width: 100%; height: auto;">
+<g stroke="#c7bb98" stroke-width="1" fill="none" stroke-dasharray="3 3">
+<line x1="121.3" y1="271.9" x2="187.1" y2="221.3"/>
+<line x1="92" y1="158.7" x2="157.7" y2="108.1"/>
+<line x1="222.3" y1="271.9" x2="288" y2="221.3"/>
+<line x1="192.9" y1="158.7" x2="258.7" y2="108.1"/>
+<line x1="121.3" y1="271.9" x2="92" y2="158.7"/>
+<line x1="187.1" y1="221.3" x2="157.7" y2="108.1"/>
+<line x1="222.3" y1="271.9" x2="192.9" y2="158.7"/>
+<line x1="288" y1="221.3" x2="258.7" y2="108.1"/>
+<line x1="121.3" y1="271.9" x2="222.3" y2="271.9"/>
+<line x1="187.1" y1="221.3" x2="288" y2="221.3"/>
+<line x1="92" y1="158.7" x2="192.9" y2="158.7"/>
+<line x1="157.7" y1="108.1" x2="258.7" y2="108.1"/>
+</g>
+<line x1="214.9" y1="243.6" x2="165.1" y2="136.4" stroke="#a8752c" stroke-width="1.3" stroke-dasharray="1 4"/>
+<polygon points="117.2,158.7 242.2,120.7 262.8,221.3 137.8,259.3" fill="#a8752c" fill-opacity="0.14" stroke="#a8752c" stroke-width="1.6"/>
+<g stroke="#3f6b45" stroke-width="1.8" fill="none" stroke-linejoin="round">
+<line x1="99.6" y1="120.8" x2="224.6" y2="82.9"/>
+<line x1="224.6" y1="82.9" x2="245.2" y2="183.4"/>
+<line x1="245.2" y1="183.4" x2="120.2" y2="221.4"/>
+<line x1="120.2" y1="221.4" x2="99.6" y2="120.8"/>
+<line x1="134.8" y1="196.6" x2="259.8" y2="158.6"/>
+<line x1="259.8" y1="158.6" x2="280.4" y2="259.2"/>
+<line x1="280.4" y1="259.2" x2="155.4" y2="297.1"/>
+<line x1="155.4" y1="297.1" x2="134.8" y2="196.6"/>
+<line x1="99.6" y1="120.8" x2="134.8" y2="196.6"/>
+<line x1="224.6" y1="82.9" x2="259.8" y2="158.6"/>
+<line x1="245.2" y1="183.4" x2="280.4" y2="259.2"/>
+<line x1="120.2" y1="221.4" x2="155.4" y2="297.1"/>
+</g>
+<circle cx="117.2" cy="158.7" r="2.6" fill="#a8752c"/>
+<text x="108.2" y="150.7" font-size="12" fill="#5c4d2e" text-anchor="end" font-style="italic">w1</text>
+<circle cx="242.2" cy="120.7" r="2.6" fill="#a8752c"/>
+<text x="251.2" y="112.7" font-size="12" fill="#5c4d2e" text-anchor="start" font-style="italic">w2</text>
+<circle cx="262.8" cy="221.3" r="2.6" fill="#a8752c"/>
+<text x="271.8" y="231.3" font-size="12" fill="#5c4d2e" text-anchor="start" font-style="italic">w3</text>
+<circle cx="137.8" cy="259.3" r="2.6" fill="#a8752c"/>
+<text x="128.8" y="273.3" font-size="12" fill="#5c4d2e" text-anchor="end" font-style="italic">w4</text>
+</svg>
+<figcaption style="font-size: 0.85rem; color: #6b6558; margin-top: 0.5rem;">
+The square $w_1w_2w_3w_4$ (gold) sits in the plane perpendicular to $\eta$ (dotted line). Offsetting it by $+\nu\eta$ and $-\nu\eta$ produces the top and bottom faces of the passing cube (green), an exact copy of the outer cube (dashed) at Nieuwland's scale.
+</figcaption>
+</figure>
+
 Put those two pieces together and you get Theorem 14: since an octahedron-through-octahedron certificate can be dualized into a cube-through-cube certificate and Nieuwland's cube-through-cube certificate can be dualized into an octahedron-through-octahedron one, each shape's Nieuwland number is at least as large as the other's, which forces them to be equal.
 
 <pre class="mermaid">
@@ -69,6 +115,17 @@ The first thing worth reporting is how many regions Algorithm 1 actually produce
 | Octahedron | 8 | 4 | 58 | 14 |
 
 I checked this two independent ways (Monte Carlo sampling and a direct transcription of Algorithm 1), and both agree; the exact quadratic formula, applied to distinct hyperplanes rather than raw faces, matches precisely.
+
+<pre class="mermaid">
+xychart-beta
+    title "Region count: naive raw-face formula vs. actual count"
+    x-axis [Cube, Octahedron]
+    y-axis "Number of regions" 0 --> 65
+    bar [32, 58]
+    bar [8, 14]
+</pre>
+
+<p style="text-align: center; font-size: 0.85rem; color: #6b6558; margin-top: -0.5rem;">For each shape, the taller bar is the naive count; the shorter bar in front is the actual count.</p>
 
 The second finding is about how hard it gets to *certify* feasibility near the critical value. Away from $\nu^*$, a handful of random restarts of a local numerical search reliably found a valid passing orientation for the cube: 3 to 4 restarts typically sufficed. Within $1.6 \times 10^{-4}$ of $\nu^* = \frac{3\sqrt{2}}{4}$, that number jumped to 37. The search landscape gets much rougher right at the boundary, which is exactly where you would expect it to, since that is where the feasible region is shrinking to a single point.
 
