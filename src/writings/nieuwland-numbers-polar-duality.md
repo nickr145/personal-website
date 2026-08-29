@@ -14,13 +14,11 @@ Before this paper, the cube was the only shape with a genuinely interesting Nieu
 
 I built a small interactive demo of the cube-through-cube case, using the paper's own numbers. The tunnel is fixed along the exact direction Nieuwland used in 1816 (so the demo matches his construction rather than searching blind). Drag the rotation sliders to hunt for an orientation where the smaller cube's shadow fits entirely inside the tunnel, push the scale slider past the Nieuwland limit and watch it turn red, since no orientation is known to make that work, and click "Snap to Nieuwland's solution" to see his 1816 construction directly.
 
-<div style="margin: 2rem 0; border: 1px solid #d8cfae; border-radius: 8px; padding: 1.75rem; text-align: center; background: #faf7ee;">
-  <p style="margin: 0 0 0.4rem; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #8a7f5f;">Interactive demo</p>
-  <p style="margin: 0 0 1.1rem; font-size: 1.15rem; font-weight: 600;">Prince Rupert's Cube, in 3D</p>
-  <p style="margin: 0 0 1.25rem; max-width: 42ch; margin-left: auto; margin-right: auto; color: #4a4436;">
-    Rotate a shrunk copy of a cube and search for the orientation that lets it pass through a tunnel bored along Nieuwland's axis.
+<div style="margin: 2rem 0;">
+  <iframe src="/widgets/rupert-cube.html" style="width: 100%; height: 900px; border: 1px solid #d8cfae; border-radius: 8px;" title="Interactive Prince Rupert's Cube demo" loading="lazy"></iframe>
+  <p style="text-align: center; margin-top: 0.5rem;">
+    <a href="/widgets/rupert-cube.html" target="_blank" rel="noopener">Open the demo fullscreen &#8594;</a>
   </p>
-  <a href="https://claude.ai/code/artifact/612e18a1-682a-415b-b77b-b4cffc2b11eb" target="_blank" rel="noopener" style="display: inline-block; padding: 0.6rem 1.4rem; background: #a86a2c; color: #fdf6ea; border-radius: 5px; text-decoration: none; font-weight: 600;">Open the interactive demo &#8594;</a>
 </div>
 
 ## Polar duality and the trick that connects the cube to the octahedron

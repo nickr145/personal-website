@@ -65,14 +65,27 @@ semicolons, or a spaced hyphen (" - ") instead.
 
 ## 4. Interactive widget
 
-Built as a standalone Claude Artifact (own URL). Originally planned as an `<iframe>` embed;
-confirmed during implementation (via a Playwright check against the published artifact) that
-Claude Artifacts send an X-Frame-Options / CSP `frame-ancestors` header that blocks external
-framing outright (`net::ERR_BLOCKED_BY_RESPONSE`), so the design fell back to its own documented
-contingency: a styled link-out card instead of an iframe. Separately, the artifact is private by
-default (per the Artifact tool's own publish note), so it must be shared from its share menu
-before the link works for anyone but the owner; this is a manual step outside any available
-tool, flagged to the user rather than silently assumed.
+Built and verified first as a standalone Claude Artifact (own URL). Two problems surfaced during
+implementation: Claude Artifacts send an X-Frame-Options / CSP `frame-ancestors` header that
+blocks external `<iframe>` embedding outright (`net::ERR_BLOCKED_BY_RESPONSE`, confirmed via
+Playwright), and the artifact is private by default, so even the fallback link 404s for
+unauthenticated visitors until manually shared. Sharing was set to "anyone with the link" but a
+fully logged-out Playwright check against that exact URL still returned Claude's own 404 page
+three times in a row, not a propagation delay.
+
+Resolved by self-hosting instead: the same verified HTML/JS, wrapped as a complete standalone
+document, lives at `public/widgets/rupert-cube.html` (a static asset Vite serves as-is, no build
+step). The post embeds it via a same-origin `<iframe src="/widgets/rupert-cube.html">`, which
+is not subject to the cross-origin framing block, plus a same-path fullscreen fallback link.
+This also removes any dependency on Claude Artifacts' sharing/auth model for the published site.
+
+One further bug found only through interactive testing (not caught by the earlier headless-math
+verification): the "Snap to Nieuwland's construction" button originally wrote `.toFixed()`
+values into the rotation sliders. Nieuwland's construction sits exactly on the containment
+boundary with zero slack, so that rounding was enough numerical error to flip the demo's
+headline moment from "Passes through" to "Does not fit". Fixed by writing full-precision values
+into the sliders (display-only rounding still happens separately, in the render loop) and by
+widening the containment tolerance from `1e-4` to `1e-3` for headroom.
 
 Technical choice: vanilla Three.js (UMD build via cdnjs) rather than `@react-three/fiber`.
 React Three Fiber has no UMD build on the Artifact sandbox's allowed CDNs (cdnjs, jsdelivr/npm
