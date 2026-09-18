@@ -1,5 +1,52 @@
 // projectStrings.tsx
 
+// Distributed Event-Driven Order System
+export const dEDOSTitle = "Distributed Event-Driven Order System - Transactional Outbox Pattern";
+export const dEDOSDescription = 
+`
+An event-driven microservice system built with .NET, PostgreSQL, RabbitMQ, and MassTransit, implementing the Transactional Outbox Pattern to eliminate dual-write risk between database persistence and message
+publishing. When an order is placed, OrderService.Api writes the order and its outbox record in a single database transaction, guaranteeing the event is never lost or published out of sync with the committed
+state.
+A background outbox worker polls for unpublished records and publishes OrderPlacedEvent messages to RabbitMQ, which a separate InventoryService consumes asynchronously to reserve stock. The system is fully
+containerized for local development (Postgres and RabbitMQ via Docker Compose), with EF Core migrations applied automatically on startup.
+`
+export const dEDOSTags = [
+  ".NET", "C#", "PostgreSQL", "RabbitMQ", "MassTransit", "Event-Driven Architecture", "Microservices", "Transactional Outbox Pattern", "Docker", "Entity Framework Core", "Distributed Systems"
+]
+export const dEDOSRepo = "https://github.com/nickr145/OrderSystem";
+
+// Async Multiplexed gRPC Streaming Proxy
+export const aMGSPTitle = "Async Multiplexed gRPC Streaming Proxy - Lock-Free C++ RPC Engine";
+export const aMGSPDescription = 
+`
+A high-throughput, low-latency gRPC proxy server written in C++20, built around a lock-free multiplexed streaming architecture that eliminates the per-call connection setup, head-of-line blocking, and thread
+contention inherent to synchronous unary RPCs. Clients open a single long-lived bidirectional gRPC stream over HTTP/2 instead of a new context per call.
+Outgoing requests flow through a single-producer single-consumer lock-free ring buffer into a dedicated writer thread, decoupling caller threads from network I/O without mutex-guarded writes. Responses are
+matched back to waiting callers through a zero-allocation, cache-line-aligned slot ring keyed by a 64-bit correlation ID, avoiding heap allocation and locked lookup tables entirely. The server side runs an
+explicit asynchronous reactor state machine on gRPC's completion queue API. Benchmarked locally at 10,000 requests per route, the multiplexed path achieves roughly 3x lower average latency (~53us vs. ~157us)
+than the synchronous unary baseline.
+`
+export const aMGSPTags = [
+  "C++20", "gRPC", "Protobuf", "CMake", "Boost", "Lock-Free Programming", "Concurrency", "Systems Programming", "Networking", "Asynchronous I/O", "Performance Benchmarking"
+]
+export const aMGSPRepo = "https://github.com/nickr145/AsyncMultiplexedgRPCStreamingProxy";
+
+// Financial Corrective RAG (CRAG) Engine
+export const finCragTitle = "Financial CRAG  - Corrective RAG for FinQA";
+export const finCragDescription = 
+`
+An implementation of Corrective RAG for financial question-answering over SEC filings, built with LangGraph and Claude. Rather than feeding retrieved context straight to the generator, the pipeline scores
+retrieval quality with Claude and routes each query through one of three correction paths: refining the top internal document when retrieval looks correct, or falling back to a live SEC EDGAR full-text search
+when it doesn't.
+Retrieval combines BM25 and dense embedding search (all-MiniLM-L6-v2) as a weighted hybrid fusion. The workflow runs fully async through LangGraph, with concurrent question batching yielding a measured 2.56x
+speedup over sequential execution. Evaluation uses a custom numeric-tolerance metric that reconciles unit suffixes and percent/fraction scale mismatches between predicted and gold answers. Shipped with a FastAPI
+backend, a Streamlit demo UI, and a benchmark suite comparing CRAG against a naive RAG baseline.
+`
+export const finCragTags = [
+  "Python", "LangGraph", "Claude API", "Retrieval-Augmented Generation", "Financial NLP", "Hybrid Retrieval", "BM25", "Sentence Transformers", "SEC EDGAR API", "FastAPI", "Streamlit", "Async", "Pytest"
+]
+export const finCragRepo = "https://github.com/nickr145/crag-finqa";
+
 // Efficient Tokenizer
 export const efficientTokenizerTitle = "Efficient Tokenizer - Significance-Aware BPE";
 export const efficientTokenizerDescription =
