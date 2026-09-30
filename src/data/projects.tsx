@@ -9,6 +9,9 @@ import chessImage from "../data/images/chess.jpg";
 import newsedgeImage from "../data/images/newsedge.webp";
 import openLineImage from "../data/images/openline.webp";
 import citymindImage from "../data/images/citymind.webp";
+import fincragImage from "../data/images/fincrag.jpg";
+import aMGSPImage from "../data/images/aMGSP.jpg";
+import dEDOSImage from "../data/images/dEDOS.jpg";
 
 export type Project = {
   title: string;
@@ -18,17 +21,51 @@ export type Project = {
   repo?: string;
   writingSlug?: string;
   image?: string;
-  year: number;
+  date: string;
 };
 
+const MONTH_ABBREVIATIONS = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+export function formatProjectDate(date: string): string {
+  const [year, month] = date.split("-").map(Number);
+  return `${MONTH_ABBREVIATIONS[month - 1]} ${year}`;
+}
+
 export const projects: Project[] = [
+  {
+    title: strings.dEDOSTitle,
+    description: strings.dEDOSDescription,
+    tags: strings.dEDOSTags,
+    repo: strings.dEDOSRepo,
+    image: dEDOSImage,
+    date: "2026-09",
+  },
+  {
+    title: strings.aMGSPTitle,
+    description: strings.aMGSPDescription,
+    tags: strings.aMGSPTags,
+    repo: strings.aMGSPRepo,
+    image: aMGSPImage,
+    date: "2026-09",
+  },
+  {
+    title: strings.finCragTitle,
+    description: strings.finCragDescription,
+    tags: strings.finCragTags,
+    repo: strings.finCragRepo,
+    image: fincragImage,
+    date: "2026-08",
+  },
   {
     title: strings.efficientTokenizerTitle,
     description: strings.efficientTokenizerDescription,
     tags: strings.efficientTokenizerTags,
     writingSlug: 'efficient-tokenizer',
     image: efficientTokenizerImage,
-    year: 2026,
+    date: "2026-05",
   },
   {
     title: strings.newsEdgeTitle,
@@ -36,7 +73,7 @@ export const projects: Project[] = [
     tags: strings.newsEdgeTags,
     repo: strings.newsEdgeRepo,
     image: newsedgeImage,
-    year: 2026,
+    date: "2026-08",
   },
   {
     title: strings.cityMindTitle,
@@ -44,7 +81,7 @@ export const projects: Project[] = [
     tags: strings.cityMindTags,
     repo: strings.cityMindRepo,
     image: citymindImage,
-    year: 2026,
+    date: "2026-03",
   },
   {
     title: strings.openLineTitle,
@@ -52,7 +89,7 @@ export const projects: Project[] = [
     tags: strings.openLineTags,
     repo: strings.openLineRepo,
     image: openLineImage,
-    year: 2026,
+    date: "2026-03",
   },
   {
     title: strings.rrpsTitle,
@@ -60,7 +97,7 @@ export const projects: Project[] = [
     tags: strings.rrpsTags,
     repo: strings.rrpsRepo,
     image: rrpsImage,
-    year: 2025,
+    date: "2025-12",
   },
   {
     title: strings.fit4MeTitle,
@@ -68,7 +105,7 @@ export const projects: Project[] = [
     tags: strings.fit4MeTags,
     repo: strings.fit4MeRepo,
     image: fit4MeImage,
-    year: 2025,
+    date: "2025-09",
   },
   {
     title: strings.cropTitle,
@@ -76,7 +113,7 @@ export const projects: Project[] = [
     tags: strings.cropTags,
     repo: strings.cropRepo,
     image: lazLogo,
-    year: 2025,
+    date: "2025-07",
   },
   {
     title: strings.skystonesTitle,
@@ -84,7 +121,7 @@ export const projects: Project[] = [
     tags: strings.skystonesTags,
     repo: strings.skystonesRepo,
     image: skystoneImage,
-    year: 2024,
+    date: "2024-11",
   },
   {
     title: strings.chessTitle,
@@ -92,7 +129,7 @@ export const projects: Project[] = [
     tags: strings.chessTags,
     repo: strings.chessRepo,
     image: chessImage,
-    year: 2023,
+    date: "2022-12",
   },
   {
     title: strings.expTrackerTitle,
@@ -100,13 +137,13 @@ export const projects: Project[] = [
     tags: strings.expTrackerTags,
     repo: strings.expTrackerRepo,
     image: expTrackerImage,
-    year: 2024,
+    date: "2024-12",
   },
   // {
   //   title: strings.pwgenTitle,
   //   description: strings.pwgenDescription,
   //   tags: strings.pwgenTags,
   //   repo: strings.pwgenRepo,
-  //   year: 2024,
+  //   date: "2024-01",
   // },
-].sort((a, b) => b.year - a.year);
+].sort((a, b) => b.date.localeCompare(a.date));

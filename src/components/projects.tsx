@@ -1,4 +1,4 @@
-import { projects } from '../data/projects';
+import { projects, formatProjectDate } from '../data/projects';
 
 const GithubIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="project-link-icon" aria-hidden="true">
@@ -35,7 +35,7 @@ export function Projects() {
         const paragraphs = p.description?.trim().split(/\n{2,}/) ?? [];
         return (
           <article key={p.title} className="project-article">
-            <div className="project-dateline">{p.year}</div>
+            <div className="project-dateline">{formatProjectDate(p.date)}</div>
 
             <div className="project-headline-row">
               <h3 className="project-headline">{p.title}</h3>

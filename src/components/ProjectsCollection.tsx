@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { projects } from '../data/projects';
+import { projects, formatProjectDate } from '../data/projects';
 
 function spaNavigate(path: string) {
   window.history.pushState({}, '', path);
@@ -55,7 +55,7 @@ export function ProjectsCollection({ onBack }: ProjectsCollectionProps) {
         <table className="projects-table">
           <thead>
             <tr>
-              <th>Year</th>
+              <th>Date</th>
               <th>Project</th>
               <th>Built with</th>
               <th>Link</th>
@@ -64,7 +64,7 @@ export function ProjectsCollection({ onBack }: ProjectsCollectionProps) {
           <tbody>
             {filtered.map((project, idx) => (
               <tr key={idx}>
-                <td className="year-cell">{project.year}</td>
+                <td className="year-cell">{formatProjectDate(project.date)}</td>
                 <td className="project-name-cell">{project.title}</td>
                 <td className="tags-cell">
                   <div className="tags-container">
