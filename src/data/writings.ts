@@ -1,3 +1,9 @@
+import bipTestContent from '../writings/bip-test.md?raw';
+import efficientTokenizerContent from '../writings/efficient-tokenizer.md?raw';
+import collatzContent from '../writings/collatz-conjecture-computational-analysis.md?raw';
+import nieuwlandContent from '../writings/nieuwland-numbers-polar-duality.md?raw';
+import asyncMultiplexContent from '../writings/async-multiplexed-grpc-proxy.md?raw';
+
 export interface Writing {
   slug: string;
   title: string;
@@ -39,16 +45,20 @@ export const writings: Writing[] = [
       "Prince Rupert bet a cube could pass through a hole bored into an identical cube. Pieter Nieuwland found the largest scale factor for which that works in 1816, and it's stood as an isolated fact ever since. A new paper (arXiv:2608.14912) proves the cube and octahedron share that same number, using polar duality, and shows the general problem can be solved in polynomial time. I built an interactive 3D widget to explore the passage, plus a numerical companion to check the paper's claims from scratch.",
     featured: true,
   },
+  {
+    slug: 'async-multiplexed-grpc-proxy',
+    title: 'Thousands of Requests, One Stream: Building a Lock-Free Multiplexed gRPC Proxy',
+    date: 'September 2026',
+    summary:
+      'Standard unary gRPC pays HTTP/2 stream and context setup costs on every single call. I built a proxy that replaces that with one persistent bidirectional stream, a lock-free SPSC pipeline on the way in, and zero-allocation slot-ring correlation on the way back, then measured it against the unary baseline: roughly a 3x drop in average per-request latency.',
+    featured: true,
+  },
 ];
-
-import bipTestContent from '../writings/bip-test.md?raw';
-import efficientTokenizerContent from '../writings/efficient-tokenizer.md?raw';
-import collatzContent from '../writings/collatz-conjecture-computational-analysis.md?raw';
-import nieuwlandContent from '../writings/nieuwland-numbers-polar-duality.md?raw';
 
 export const writingContent: Record<string, string> = {
   'efficient-tokenizer': efficientTokenizerContent,
   'bip-test': bipTestContent,
   'collatz-conjecture-computational-analysis': collatzContent,
   'nieuwland-numbers-polar-duality': nieuwlandContent,
+  'async-multiplexed-grpc-proxy': asyncMultiplexContent,
 };
