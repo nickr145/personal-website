@@ -62,6 +62,12 @@ export function WritingPost({ slug, onBack }: WritingPostProps) {
   useEffect(() => {
     const el = articleRef.current;
     if (!el) return;
+    // Fenced ```mermaid blocks render as <pre><code class="language-mermaid">; normalise to pre.mermaid.
+    el.querySelectorAll('pre > code.language-mermaid').forEach(code => {
+      const pre = code.parentElement!;
+      pre.className = 'mermaid';
+      pre.textContent = code.textContent;
+    });
     const diagrams = el.querySelectorAll('pre.mermaid');
     if (diagrams.length === 0) return;
 
