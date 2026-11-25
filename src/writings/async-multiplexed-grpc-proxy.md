@@ -1,7 +1,7 @@
 # Thousands of Requests, One Stream: Building a Lock-Free Multiplexed gRPC Proxy 
 Every unary gRPC call pays a toll before it does any useful work. A new HTTP/2 stream gets opened on the connection, a `ClientContext` gets allocated, headers get framed and sent, and only then does the actual request go out. For a web backend making a handful of calls a second, this toll is invisible. For an order-entry system firing thousands of messages a second, it is the whole bottleneck.
 
-I built a proxy that removes the toll entirely: one persistent, bidirectional gRPC stream, multiplexing an arbitrary number of independent logical requests, with a lock-free pipeline on the way in and zero-allocation correlation on the way back. Here is how it works, and what it bought me.
+I built a proxy that pays that toll once per connection instead of once per call. It uses one persistent, bidirectional gRPC stream that multiplexes any number of independent logical requests, with a lock-free pipeline on the way in and zero-allocation correlation on the way back. Below is how it works and what it bought me.
 
 ## The problem with one stream per call
 
@@ -67,7 +67,7 @@ service MultiplexedProxy {
 }
 ```
 
-`ExecuteUnary` is not scaffolding. It is the control, there so the benchmark measures the streaming path against something real rather than against a guess.
+`ExecuteUnary` is the control. It gives the benchmark a real unary baseline to measure the streaming path against.
 
 ## Client side: a lock-free pipeline in, a slot ring back
 
@@ -100,9 +100,9 @@ std::future<StreamResponse> SendAsync(uint32_t action_code, const std::string& p
 }
 ```
 
-There is a detail here worth being honest about. `boost::lockfree::spsc_queue` is only safe with a single producer, and `SendAsync` can be called from multiple caller threads at once. I serialize the push with a mutex rather than switch to a multi-producer lock-free queue, because `boost::lockfree::queue` requires trivially copyable, trivially destructible elements and protobuf messages are neither. The mutex sits only on the producer side. The consumer, the background writer thread draining the ring and calling `stream_->Write()`, stays single-threaded and uncontended, which is where the real throughput pressure is.
+One caveat. `boost::lockfree::spsc_queue` is only safe with a single producer, and `SendAsync` can be called from several caller threads at once. I serialize the push with a mutex instead of switching to a multi-producer lock-free queue, because `boost::lockfree::queue` requires trivially copyable, trivially destructible elements and protobuf messages are neither. The mutex sits only on the producer side. The consumer, the background writer thread that drains the ring and calls `stream_->Write()`, stays single-threaded and uncontended, and that's where the real throughput pressure is.
 
-Response correlation avoids a hash map entirely. `MAX_PENDING_SLOTS` pending requests get a fixed, pre-allocated array of slots, each `alignas(64)` to keep two slots from sharing a cache line, which matters because different caller threads and the reader thread are hammering different slots concurrently and false sharing would quietly serialize them anyway. `client_uid % MAX_PENDING_SLOTS` finds the slot directly:
+Response correlation skips the hash map entirely. `MAX_PENDING_SLOTS` pending requests share a fixed, pre-allocated array of slots, each `alignas(64)` so two slots never share a cache line. That matters because caller threads and the reader thread are hitting different slots concurrently, and false sharing would quietly serialize them. `client_uid % MAX_PENDING_SLOTS` finds the slot directly:
 
 ```cpp
 void ReadLoop() {
@@ -200,8 +200,8 @@ Ten thousand requests through each path, loopback, Apple Silicon:
 | Unary gRPC (baseline) | ~157 us |
 | Async Multiplexed Stream | ~53 us |
 
-Roughly a 3x drop in average per-request latency. The absolute numbers are specific to that machine and will move on different hardware or over a real network link, but the shape of the result is the part that should hold anywhere: the unary path pays setup cost on every single call, and the multiplexed path pays it exactly once, no matter how many requests ride the stream afterward.
+That is roughly a 3x drop in average per-request latency. The absolute numbers are specific to that machine and will move on other hardware or over a real network link. The shape of the result should hold anywhere: the unary path pays setup cost on every call, and the multiplexed path pays it once, however many requests ride the stream afterward.
 
 ## What is still missing
 
-Two things from the original design are not built yet. The connection has no automatic re-establishment with exponential backoff if the TCP link drops mid-stream, and there is no sweeper to time out and fail a pending slot whose response never comes back, so an orphaned request from a lost packet would wait on its future forever. Both are the natural next pieces, and both are the kind of failure mode that only shows up under real network conditions rather than on loopback, which is exactly why they matter for anything meant to run outside a benchmark.
+Two things from the original design are not built yet. The connection doesn't re-establish itself with exponential backoff if the TCP link drops mid-stream. And there is no sweeper to time out and fail a pending slot whose response never arrives, so a request orphaned by a lost packet would wait on its future forever. These are the next pieces to build. Both failure modes only show up under real network conditions, not on loopback, so they matter for anything meant to run outside a benchmark.

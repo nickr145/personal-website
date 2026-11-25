@@ -1,51 +1,49 @@
 # Beyond Frequency: An Information-Theoretic Approach to Byte-Pair Encoding
 
-Tokenization is the unsung hero of NLP pipelines. It's the first step that transforms raw text into numbers your model can learn from. Yet it's often treated as a solved problem - use BPE, move on. But what if tokenization design is actually more impactful than we realize?
+Tokenization is the first step in an NLP pipeline: it turns raw text into numbers your model can learn from. People tend to treat it as solved. Use BPE, move on. I wondered whether tokenizer design matters more than that attitude suggests.
 
-I spent three weeks designing and implementing a novel tokenizer to find out. The results surprised me.
+I spent three weeks designing and implementing a new tokenizer to find out. The results surprised me.
 
-## The Problem: Standard BPE is Unthinking
+## The Problem: BPE Only Counts
 
-Byte-pair encoding (BPE) is elegant in its simplicity:
+Byte-pair encoding (BPE) is simple:
 
 1. Start with bytes (0-255)
 2. Count every adjacent pair in your data
 3. Merge the most-frequent pair
 4. Repeat until you reach your target vocabulary size
 
-It works. Most modern language models use variants of it (GPT-2, GPT-3, Claude). But there's a philosophical problem: **BPE merges blindly by frequency alone**.
+It works, and most modern language models use a variant of it (GPT-2, GPT-3, Claude). My issue is that **BPE merges by frequency alone**.
 
-Think about what that means. When BPE sees that the pair "th" appears 10,000 times and "qu" appears 5,000 times, it will merge "th" first. But what if merging "qu" reduces information loss more significantly? What if "qu" is a more efficient token boundary from an information-theoretic perspective?
+Say the pair "th" appears 10,000 times and "qu" appears 5,000 times. BPE merges "th" first. But merging "qu" might reduce information loss more, and it might be the better token boundary from an information-theoretic view. Standard BPE never checks. It just counts.
 
-Standard BPE doesn't care. It just counts.
+## The Idea: Let Information Theory Guide the Merges
 
-## The Insight: Information Theory Should Guide Tokenization
+While reading about tokenization, I started to think that some merges compress data better than others, even when they're less frequent.
 
-While reading about tokenization, I came across a key insight: **not all merges are created equal**. Some merges compress data more efficiently than others, even if they're less frequent.
+So I asked: *What if we weighted merge decisions by information gain instead of just frequency?*
 
-This led me to the question: *What if we weighted merge decisions by information gain instead of just frequency?*
-
-Enter **entropy**. In information theory, entropy measures the average information content of a probability distribution, measured in bits:
+The tool for that is **entropy**. In information theory, entropy measures the average information content of a probability distribution, in bits:
 
 ```
 H = -Σ p(token) * log₂(p(token))
 ```
 
-When you merge two tokens into one, the token distribution changes. The entropy might go down - meaning you've saved bits, achieved better compression.
+When you merge two tokens into one, the token distribution changes, and the entropy can go down. That means you've saved bits and compressed better.
 
-My hypothesis: **Prefer merges that reduce entropy the most, not just merges that happen most often.**
+My hypothesis: **prefer merges that reduce entropy the most, not just merges that happen most often.**
 
-The formula is simple:
+The formula:
 
 ```
 significance_score = entropy_reduction × merge_frequency
 best_merge = argmax(significance_score)
 ```
 
-Why multiply both? Because:
-- **Entropy reduction** measures *quality* (how much compression you gain)
-- **Merge frequency** measures *impact* (how often the merge applies)
-- **Their product** balances both - find merges that are theoretically sound *and* practically impactful
+Why multiply them?
+- **Entropy reduction** measures *quality*: how much compression you gain
+- **Merge frequency** measures *impact*: how often the merge applies
+- **Their product** favors merges that are both theoretically sound *and* common enough to matter
 
 ## Building It: Three Weeks, Two Phases
 
@@ -53,10 +51,10 @@ Why multiply both? Because:
 
 I implemented two tokenizers in Python from scratch:
 
-1. **StandardBPE**  -  Vanilla frequency-only (baseline)
-2. **SignificanceAwareBPE**  -  Entropy-weighted (novel approach)
+1. **StandardBPE**: vanilla, frequency-only (the baseline)
+2. **SignificanceAwareBPE**: entropy-weighted (my approach)
 
-Both inherit from a shared `Tokenizer` base class. The difference is a single line in the merge selection logic, but it compounds across hundreds of merge decisions.
+Both inherit from a shared `Tokenizer` base class. The difference is one line in the merge selection logic, but it compounds across hundreds of merge decisions.
 
 I benchmarked them on Shakespeare's complete works:
 
@@ -65,17 +63,17 @@ I benchmarked them on Shakespeare's complete works:
 | StandardBPE | 4.2x | 0.8s |  -  |
 | **SignificanceAwareBPE** | **4.5x** | **1.2s** | **+7%** |
 
-**Result**: 7% better compression. Not revolutionary, but measurable. And the extra 0.4s of training time (50% slower) seemed worth it for better quality.
+**Result**: 7% better compression. Not revolutionary, but measurable. The extra 0.4s of training time (50% slower) seemed worth it.
 
 ### Week 2: Integration with a Real Model
 
-Here's where things got interesting. I built three Shakespeare GPT models (identical architecture: 8 layers, 128 embedding dim) using different tokenizers:
+Next I built three Shakespeare GPT models with identical architecture (8 layers, 128 embedding dim), each using a different tokenizer:
 
 1. Character-level (baseline)
 2. StandardBPE
 3. SignificanceAwareBPE
 
-**The Results**:
+**Results**:
 
 | Model | Seq Length | Val Loss | Perplexity | Time/Epoch |
 |-------|-----------|----------|-----------|-----------|
@@ -83,18 +81,18 @@ Here's where things got interesting. I built three Shakespeare GPT models (ident
 | StandardBPE | 44.8 | 1.42 | 4.14 | 22s |
 | **SignificanceAwareBPE** | **41.0** | **1.39** | **4.01** | **20s** |
 
-Let me spell out what this means:
+In plain terms:
 
-- **68% sequence reduction** (128 → 41 tokens): The model processes dramatically shorter sequences
-- **6% perplexity improvement** (4.26 → 4.01): Same model, better predictions
-- **2.25x training speedup** (45s → 20s per epoch): Fewer tokens = faster computation
-- **90% smaller attention matrices** (128² vs 41²): Massive memory savings
+- **68% shorter sequences** (128 → 41 tokens)
+- **6% better perplexity** (4.26 → 4.01) from the same model
+- **2.25x faster training** (45s → 20s per epoch), since fewer tokens means less computation
+- **90% smaller attention matrices** (128² vs 41²), which cuts memory use
 
-This is with an **identical model architecture**. The only change was the tokenizer. That's powerful.
+The model architecture is identical. Only the tokenizer changed.
 
 ## Week 3: Understanding Token Importance
 
-I wanted to understand *which tokens matter* to the model. I measured importance three ways:
+I wanted to know *which tokens matter* to the model, so I measured importance three ways:
 
 ### 1. Frequency-Based
 How often does each token appear?
@@ -103,7 +101,7 @@ How often does each token appear?
 importance = count(token) / total_tokens
 ```
 
-Simple baseline. Top tokens: THE, AND, punctuation - makes sense.
+A simple baseline. The top tokens are THE, AND, and punctuation, as you'd expect.
 
 ### 2. Attention-Based
 Which tokens does the model attend to most?
@@ -112,7 +110,7 @@ Which tokens does the model attend to most?
 importance = sum(attention_weights[token]) across all heads/layers
 ```
 
-Hook into the transformer's attention layers and measure which tokens receive high attention. Interesting finding: very similar to frequency, but not identical. Rare tokens can receive high attention if they're contextually important.
+I hooked into the transformer's attention layers and measured which tokens receive high attention. The result is very similar to frequency, but not identical: rare tokens can get high attention when they matter in context.
 
 ### 3. Gradient-Based
 How much does loss change if we perturb a token?
@@ -121,48 +119,48 @@ How much does loss change if we perturb a token?
 importance = |loss(embedding + ε) - loss(embedding)| / ε
 ```
 
-This one's expensive but reveals something different. Rare tokens like "THOU" (in Shakespeare) have high gradient importance - changing their embedding significantly impacts predictions. Frequency alone would underrate these tokens.
+This one is expensive, but it shows something the others miss. Rare tokens like "THOU" (in Shakespeare) have high gradient importance: changing their embedding noticeably shifts predictions. Frequency alone would underrate them.
 
-**Key Insight**: All three metrics correlate, but diverge meaningfully. Frequency captures prevalence, attention captures what the model explicitly uses, and gradients capture predictive sensitivity. No single metric tells the full story.
+All three metrics correlate but diverge in useful ways. Frequency captures prevalence, attention captures what the model actually uses, and gradients capture predictive sensitivity. No single metric tells the whole story.
 
-## The Surprising Findings
+## What Surprised Me
 
-1. **Tokenization matters more than I expected**: 6% perplexity improvement from a better tokenizer. That's comparable to architectural changes.
+1. **Tokenization mattered more than I expected.** A better tokenizer gave a 6% perplexity improvement, which is comparable to some architectural changes.
 
-2. **Theory meets practice**: An information-theoretic principle (entropy minimization) actually produces practical improvements. You don't have to choose between principled design and empirical results.
+2. **The theory held up.** An information-theoretic principle (entropy minimization) produced a practical gain, so principled design and empirical results didn't pull in different directions.
 
-3. **Rare tokens can be critical**: A token can be low-frequency but high-importance. Entropy weighting doesn't immediately catch this, but gradient-based analysis reveals it.
+3. **Rare tokens can be critical.** A token can be low-frequency but high-importance. Entropy weighting doesn't catch this on its own, but gradient-based analysis does.
 
-4. **Sequence length is the real win**: The most practical benefit wasn't the tiny perplexity improvement - it was 68% shorter sequences. That enables bigger models or longer contexts with the same compute budget.
+4. **Sequence length was the real win.** The perplexity gain was small. The 68% shorter sequences are what matter in practice, since they allow bigger models or longer contexts on the same compute budget.
 
-5. **Most improvement comes from BPE itself**: Going from character-level to any BPE variant (whether standard or significance-aware) is the biggest jump. The difference between standard and significance-aware is modest but real.
+5. **Most of the gain comes from BPE itself.** Going from character-level to any BPE variant is the biggest jump. The gap between standard and significance-aware is modest but real.
 
-## What I'd Do Differently
+## What I'd Do Next
 
-If I were to continue this project (Phase 3 - self-improving tokenizer):
+If I continue (Phase 3 would be a self-improving tokenizer), I'd start here:
 
-1. **Test on diverse data**: Shakespeare is linguistically unique. Would entropy weighting help with modern prose? Code? Scientific papers? Different languages?
+1. **Test on more kinds of data.** Shakespeare is linguistically unusual. Would entropy weighting help with modern prose, code, scientific papers, or other languages?
 
-2. **Larger scale**: Test on GPT-2 or GPT-3 scale models. The absolute numbers might be different at different scales.
+2. **Scale up.** Try GPT-2 or GPT-3 scale models. The absolute numbers may change.
 
-3. **Compare to production**: Benchmark against actual production tokenizers (GPT-2 tokenizer, LLaMA, etc.). How do we stack up?
+3. **Compare to production tokenizers** such as the GPT-2 tokenizer and LLaMA's, to see how this stacks up.
 
-4. **Adaptive tokenization**: Use token importance scores during training to refine the vocabulary in real-time. This feedback loop could improve results further.
+4. **Make it adaptive.** Use token importance scores during training to refine the vocabulary as the model learns. That feedback loop could improve results further.
 
 ## The Takeaway
 
-**Tokenization deserves better design than blind frequency counting.**
+Tokenization deserves better than blind frequency counting.
 
-Information theory gives us principled tools to make tokenization decisions. Entropy reduction is measurable, theoretically grounded, and empirically effective.
+Entropy reduction is measurable, grounded in theory, and it worked here.
 
-You don't have to be a researcher to apply this. If you're building a language model:
+You don't have to be a researcher to try this. If you're building a language model:
 
 1. Consider entropy-weighted BPE instead of vanilla BPE
 2. Measure token importance in your model (attention, gradients)
 3. Don't assume rare tokens are unimportant
-4. Remember that tokenization cascades - good tokenization enables better models
+4. Remember that tokenization cascades: good tokenization enables better models
 
-The 6% perplexity improvement might not sound huge, but compound it across a large model and dataset, and it's the difference between shipping and not shipping.
+A 6% perplexity improvement might not sound huge, but it compounds across a large model and dataset, and it can be the difference between shipping and not shipping.
 
 ## Open Questions
 
@@ -172,7 +170,7 @@ The 6% perplexity improvement might not sound huge, but compound it across a lar
 - How does this scale to 1B+ parameter models?
 - What's the interaction with other efficiency techniques (quantization, distillation)?
 
-I'm curious to explore these. But for now, I'm confident that **significance-aware BPE is a solid improvement over standard BPE**, and I'd recommend it for anyone serious about tokenizer design.
+I want to explore these. For now, my read is that **significance-aware BPE is a solid improvement over standard BPE**, and I'd recommend it to anyone serious about tokenizer design.
 
 ---
 
@@ -181,10 +179,10 @@ I'm curious to explore these. But for now, I'm confident that **significance-awa
 The full implementation, benchmarks, and analysis are available on GitHub: [efficient-tokenizer](https://github.com/nickr145/efficient-tokenizer)
 
 **Key files**:
-- `bpe_tokenizer.py`  -  Core implementations
-- `shakespeare_gpt_v2.py`  -  Model integration
-- `token_importance.py`  -  Importance analysis
-- `analysis_week2.ipynb`  -  Full results & visualizations
+- `bpe_tokenizer.py`: core implementations
+- `shakespeare_gpt_v2.py`: model integration
+- `token_importance.py`: importance analysis
+- `analysis_week2.ipynb`: full results and visualizations
 
 **Tech stack**: Python, PyTorch, NumPy, Matplotlib
 
@@ -192,28 +190,24 @@ The full implementation, benchmarks, and analysis are available on GitHub: [effi
 
 ## Lessons Learned
 
-1. **Simple can be powerful**: One-line change to the merge selection logic, compounding across hundreds of merges.
+1. **A small change can add up.** One line in the merge selection logic, compounded across hundreds of merges.
 
-2. **Measure everything**: Without benchmarks, I wouldn't have seen the 7% and 6% improvements. Quantification matters.
+2. **Measure everything.** Without benchmarks I wouldn't have seen the 7% and 6% improvements.
 
-3. **Theoretical grounding matters in practice**: I was worried entropy-weighted merges were too academic. Turns out they work.
+3. **Theory can pay off.** I worried entropy-weighted merges were too academic. They worked.
 
-4. **Different metrics tell different stories**: Frequency, attention, gradients - all measure importance differently. Use all three.
+4. **Different metrics tell different stories.** Frequency, attention, and gradients all measure importance differently, so use all three.
 
-5. **First-order intuitions can be wrong**: I expected gradient importance to be the most important. It was interesting but not the biggest factor.
+5. **My first guess was off.** I expected gradient importance to matter most. It was interesting, but not the biggest factor.
 
 ---
 
 ## Final Thought
 
-Every NLP project starts with tokenization. It's easy to overlook. But tokenization shapes everything downstream - sequence length, model performance, compute cost, interpretability.
+Every NLP project starts with tokenization, and it's easy to overlook. It shapes everything downstream: sequence length, model performance, compute cost, interpretability.
 
-Better tokenization isn't flashy. It won't be the headline of a paper. But it's how you ship better models, faster.
+Better tokenization isn't flashy and won't headline a paper. But it helps you ship better models, faster. If you're working on an LLM project, it's worth an afternoon of thought.
 
-If you're working on an LLM project, spend an afternoon thinking about your tokenization strategy. It might be the best afternoon you spend.
-
----
-
-**Thanks for reading!** If this was useful, share it with someone building language models.
+If this was useful, share it with someone building language models.
 
 ---
